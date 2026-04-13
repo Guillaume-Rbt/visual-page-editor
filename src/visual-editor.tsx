@@ -1,6 +1,10 @@
 import { BlocDefinition } from "./types";
 import { createRoot } from "react-dom/client";
+import { VisualEditor as VisualEditorComponent } from "./VisualEditor";
+import { EditorContextProvider } from "./Store";
+import "./assets/css/app.css";
 import "virtual:uno.css";
+
 
 const blocs: BlocDefinition[] = [];
 
@@ -18,8 +22,12 @@ class VisualEditor {
       }
 
       connectedCallback() {
-        console.log("Connected to DOM");
         this.root = createRoot(this);
+        this.root.render(
+          <EditorContextProvider blocs={blocs}>
+            <VisualEditorComponent />
+          </EditorContextProvider>
+        );
       }
 
       attributesChangedCallback(

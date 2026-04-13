@@ -3,15 +3,23 @@ import { defineConfig, presetWind4 } from "unocss";
 export default defineConfig({
   presets: [presetWind4()],
 
+  content: {
+    filesystem: ["./**"],
+  },
+
   outputToCssLayers: {
-    cssLayerName: (layer) => {
-      if (layer == "default") return "visual-editor";
-    },
+    cssLayerName: (layer)=> {
+      if(layer == "default")
+      {
+        return "ve-editor";
+      }
+    }
   },
 
   layers: {
+    base: -1,
     reset: 0,
-    "visual-editor": 1,
+    "ve-editor": 6,
   },
 
   theme: {
@@ -26,6 +34,4 @@ export default defineConfig({
       dark: "#343a40",
     },
   },
-
-  shortcuts: {},
 });

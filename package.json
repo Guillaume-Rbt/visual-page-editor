@@ -9,8 +9,18 @@
   "license": "ISC",
   "author": "",
   "type": "module",
+  "main": "./dist/visual-editor.js",
+  "module": "./dist/visual-editor.js",
+  "types": "./dist/visual-editor.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/visual-editor.d.ts",
+      "import": "./dist/visual-editor.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
