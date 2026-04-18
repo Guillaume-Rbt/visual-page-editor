@@ -2,13 +2,22 @@ import { BlocDefinition } from "./types";
 import { createRoot } from "react-dom/client";
 import { VisualEditor as VisualEditorComponent } from "./VisualEditor";
 import { EditorContextProvider } from "./Store";
+import { Translation } from "./types";
+import { fr as FR } from "./langs/fr";
 import "./assets/css/app.css";
 import "virtual:uno.css";
 
+import { Text } from "./components/fields/Text";
 
 const blocs: BlocDefinition[] = [];
 
 class VisualEditor {
+  static lang: Translation = FR;
+
+  constructor(options: { lang?: Translation } = {}) {
+    VisualEditor.lang = options.lang || FR;
+  }
+
   registerBloc(options: BlocDefinition) {
     blocs.push(options);
   }
@@ -26,7 +35,7 @@ class VisualEditor {
         this.root.render(
           <EditorContextProvider blocs={blocs}>
             <VisualEditorComponent />
-          </EditorContextProvider>
+          </EditorContextProvider>,
         );
       }
 
@@ -34,10 +43,7 @@ class VisualEditor {
         name: string,
         oldValue: string,
         newValue: string,
-      ) {
-        if (name === "open") {
-        }
-      }
+      ) {}
 
       disconnectedCallback() {
         this.root?.unmount();
@@ -46,4 +52,9 @@ class VisualEditor {
     customElements.define(name, Element);
   }
 }
+
 export { VisualEditor };
+
+// FIELD EXPORTS
+
+export { Text };

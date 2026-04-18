@@ -6,7 +6,9 @@ import { combine } from "zustand/middleware";
 type StoreState = {
   blocs: BlocDefinition[];
   value: Record<string, any>;
+  insertIndex: number | null;
   setValue: (id: string, name: string, value: any) => void;
+  setInsertIndex: (index: number | null) => void;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -33,10 +35,14 @@ export const EditorContextProvider = ({
       {
         blocs: blocs,
         value: {} as Record<string, any>,
+        insertIndex: null as number | null,
       },
       (set, getState) => {
         return {
           setValue: (id: string, name: string, value: any) => {},
+          setInsertIndex: (index: number | null) => {
+            set({ insertIndex: index });
+          },
         };
       },
     ),
@@ -66,3 +72,7 @@ export function usePartialStore(...keys: (keyof StoreState)[]) {
   ) as Pick<StoreState, (typeof keys)[number]>;
 }
 
+export function useBlocsLibraryVisible() {
+  const { insertIndex } = usePartialStore("insertIndex");
+  return insertIndex !== null;
+}
