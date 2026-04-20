@@ -29,4 +29,5 @@ export type FieldComponent<FieldOptions, FieldValue> = FunctionComponent<{
 
 export type Translation = {
   addComponent: string;
+  iconFor: string;
 };

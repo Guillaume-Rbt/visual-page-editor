@@ -1,6 +1,7 @@
 import { useBlocsLibraryVisible, usePartialStore } from "../../Store";
 import { translation } from "../../utils/utils";
 import { Modal } from "../ui/Modal";
+import { BlocsGrid } from "./BlocsGrid";
 
 export function BlocsLibrary() {
   const visible = useBlocsLibraryVisible();
@@ -15,6 +16,8 @@ export function BlocsLibrary() {
       visible={visible}
       onVisibilityChange={onVisibilityChange}
       title={translation("addComponent")}
-    ></Modal>
+    >
+      <BlocsGrid />
+    </Modal>
   );
 }

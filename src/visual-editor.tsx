@@ -7,8 +7,6 @@ import { fr as FR } from "./langs/fr";
 import "./assets/css/app.css";
 import "virtual:uno.css";
 
-import { Text } from "./components/fields/Text";
-
 const blocs: BlocDefinition[] = [];
 
 class VisualEditor {
@@ -20,6 +18,8 @@ class VisualEditor {
 
   registerBloc(options: BlocDefinition) {
     blocs.push(options);
+
+    return this;
   }
 
   defineElement(name = "visual-editor") {
@@ -33,7 +33,10 @@ class VisualEditor {
       connectedCallback() {
         this.root = createRoot(this);
         this.root.render(
-          <EditorContextProvider blocs={blocs}>
+          <EditorContextProvider
+            iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
+            blocs={blocs}
+          >
             <VisualEditorComponent />
           </EditorContextProvider>,
         );
@@ -54,7 +57,8 @@ class VisualEditor {
 }
 
 export { VisualEditor };
+export { defineField, translation } from "./utils/utils";
 
 // FIELD EXPORTS
 
-export { Text };
+export { Text } from "./components/fields/Text";

@@ -15,6 +15,7 @@ export type Store = UseBoundStore<StoreApi<StoreState>>;
 
 type EditorContextValue = {
   store: Store;
+  iconsUrl?: string;
 };
 
 const EditorContext = createContext<EditorContextValue>(
@@ -22,12 +23,14 @@ const EditorContext = createContext<EditorContextValue>(
 );
 
 type EditorContextProviderProps = {
+  iconsUrl?: string;
   blocs: BlocDefinition[];
   children?: ReactNode;
 };
 
 export const EditorContextProvider = ({
   blocs,
+  iconsUrl,
   children,
 }: EditorContextProviderProps) => {
   const store = create(
@@ -49,13 +52,13 @@ export const EditorContextProvider = ({
   );
 
   return (
-    <EditorContext.Provider value={{ store: store }}>
+    <EditorContext.Provider value={{ store: store, iconsUrl: iconsUrl }}>
       {children}
     </EditorContext.Provider>
   );
 };
 
-const useEditorContext = () => {
+export const useEditorContext = () => {
   const context = useContext(EditorContext);
   if (!context) {
     throw new Error(
