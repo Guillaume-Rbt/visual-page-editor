@@ -1,14 +1,15 @@
 import { createContext, type ReactNode, useContext } from "react";
 import { create, useStore, UseBoundStore, StoreApi } from "zustand";
-import { BlocDefinition } from "./types";
+import { BlocDefinition, Value } from "./types";
 import { combine } from "zustand/middleware";
 
 type StoreState = {
   blocs: BlocDefinition[];
-  value: Record<string, any>;
+  value: Value[];
   insertIndex: number | null;
   setValue: (id: string, name: string, value: any) => void;
   setInsertIndex: (index: number | null) => void;
+  insertData: (bloc: BlocDefinition) => void;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -37,7 +38,7 @@ export const EditorContextProvider = ({
     combine(
       {
         blocs: blocs,
-        value: {} as Record<string, any>,
+        value: [] as Value[],
         insertIndex: null as number | null,
       },
       (set, getState) => {
@@ -45,6 +46,26 @@ export const EditorContextProvider = ({
           setValue: (id: string, name: string, value: any) => {},
           setInsertIndex: (index: number | null) => {
             set({ insertIndex: index });
+          },
+          insertData: (bloc: BlocDefinition) => {
+            const { value, insertIndex } = getState();
+
+            const data = {} as Record<string, any>;
+
+            bloc.fields.forEach((field) => {
+              data[field.name] = field.options.defaultValue;
+            });
+
+            const nextValue = [
+              ...value.slice(0, insertIndex!),
+              {
+                name: bloc.name,
+                data,
+              },
+              ...value.slice(insertIndex!),
+            ];
+
+            set({ value: nextValue });
           },
         };
       },

@@ -1,10 +1,10 @@
-import { type FieldOptions } from "../../types";
+import { type FieldProps } from "../../types";
 
 export function Field({
   description,
   children,
   label,
-}: FieldOptions & {
+}: FieldProps & {
   children: React.ReactNode;
 }) {
   return (
