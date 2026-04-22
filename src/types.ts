@@ -11,6 +11,7 @@ export interface FieldOptions {
 
 export type BlocDefinition = {
   name: string;
+  label: string;
   fields: { name: string; options: {} }[];
   category: string;
 };

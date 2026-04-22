@@ -6,7 +6,8 @@ visualEditor.defineElement("ve-editor");
 
 visualEditor
   .registerBloc({
-    name: "Test bloc",
+    name: "test-bloc",
+    label: "Test bloc",
     category: "test",
     fields: [
       Text("text-field", {
@@ -18,7 +19,8 @@ visualEditor
     ],
   })
   .registerBloc({
-    name: "Test bloc 2",
+    name: "test-bloc-2",
+    label: "Test bloc 2",
     category: "test",
     fields: [
       Text("text-field", {

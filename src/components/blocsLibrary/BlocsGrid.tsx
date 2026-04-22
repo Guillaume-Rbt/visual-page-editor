@@ -7,7 +7,7 @@ export function BlocsGrid() {
   return (
     <div className="grid w-full grid-cols-[repeat(auto-fill,_250px)] gap-2 justify-start">
       {blocs.map((bloc) => {
-        return <BlocItem key={bloc.name} name={bloc.name} />;
+        return <BlocItem key={bloc.label} name={bloc.label} />;
       })}
     </div>
   );
