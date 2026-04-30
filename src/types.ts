@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import { blocs } from "./visual-editor";
 
 export interface FieldProps {
   description?: string;
@@ -34,7 +35,7 @@ export type Translation = {
   iconFor: string;
 };
 
-export type Value = {
+export type BlocValue = {
   name: string;
   data: Record<string, any>;
 };

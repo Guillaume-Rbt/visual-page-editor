@@ -9,8 +9,10 @@ export function Field({
 }) {
   return (
     <div className="w-full flex flex-col">
-      <p>{label}</p>
-      <p>{description}</p>
+      <p className="font-semibold text-4.2">{label}</p>
+      {description && (
+        <p className="text-dark/70 text-3.5 font-italic">{description}</p>
+      )}
       {children}
     </div>
   );

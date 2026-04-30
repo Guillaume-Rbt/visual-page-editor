@@ -1,16 +1,27 @@
 import { useContext } from "react";
-import { useEditorContext, usePartialStore } from "../../Store";
+import { usePartialStore } from "../../Store";
 import { ButtonAddComponent } from "../ui/ButtonAddComponent";
+import { SidebarBloc } from "./SidebarBloc";
 
 export function SidebarBlocs() {
-  const { blocs, value } = usePartialStore("blocs", "value");
-
-  console.log(blocs, value);
+  const { value } = usePartialStore("value");
 
   return (
     <>
       <ButtonAddComponent index={0}></ButtonAddComponent>
-      {JSON.stringify(value)}
+      <div className="flex flex-col px-2 gap-2">
+        {value.map((bloc, k) => {
+          return (
+            <SidebarBloc
+              id={k}
+              key={k}
+              name={bloc.name}
+              data={bloc}
+            ></SidebarBloc>
+          );
+        })}
+        <pre>{JSON.stringify(value)}</pre>
+      </div>
     </>
   );
 }

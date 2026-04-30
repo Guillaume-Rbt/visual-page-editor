@@ -16,7 +16,7 @@ export function Modal({
     <div
       className={`position-fixed inset-0 bg-dark/50 flex items-center justify-center z-index-50 ${visible ? "flex" : "hidden"}`}
     >
-      <div className="rounded-2 font-bold flex flex-col bg-white overflow-hidden min-w-[300px] w-full max-w-[80%] min-w-lg max-h-[80%]">
+      <div className="rounded-2 font-bold flex flex-col bg-white overflow-hidden min-w-[300px]  max-w-[80%] max-h-[80%]">
         <ModalHeader
           title={title}
           onClose={() => onVisibilityChange?.(false)}

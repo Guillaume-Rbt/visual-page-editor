@@ -8,12 +8,11 @@ export default defineConfig({
   },
 
   outputToCssLayers: {
-    cssLayerName: (layer)=> {
-      if(layer == "default")
-      {
+    cssLayerName: (layer) => {
+      if (layer == "default") {
         return "ve-editor";
       }
-    }
+    },
   },
 
   layers: {
@@ -21,6 +20,16 @@ export default defineConfig({
     reset: 0,
     "ve-editor": 6,
   },
+
+  rules: [
+    [
+      "shadow",
+      {
+        "box-shadow":
+          "0 1px 2px color-mix(in srgb, var(--colors-dark) 40%, transparent)",
+      },
+    ],
+  ],
 
   theme: {
     colors: {

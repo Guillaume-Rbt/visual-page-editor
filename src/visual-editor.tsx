@@ -25,17 +25,21 @@ class VisualEditor {
   defineElement(name = "visual-editor") {
     class Element extends HTMLElement {
       root: ReturnType<typeof createRoot> | null = null;
+      value = [];
 
       constructor() {
         super();
       }
 
       connectedCallback() {
+        this.value = JSON.parse(this.getAttribute("value") ?? "[]");
+
         this.root = createRoot(this);
         this.root.render(
           <EditorContextProvider
             iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
             blocs={blocs}
+            value={this.value}
           >
             <VisualEditorComponent />
           </EditorContextProvider>,
@@ -56,7 +60,7 @@ class VisualEditor {
   }
 }
 
-export { VisualEditor };
+export { VisualEditor, blocs };
 export { defineField, translation } from "./utils/utils";
 
 // FIELD EXPORTS

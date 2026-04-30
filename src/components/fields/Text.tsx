@@ -14,12 +14,17 @@ type ComponentProps = {
   onChange: (v: string) => void;
   multiline: boolean;
 };
-
+const textFieldClasses = "border-1 border-dark/20 p-2 focus:outline-none";
 function TextComponent({ value, onChange, multiline }: ComponentProps) {
   const Field = multiline ? (
-    <textarea value={value} onChange={(e) => onChange(e.target.value)} />
+    <textarea
+      className={`${textFieldClasses}`}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
   ) : (
     <input
+      className={`${textFieldClasses}`}
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
@@ -34,6 +39,8 @@ const Component: FieldComponent<fieldsArgs, string> = ({
   onChange,
   options,
 }) => {
+  console.log(value, options);
+
   return (
     <Field label={options.label} description={options.description}>
       <TextComponent
