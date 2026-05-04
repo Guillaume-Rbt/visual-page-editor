@@ -1,8 +1,16 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { type BlocValue } from "../../types";
 import { usePartialStore } from "../../Store";
 
-export function FieldRenderer({ field, data, dataPath }: { field: any; data: BlocValue; dataPath: string }) {
+export const FieldRenderer = memo(function FieldRenderer({
+    field,
+    data,
+    dataPath,
+}: {
+    field: any;
+    data: BlocValue;
+    dataPath: string;
+}) {
     const { updateData } = usePartialStore("updateData");
     const Component = field.render;
 
@@ -14,4 +22,4 @@ export function FieldRenderer({ field, data, dataPath }: { field: any; data: Blo
     );
 
     return <Component options={field.options} value={data.data[field.name]} onChange={handleChange} />;
-}
+});

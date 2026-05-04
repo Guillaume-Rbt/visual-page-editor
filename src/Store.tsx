@@ -3,12 +3,12 @@ import { create, useStore, UseBoundStore, StoreApi } from "zustand";
 import { BlocDefinition, BlocValue } from "./types";
 import { combine } from "zustand/middleware";
 import { setDeepValue } from "./utils/utils";
+import { v4 as uuid } from "uuid";
 
 type StoreState = {
     blocs: BlocDefinition[];
     value: BlocValue[];
     insertIndex: number | null;
-    setValue: (id: string, name: string, value: any) => void;
     setInsertIndex: (index: number | null) => void;
     insertData: (bloc: BlocDefinition) => void;
     updateData: (v: unknown, path: string) => void;
@@ -40,7 +40,6 @@ export const EditorContextProvider = ({ blocs, iconsUrl, children, value }: Edit
             },
             (set, getState) => {
                 return {
-                    setValue: (id: string, name: string, value: any) => {},
                     setInsertIndex: (index: number | null) => {
                         set({ insertIndex: index });
                     },
@@ -56,7 +55,8 @@ export const EditorContextProvider = ({ blocs, iconsUrl, children, value }: Edit
                         const nextValue = [
                             ...value.slice(0, insertIndex!),
                             {
-                                name: bloc.name,
+                                _name: bloc.name,
+                                _id: uuid(),
                                 data,
                             },
                             ...value.slice(insertIndex!),
@@ -96,4 +96,20 @@ export function usePartialStore(...keys: (keyof StoreState)[]) {
 export function useBlocsLibraryVisible() {
     const { insertIndex } = usePartialStore("insertIndex");
     return insertIndex !== null;
+}
+
+export function useBlocData(id: string) {
+    const { store } = useEditorContext();
+    return (
+        useStore(store, (state) => state.value.find((b) => (b._id = id))) || {
+            _id: id,
+            _name: "",
+            data: {},
+        }
+    );
+}
+
+export function useBlocDefinition(name: string) {
+    const { store } = useEditorContext();
+    return useStore(store, (state) => state.blocs.find((b) => b.name === name));
 }

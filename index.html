@@ -1,19 +1,34 @@
 <!doctype html>
 <html lang="en" class="h-full">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- if development -->
 
-        <script type="module" defer src=" http://localhost:5173/@vite/client"></script>
-        <script type="module" defer src=" http://localhost:5173/demo/main.js"></script>
-        <title>Document</title>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- if development -->
 
-    <body class="h-full">
-        <ve-editor
-            iconsUrl="./demo/img"
-            value='[{"name":"test-bloc","data":{"text-field-1":"Default value", "text-long-field-1": "k"}}]'
-            class="block w-full h-full"></ve-editor>
-    </body>
+    <script type="module" defer src=" http://localhost:5173/@vite/client"></script>
+    <script type="module" defer src=" http://localhost:5173/demo/main.js"></script>
+    <title>Document</title>
+</head>
+
+<body class="h-full">
+    <ve-editor iconsUrl="./demo/img" value='[
+  {
+    "_name": "test-bloc-2",
+    "_id": "caf19f7f-350e-4e0b-ad71-3829ffc70cea",
+    "data": {
+      "text-field-2": "Default value"
+    }
+  },
+  {
+    "_name": "test-bloc",
+    "_id": "31eb2043-0842-48b8-8ead-261d8a886c77",
+    "data": {
+      "text-field-1": "Default value",
+      "text-long-field-1": "Default value"
+    }
+  }
+]' class="block w-full h-full"></ve-editor>
+</body>
+
 </html>
