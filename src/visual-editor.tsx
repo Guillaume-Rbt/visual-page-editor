@@ -25,30 +25,48 @@ class VisualEditor {
     defineElement(name = "visual-editor") {
         class Element extends HTMLElement {
             root: ReturnType<typeof createRoot> | null = null;
-            value = [];
+            data = [];
             name = "content";
+            urlPreview = "/preview";
 
             constructor() {
                 super();
             }
 
             connectedCallback() {
-                this.value = JSON.parse(this.getAttribute("value") ?? "[]");
-                this.name = this.getAttribute("name") || "content";
+                this.data = JSON.parse(this.getAttribute("value") ?? "[]");
+                this.name = this.getAttribute("name") ?? "content";
+                this.urlPreview = this.getAttribute("urlPreview") ?? "";
 
                 this.root = createRoot(this);
-                this.root.render(
+
+                this.render();
+            }
+
+            attributesChangedCallback(name: string, oldValue: string, newValue: string) {
+                switch (name) {
+                    case "previewUrl":
+                        if (oldValue == newValue) {
+                            break;
+                        }
+                        this.urlPreview = this.getAttribute("previewUrl") ?? "";
+                        this.render();
+                        break;
+                }
+            }
+
+            render() {
+                this.root!.render(
                     <EditorContextProvider
+                        urlPreview={this.urlPreview}
                         iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
                         blocs={blocs}
-                        value={this.value}>
+                        data={this.data}>
                         <VisualEditorComponent />
                         <HiddenTextarea name={this.name} />
                     </EditorContextProvider>,
                 );
             }
-
-            attributesChangedCallback(name: string, oldValue: string, newValue: string) {}
 
             disconnectedCallback() {
                 this.root?.unmount();
@@ -59,9 +77,9 @@ class VisualEditor {
 }
 
 function HiddenTextarea({ name = "content" }) {
-    const { value } = usePartialStore("value");
+    const { data } = usePartialStore("data");
 
-    return <textarea readOnly hidden name={name} value={JSON.stringify(value)}></textarea>;
+    return <textarea readOnly hidden name={name} value={JSON.stringify(data)}></textarea>;
 }
 export { VisualEditor, blocs };
 export { defineField, translation } from "./utils/utils";

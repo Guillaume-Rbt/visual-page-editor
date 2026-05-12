@@ -5,7 +5,7 @@ export default defineConfig({
     presets: [presetWind4()],
 
     content: {
-        filesystem: ["./**"],
+        filesystem: ["./src/**", "./index.html"],
     },
 
     outputToCssLayers: {

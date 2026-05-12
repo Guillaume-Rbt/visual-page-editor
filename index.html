@@ -12,23 +12,9 @@
 </head>
 
 <body class="h-full">
-    <ve-editor iconsUrl="./demo/img" value='[
-  {
-    "_name": "test-bloc-2",
-    "_id": "caf19f7f-350e-4e0b-ad71-3829ffc70cea",
-    "data": {
-      "text-field-2": "Default value"
-    }
-  },
-  {
-    "_name": "test-bloc",
-    "_id": "31eb2043-0842-48b8-8ead-261d8a886c77",
-    "data": {
-      "text-field-1": "Default value",
-      "text-long-field-1": "Default value"
-    }
-  }
-]' class="block w-full h-full"></ve-editor>
+    <ve-editor urlPreview="http://localhost:5173/preview" iconsUrl="http://127.0.0.1:8000/icons/{{name}}.svg"
+        value='[{"_name":"hero","_id":"76268f04-57f4-4bcc-bbf3-e02a421598e5","data":{"siteTitle":"Titre de test","siteDescription":"Découvrez nos créations"}}]'
+        class="block w-full h-full"></ve-editor>
 </body>
 
 </html>

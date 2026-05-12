@@ -1,44 +1,48 @@
 {
-  "name": "visual-page-editor",
-  "version": "1.0.0",
-  "description": "a JavaScript library that allows you to set up a visual editor for a website",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Guillaume-Rbt/visual-page-editor.git"
-  },
-  "license": "ISC",
-  "author": "",
-  "type": "module",
-  "main": "./dist/visual-editor.js",
-  "module": "./dist/visual-editor.js",
-  "types": "./dist/visual-editor.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/visual-editor.d.ts",
-      "import": "./dist/visual-editor.js"
+    "name": "visual-page-editor",
+    "version": "1.0.0",
+    "description": "a JavaScript library that allows you to set up a visual editor for a website",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Guillaume-Rbt/visual-page-editor.git"
+    },
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "main": "./dist/visual-editor.js",
+    "module": "./dist/visual-editor.js",
+    "types": "./dist/visual-editor.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/visual-editor.d.ts",
+            "import": "./dist/visual-editor.js"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "server": "node ./server/server.ts"
+    },
+    "dependencies": {
+        "@unocss/reset": "^66.6.8",
+        "react": "^19.2.5",
+        "react-dom": "^19.2.5",
+        "uuid": "^14.0.0",
+        "zustand": "^5.0.12"
+    },
+    "devDependencies": {
+        "@fastify/static": "^9.1.3",
+        "@types/node": "^25.5.2",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@unocss/preset-wind4": "^66.6.8",
+        "edge.js": "^6.5.0",
+        "fastify": "^5.8.5",
+        "prettier": "^3.8.1",
+        "typescript": "^6.0.2",
+        "unocss": "^66.6.8",
+        "vite": "^8.0.7",
+        "vite-plugin-svgr": "^5.2.0"
     }
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build && tsc -p tsconfig.build.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@unocss/reset": "^66.6.8",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "uuid": "^14.0.0",
-    "zustand": "^5.0.12"
-  },
-  "devDependencies": {
-    "@types/node": "^25.5.2",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@unocss/preset-wind4": "^66.6.8",
-    "prettier": "^3.8.1",
-    "typescript": "^6.0.2",
-    "unocss": "^66.6.8",
-    "vite": "^8.0.7",
-    "vite-plugin-svgr": "^5.2.0"
-  }
 }

@@ -7,7 +7,7 @@ import { v4 as uuid } from "uuid";
 
 type StoreState = {
     blocs: BlocDefinition[];
-    value: BlocValue[];
+    data: BlocValue[];
     insertIndex: number | null;
     setInsertIndex: (index: number | null) => void;
     insertData: (bloc: BlocDefinition) => void;
@@ -18,24 +18,32 @@ export type Store = UseBoundStore<StoreApi<StoreState>>;
 
 type EditorContextValue = {
     store: Store;
-    iconsUrl?: string;
+    iconsUrl: string;
+    urlPreview: string;
 };
 
 const EditorContext = createContext<EditorContextValue>({} as EditorContextValue);
 
 type EditorContextProviderProps = {
-    iconsUrl?: string;
+    iconsUrl: string;
     blocs: BlocDefinition[];
-    value: BlocValue[];
+    data: BlocValue[];
+    urlPreview: string;
     children?: ReactNode;
 };
 
-export const EditorContextProvider = ({ blocs, iconsUrl, children, value }: EditorContextProviderProps) => {
+export const EditorContextProvider = ({
+    blocs,
+    iconsUrl,
+    urlPreview,
+    children,
+    data: data,
+}: EditorContextProviderProps) => {
     const store = create(
         combine(
             {
                 blocs: blocs,
-                value: value,
+                data: data,
                 insertIndex: null as number | null,
             },
             (set, getState) => {
@@ -44,37 +52,41 @@ export const EditorContextProvider = ({ blocs, iconsUrl, children, value }: Edit
                         set({ insertIndex: index });
                     },
                     insertData: (bloc: BlocDefinition) => {
-                        const { value, insertIndex } = getState();
+                        const { data, insertIndex } = getState();
 
-                        const data = {} as Record<string, any>;
+                        const newBlocData = {} as Record<string, any>;
 
                         bloc.fields.forEach((field) => {
-                            data[field.name] = field.options.defaultValue;
+                            newBlocData[field.name] = field.options.defaultValue;
                         });
 
                         const nextValue = [
-                            ...value.slice(0, insertIndex!),
+                            ...data.slice(0, insertIndex!),
                             {
                                 _name: bloc.name,
                                 _id: uuid(),
-                                data,
+                                data: newBlocData,
                             },
-                            ...value.slice(insertIndex!),
+                            ...data.slice(insertIndex!),
                         ];
 
-                        set({ value: nextValue });
+                        set({ data: nextValue });
                     },
                     updateData: (v: unknown, path: string) => {
-                        const { value } = getState();
+                        const { data } = getState();
                         const keys = path.split(".");
-                        set({ value: setDeepValue(value, keys, v) });
+                        set({ data: setDeepValue(data, keys, v) });
                     },
                 };
             },
         ),
     );
 
-    return <EditorContext.Provider value={{ store: store, iconsUrl: iconsUrl }}>{children}</EditorContext.Provider>;
+    return (
+        <EditorContext.Provider value={{ store: store, iconsUrl: iconsUrl, urlPreview: urlPreview }}>
+            {children}
+        </EditorContext.Provider>
+    );
 };
 
 export const useEditorContext = () => {
@@ -101,7 +113,7 @@ export function useBlocsLibraryVisible() {
 export function useBlocData(id: string) {
     const { store } = useEditorContext();
     return (
-        useStore(store, (state) => state.value.find((b) => (b._id = id))) || {
+        useStore(store, (state) => state.data.find((b) => b._id == id)) || {
             _id: id,
             _name: "",
             data: {},
@@ -112,4 +124,9 @@ export function useBlocData(id: string) {
 export function useBlocDefinition(name: string) {
     const { store } = useEditorContext();
     return useStore(store, (state) => state.blocs.find((b) => b.name === name));
+}
+
+export function useDataGetter(): () => BlocValue[] {
+    const context = useContext(EditorContext);
+    return () => context.store?.getState().data ?? [];
 }
