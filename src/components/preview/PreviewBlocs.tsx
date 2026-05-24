@@ -7,7 +7,7 @@ export function PreviewBlocs({ initHTML }: { initHTML: Record<string, string> })
     return (
         <>
             {data.map((bloc, i) => {
-                return <PreviewBloc key={i} data={data[i]} html={initHTML[bloc._id]}></PreviewBloc>;
+                return <PreviewBloc key={bloc._id} data={data[i]} html={initHTML[bloc._id]}></PreviewBloc>;
             })}
         </>
     );

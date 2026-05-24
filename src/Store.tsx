@@ -4,14 +4,18 @@ import { BlocDefinition, BlocValue } from "./types";
 import { combine } from "zustand/middleware";
 import { setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
+import { arrayMove } from "@dnd-kit/sortable";
 
 type StoreState = {
     blocs: BlocDefinition[];
     data: BlocValue[];
+    blocsOrder: string[];
     insertIndex: number | null;
     setInsertIndex: (index: number | null) => void;
     insertData: (bloc: BlocDefinition) => void;
     updateData: (v: unknown, path: string) => void;
+    moveBloc: (fromIndex: number, toIndex: number) => void;
+    getIndexById: (id: string) => number;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -44,6 +48,7 @@ export const EditorContextProvider = ({
             {
                 blocs: blocs,
                 data: data,
+                blocsOrder: [] as string[],
                 insertIndex: null as number | null,
             },
             (set, getState) => {
@@ -76,6 +81,21 @@ export const EditorContextProvider = ({
                         const { data } = getState();
                         const keys = path.split(".");
                         set({ data: setDeepValue(data, keys, v) });
+                    },
+                    moveBloc: (fromIndex: number, toIndex: number) => {
+                        set((state) => {
+                            const newData = arrayMove(state.data, fromIndex, toIndex);
+
+                            return {
+                                data: newData,
+                                blocsOrder: newData.map((v) => v._id),
+                            };
+                        });
+                    },
+
+                    getIndexById: (id: string) => {
+                        const { data } = getState();
+                        return data.findIndex((b) => b._id === id);
                     },
                 };
             },

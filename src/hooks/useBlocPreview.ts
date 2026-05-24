@@ -17,7 +17,7 @@ export function useBlocPreview(data: BlocValue, previewUrl: string, initial: str
                 .then(setHTML);
         },
         [data],
-        250,
+        200,
     );
 
     return html;

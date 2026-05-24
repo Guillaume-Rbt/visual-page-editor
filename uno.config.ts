@@ -26,7 +26,7 @@ export default defineConfig({
         btn: "cursor-pointer rounded-3 px-5 py-2",
         "btn-primary":
             "bg-primary hover:bg-[color-mix(in_srgb,var(--colors-primary)_80%,#fff)] transition-background duration-300 text-white",
-        "btn-rounded": "rounded-full px-2 py-2",
+        "btn-rounded": "rounded-full px-1 py-1",
     },
     rules: [
         [
