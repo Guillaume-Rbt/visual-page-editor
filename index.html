@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="en" class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- if development -->
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- if development -->
+        <script type="module" defer src=" http://localhost:5173/@vite/client"></script>
+        <script type="module" defer src=" http://localhost:5173/demo/main.js"></script>
+        <title>Document</title>
+    </head>
 
-    <script type="module" defer src=" http://localhost:5173/@vite/client"></script>
-    <script type="module" defer src=" http://localhost:5173/demo/main.js"></script>
-    <title>Document</title>
-</head>
-
-<body class="h-full">
-    <ve-editor urlPreview="http://localhost:5173/preview" iconsUrl="http://127.0.0.1:8000/icons/{{name}}.svg"
-        value='[{"_name":"hero","_id":"76268f04-57f4-4bcc-bbf3-e02a421598e5","data":{"siteTitle":"Titre de test","siteDescription":"Découvrez nos créations"}}]'
-        class="block w-full h-full"></ve-editor>
-</body>
-
+    <body class="h-full">
+        <ve-editor
+            urlPreview="http://localhost:5173/preview"
+            iconsUrl="http://127.0.0.1:8000/icons/{{name}}.svg"
+            value='[{"_name":"hero","_id":"76268f04-57f4-4bcc-bbf3-e02a421598e5","data":{"siteTitle":"Titre de test","siteDescription":"Découvrez nos créations","actions": []} }]'
+            class="block w-full h-full"></ve-editor>
+    </body>
 </html>

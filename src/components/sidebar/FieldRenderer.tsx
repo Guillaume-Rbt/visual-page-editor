@@ -6,20 +6,21 @@ export const FieldRenderer = memo(function FieldRenderer({
     field,
     data,
     dataPath,
+    onChange
 }: {
     field: any;
-    data: BlocValue;
+    data: BlocValue["data"];
     dataPath: string;
+    onChange: Function
 }) {
-    const { updateData } = usePartialStore("updateData");
     const Component = field.render;
 
     const handleChange = useCallback(
         (v: unknown) => {
-            updateData(v, `${dataPath}.data.${field.name}`);
+            onChange(v, `${dataPath}.${field.name}`);
         },
-        [dataPath, updateData],
+        [dataPath, onChange],
     );
 
-    return <Component options={field.options} value={data.data[field.name]} onChange={handleChange} />;
+    return <Component options={field.options} value={data[field.name]} onChange={handleChange} />;
 });

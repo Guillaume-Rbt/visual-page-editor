@@ -87,3 +87,4 @@ export { defineField, translation } from "./utils/utils";
 // FIELD EXPORTS
 
 export { Text } from "./components/fields/Text";
+export { Repeater } from "./components/fields/Repeater";

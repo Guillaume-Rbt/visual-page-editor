@@ -2,7 +2,7 @@ import { createContext, type ReactNode, useContext } from "react";
 import { create, useStore, UseBoundStore, StoreApi } from "zustand";
 import { BlocDefinition, BlocValue } from "./types";
 import { combine } from "zustand/middleware";
-import { setDeepValue } from "./utils/utils";
+import { deleteFromArray, insertIntoArray, setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -16,6 +16,7 @@ type StoreState = {
     updateData: (v: unknown, path: string) => void;
     moveBloc: (fromIndex: number, toIndex: number) => void;
     getIndexById: (id: string) => number;
+    removeData: (id: string) => void;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -65,17 +66,13 @@ export const EditorContextProvider = ({
                             newBlocData[field.name] = field.options.defaultValue;
                         });
 
-                        const nextValue = [
-                            ...data.slice(0, insertIndex!),
-                            {
+                        set({
+                            data: insertIntoArray(data, insertIndex ?? data.length, {
                                 _name: bloc.name,
                                 _id: uuid(),
                                 data: newBlocData,
-                            },
-                            ...data.slice(insertIndex!),
-                        ];
-
-                        set({ data: nextValue });
+                            }),
+                        });
                     },
                     updateData: (v: unknown, path: string) => {
                         const { data } = getState();
@@ -92,7 +89,13 @@ export const EditorContextProvider = ({
                             };
                         });
                     },
-
+                    removeData: (id: string) => {
+                        const { data } = getState();
+                        const index = data.findIndex((b) => b._id === id);
+                        if (index !== -1) {
+                            set({ data: deleteFromArray(data, index) });
+                        }
+                    },
                     getIndexById: (id: string) => {
                         const { data } = getState();
                         return data.findIndex((b) => b._id === id);

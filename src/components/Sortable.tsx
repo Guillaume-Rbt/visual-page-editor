@@ -1,7 +1,7 @@
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 
-export function SortableBloc({
+export function Sortable({
     id,
     children,
 }: {
@@ -10,7 +10,7 @@ export function SortableBloc({
         dragHandleRef: (el: HTMLElement | null) => void;
         listeners: any;
         attributes: any;
-        isDragging: Boolean
+        isDragging: Boolean;
     }) => React.ReactNode;
 }) {
     const { attributes, setActivatorNodeRef, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -31,7 +31,7 @@ export function SortableBloc({
                 dragHandleRef: setActivatorNodeRef,
                 listeners,
                 attributes,
-                isDragging
+                isDragging,
             })}
         </div>
     );

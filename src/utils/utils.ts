@@ -1,4 +1,4 @@
-import { BlocValue, FieldComponent, FieldDefinition, Translation } from "../types";
+import { FieldComponent, FieldDefinition, Translation } from "../types";
 import { VisualEditor } from "../visual-editor";
 
 export function defineField<Options, Value>(args: {
@@ -23,7 +23,6 @@ export function setDeepValue(obj: any, keys: string[], data: unknown): any {
     const [key, ...rest] = keys;
 
     const clone = Array.isArray(obj) ? [...obj] : { ...obj };
-
     if (Array.isArray(clone)) {
         const index = Number(key);
         if (!Number.isNaN(index)) {
@@ -70,4 +69,16 @@ export function debounce<T extends (...args: any[]) => void>(callback: T, delay:
             callback(...args);
         }, delay);
     };
+}
+
+export function stringifyValue(v: number | string | string[] | number[]): string {
+    return Array.isArray(v) ? v.join(" ") : `${v}`;
+}
+
+export function insertIntoArray<T>(array: T[], index: number, value: T): T[] {
+    return [...array.slice(0, index), value, ...array.slice(index)];
+}
+
+export function deleteFromArray<T>(array: T[], index: number): T[] {
+    return [...array.slice(0, index), ...array.slice(index + 1)];
 }

@@ -1,4 +1,4 @@
-import { Text, VisualEditor } from "../src/visual-editor";
+import { Repeater, Text, VisualEditor } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
 
@@ -17,7 +17,23 @@ visualEditor.registerBloc({
         Text("siteDescription", {
             label: "Description du site",
             multiline: true,
-            defaultValue: "",
+        }),
+        Repeater("actions", {
+            label: "Actions",
+            itemLabel: "label",
+            fields: [
+                Text("label", {
+                    label: "Label du bouton",
+                    multiline: false,
+                    placeholder: "Call to action",
+                }),
+                Text("type", {
+                    label: "Type",
+                    multiline: false,
+                    placeholder: "Type",
+                    defaultValue: "primary"
+                }),
+            ],
         }),
     ],
 });
