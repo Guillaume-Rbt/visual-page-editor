@@ -1,4 +1,4 @@
-import { FieldComponent, FieldDefinition, Translation } from "../types";
+import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent, Translation } from "../types";
 import { VisualEditor } from "../visual-editor";
 
 export function defineField<Options, Value>(args: {
@@ -12,6 +12,17 @@ export function defineField<Options, Value>(args: {
             name,
             options: mergedOptions,
         };
+    };
+}
+
+export function defineFieldsGroup<Options, Value>(render: FieldsGroupComponent<Options, Value>) {
+    return (options = {} as Options): FieldsdGroupDefinition<Options, Value> => {
+        return {
+            group: true,
+            render: render,
+            options: options,
+            ...options,
+        } as FieldsdGroupDefinition<Options, Value>;
     };
 }
 

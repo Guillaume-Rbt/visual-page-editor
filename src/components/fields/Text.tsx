@@ -2,7 +2,7 @@ import { defineField } from "../../utils/utils";
 import { FieldComponent } from "../../types";
 import { Field } from "./Field";
 
-type fieldsArgs = {
+type FieldArgs = {
     label: string;
     description?: string;
     multiline: boolean;
@@ -38,7 +38,7 @@ function TextComponent({ value, onChange, multiline, placeholder }: ComponentPro
     return <>{Field}</>;
 }
 
-const Component: FieldComponent<fieldsArgs, string> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs, string> = ({ value, onChange, options }) => {
     return (
         <Field label={options.label} description={options.description}>
             <TextComponent
@@ -51,7 +51,7 @@ const Component: FieldComponent<fieldsArgs, string> = ({ value, onChange, option
     );
 };
 
-export const Text = defineField<fieldsArgs, string>({
+export const Text = defineField<FieldArgs, string>({
     defaultOptions: {
         multiline: false,
         defaultValue: "",

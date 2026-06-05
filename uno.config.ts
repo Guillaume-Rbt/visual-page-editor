@@ -1,4 +1,3 @@
-import { shortcuts } from "@unocss/preset-wind4";
 import { defineConfig, presetWind4 } from "unocss";
 
 export default defineConfig({
@@ -14,16 +13,21 @@ export default defineConfig({
                 return "ve-editor";
             }
         },
+        allLayers: true,
     },
 
     layers: {
-        base: 0,
         reset: -1,
-        shortcuts: 2,
+        base: 0,
+        properties: 1,
+        theme: 2,
+        preflights: 3,
+        shortcuts: 4,
+        default: 5,
         "ve-editor": 6,
     },
     shortcuts: {
-        btn: "cursor-pointer rounded-2 px-5 py-2",
+        btn: "cursor-pointer rounded-2 px-5 py-3",
         "btn-primary":
             "bg-primary hover:bg-[color-mix(in_srgb,var(--colors-primary)_80%,#fff)] transition-background duration-300 text-white",
         "btn-rounded": "rounded-full px-1 py-1",
@@ -33,6 +37,12 @@ export default defineConfig({
             "shadow",
             {
                 "box-shadow": "0 1px 2px color-mix(in srgb, var(--colors-dark) 40%, transparent)",
+            },
+        ],
+        [
+            "transition-discrete",
+            {
+                "transition-behavior": "allow-discrete",
             },
         ],
     ],

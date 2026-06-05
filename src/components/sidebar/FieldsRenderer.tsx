@@ -15,19 +15,19 @@ export const FieldsRenderer = memo(function FieldsRenderer({
     dataPath: string;
     id?: string;
     isVisible?: Boolean;
-    onUpdate: Function;
+    onUpdate: (v: any, path: string) => void;
     data?: Record<string, any>;
 }) {
-    const isRepeaterFields = id === null;
+    const isGroup = id === null;
 
     const blocData = data ?? useBlocData(id).data;
 
     return (
-        <div className={`flex flex-col gap-2 ${!isVisible ? "hidden" : ""}`}>
+        <div className={`flex flex-col gap-3 ${!isVisible ? "hidden" : ""}`}>
             {fields.map((field) => (
                 <FieldRenderer
                     onChange={onUpdate}
-                    dataPath={isRepeaterFields ? `${dataPath}` : `${dataPath}.data`}
+                    dataPath={isGroup ? `${dataPath}` : `${dataPath}.data`}
                     data={blocData}
                     key={`${id}-${field.name}`}
                     field={field}></FieldRenderer>

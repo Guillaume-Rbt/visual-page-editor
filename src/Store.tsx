@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useContext } from "react";
 import { create, useStore, UseBoundStore, StoreApi } from "zustand";
-import { BlocDefinition, BlocValue } from "./types";
+import { BlocDefinition, BlocValue, FieldDefinition } from "./types";
 import { combine } from "zustand/middleware";
 import { deleteFromArray, insertIntoArray, setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
@@ -63,7 +63,50 @@ export const EditorContextProvider = ({
                         const newBlocData = {} as Record<string, any>;
 
                         bloc.fields.forEach((field) => {
-                            newBlocData[field.name] = field.options.defaultValue;
+                            if (field.group) {
+                                const fields = (
+                                    field.options[0].defaultValue
+                                        ? field.options
+                                        : field.options.reduce(
+                                              (
+                                                  acc: any,
+                                                  obj: { fields: []; useTabNameAsKey?: boolean; name?: string },
+                                              ) => {
+                                                  const fields = obj.useTabNameAsKey
+                                                      ? obj.fields.map((f) => {
+                                                            return {
+                                                                parent: obj.name,
+                                                                field: f,
+                                                            };
+                                                        })
+                                                      : obj.fields;
+
+                                                  return [...acc, ...fields];
+                                              },
+                                              [],
+                                          )
+                                ) as FieldDefinition<any, any>[];
+                                console.log(fields);
+                                fields.forEach(
+                                    (
+                                        f:
+                                            | FieldDefinition<any, any>
+                                            | { parent: string; field: FieldDefinition<any, any> },
+                                    ) => {
+                                        if ("parent" in f) {
+                                            newBlocData[f.parent] ??= {};
+                                            newBlocData[f.parent][f.field.name] = f.field.options.defaultValue;
+                                            return;
+                                        }
+
+                                        newBlocData[f.name] = f.options.defaultValue;
+                                    },
+                                );
+
+                                return;
+                            }
+
+                            newBlocData[field.name!] = field.options.defaultValue;
                         });
 
                         set({

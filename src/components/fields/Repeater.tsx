@@ -1,4 +1,4 @@
-import { FieldComponent, FieldDefinition } from "../../types";
+import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent } from "../../types";
 import { defineField } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
@@ -16,7 +16,7 @@ import { DndContext, DragEndEvent, DraggableAttributes } from "@dnd-kit/core";
 import DraggableIcon from "../../assets/imgs/draggable.svg?react";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
-type fieldsArgs = {
+type FieldArgs = {
     label: string;
     fields: FieldDefinition<any, any>[];
     description?: string;
@@ -75,7 +75,10 @@ function RepeaterComponent({
             <div className='flex flex-col'>
                 <SortableContext items={value.map((bloc) => bloc._id)} strategy={verticalListSortingStrategy}>
                     {value.map((item, index) => {
-                        const label = (item[itemLabel] ?? index.toString()) || `#${index + 1}`;
+                        const label =
+                            itemLabel.indexOf("{{id}}") == -1
+                                ? (item[itemLabel] ?? index.toString()) || `#${index + 1}`
+                                : itemLabel.replace("{{id}}", `${index + 1}`);
 
                         return (
                             <Sortable key={item._id} id={item._id}>
@@ -144,7 +147,7 @@ function Item({
                 {...dragAttributes}>
                 <DraggableIcon className='text-dark/30 text-6 rotate-90 mx-auto' />
             </div>
-            <div onClick={toggle} className='flex items-center gap-2 cursor-pointer header'>
+            <div onClick={toggle} className='flex items-center gap-2 mb-3 cursor-pointer header'>
                 <p className='font-700 flex-grow-1 overflow-hidden'>{label}</p>
                 <RoundedButton
                     onClick={(e) => {
@@ -165,7 +168,7 @@ function Item({
     );
 }
 
-const Component: FieldComponent<fieldsArgs, { [key: string]: any; _id: string }[]> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs, { [key: string]: any; _id: string }[]> = ({ value, onChange, options }) => {
     return (
         <Field label={options.label} description={options.description}>
             <RepeaterComponent
@@ -178,7 +181,7 @@ const Component: FieldComponent<fieldsArgs, { [key: string]: any; _id: string }[
     );
 };
 
-export const Repeater = defineField<fieldsArgs, RepeaterItemValue[]>({
+export const Repeater = defineField<FieldArgs, RepeaterItemValue[]>({
     defaultOptions: { defaultValue: [] as RepeaterItemValue[], itemLabel: "" },
     render: Component,
 });

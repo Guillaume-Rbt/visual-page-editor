@@ -1,6 +1,7 @@
 import { Translation } from "../types";
 
-export const fr: Translation & { [key: string]: string } = {
+export const fr: Translation = {
   addComponent: "Ajouter un composant",
   iconFor: "Icône pour",
+  slotAddComponent: "Ajouter un composant"
 };

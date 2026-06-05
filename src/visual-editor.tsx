@@ -17,7 +17,7 @@ class VisualEditor {
     }
 
     registerBloc(options: BlocDefinition) {
-        blocs.push(options);
+        blocs.push({ usableInSlot: false, ...options });
 
         return this;
     }
@@ -88,3 +88,6 @@ export { defineField, translation } from "./utils/utils";
 
 export { Text } from "./components/fields/Text";
 export { Repeater } from "./components/fields/Repeater";
+export { Slot } from "./components/fields/Slot";
+export { Tabs } from "./components/fields/Tabs";
+export { Row } from "./components/fields/Row";

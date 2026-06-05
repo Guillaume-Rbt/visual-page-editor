@@ -28,7 +28,7 @@ export const SidebarBloc = memo(function SidebarBloc({
     dragListeners: SyntheticListenerMap;
     dragAttributes: DraggableAttributes;
     isDragging: Boolean;
-    onUpdate: Function;
+    onUpdate: (v: any, path: string) => void;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
     const blocDefinition = useBlocDefinition(name);
