@@ -28,7 +28,8 @@ export type FieldsdGroupDefinition<Options, Value> = {
     group: true;
     options: Options;
     render: FieldsGroupComponent<Options, Value>;
-} & (Options extends { name: infer Name extends string } ? { name: Name } : {});
+    name: string;
+};
 
 export type FieldComponent<FieldOptions, FieldValue> = FunctionComponent<{
     value: FieldValue;

@@ -65,17 +65,22 @@ export const EditorContextProvider = ({
                         bloc.fields.forEach((field) => {
                             if (field.group) {
                                 const fields = (
-                                    field.options[0].defaultValue
+                                    field.options[0].defaultValue // check if fiekdsDefinition[] | {fields : fiekdsDefinition[]}
                                         ? field.options
                                         : field.options.reduce(
                                               (
                                                   acc: any,
-                                                  obj: { fields: []; useTabNameAsKey?: boolean; name?: string },
+                                                  obj: {
+                                                      fields: [];
+                                                      useTabNameAsKey?: boolean;
+                                                      name?: string;
+                                                      key?: string;
+                                                  },
                                               ) => {
                                                   const fields = obj.useTabNameAsKey
                                                       ? obj.fields.map((f) => {
                                                             return {
-                                                                parent: obj.name,
+                                                                parent: obj.key ?? obj.name,
                                                                 field: f,
                                                             };
                                                         })

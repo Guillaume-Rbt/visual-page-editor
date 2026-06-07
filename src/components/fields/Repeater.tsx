@@ -1,4 +1,4 @@
-import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent } from "../../types";
+import { FieldComponent, FieldDefinition } from "../../types";
 import { defineField } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";

@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent, Translation } from "../types";
 import { VisualEditor } from "../visual-editor";
 
@@ -14,13 +15,25 @@ export function defineField<Options, Value>(args: {
         };
     };
 }
-
-export function defineFieldsGroup<Options, Value>(render: FieldsGroupComponent<Options, Value>) {
+type OptionsWithFields = {
+    fields: FieldDefinition<any, any>[];
+};
+export function defineFieldsGroup<Options extends OptionsWithFields | OptionsWithFields[], Value>(
+    render: FieldsGroupComponent<Options, Value>,
+) {
     return (options = {} as Options): FieldsdGroupDefinition<Options, Value> => {
+        let name = "";
+
+        const fields = Array.isArray(options) ? options.flatMap((obj) => obj.fields) : options.fields;
+
+        if (options != null && typeof options == "object") {
+            name = "name" in options ? (options.name as string) : fields.map((f) => f.name).join("-");
+        }
         return {
             group: true,
             render: render,
             options: options,
+            name: name,
             ...options,
         } as FieldsdGroupDefinition<Options, Value>;
     };

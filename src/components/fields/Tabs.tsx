@@ -7,6 +7,7 @@ type TabDefinition = {
     name: string;
     fields: FieldDefinition<any, any>[];
     useTabNameAsKey?: boolean;
+    key?: string
 };
 
 type FieldArgs = TabDefinition[];
@@ -43,7 +44,7 @@ function TabsComponent({ options, value, onChange }: TabsComponentProps) {
                     {options.map((t) => (
                         <FieldsRenderer
                             fields={t.fields}
-                            dataPath={t.useTabNameAsKey ? (t.name ?? "") : ""}
+                            dataPath={t.useTabNameAsKey ? (t.key ?? t.name) : ""}
                             data={value}
                             onUpdate={onUpdate}
                         />

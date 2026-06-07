@@ -2,7 +2,7 @@ import { BlocValue, FieldDefinition, FieldsGroupComponent } from "../../types";
 import { defineFieldsGroup } from "../../utils/utils";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 
-type FieldArgs = { fields: FieldDefinition<any, any>[]; columns?: string; name: string };
+type FieldArgs = { fields: FieldDefinition<any, any>[]; columns?: string; collapsed?: boolean };
 type RowComponentProps = {
     options: FieldArgs;
     value: BlocValue;
@@ -24,9 +24,15 @@ function RowComponent({ onChange, options }: RowComponentProps) {
     const fields = Array.isArray(options) ? options : options.fields;
 
     return (
-        <div style={{ gridTemplateColumns: `${gridTemplate}` }} className={`grid gap-2`}>
-            {fields.map((f) => {
-                return <FieldsRenderer key={f.name} fields={[f]} dataPath='' onUpdate={onUpdate} />;
+        <div
+            style={{ gridTemplateColumns: `${gridTemplate}` }}
+            className={`grid ${options.collapsed ? "gap-0" : "gap-2"}`}>
+            {fields.map((f, i) => {
+                return (
+                    <div style={{ marginLeft: `${!options.collapsed ? "0" : `calc(var(--spacing) / 4 * -${i})`}` }}>
+                        <FieldsRenderer key={f.name} fields={[f]} dataPath='' onUpdate={onUpdate} />
+                    </div>
+                );
             })}
         </div>
     );
@@ -36,4 +42,4 @@ const Component: FieldsGroupComponent<FieldArgs, BlocValue> = ({ onChange, optio
     return <RowComponent options={options} value={value} onChange={onChange} />;
 };
 
-export const Row = defineFieldsGroup<FieldArgs, BlocValue>(Component);
+export const Row = defineFieldsGroup<FieldArgs & { name: string }, BlocValue>(Component); // add {name: string} in type if use in repeater
