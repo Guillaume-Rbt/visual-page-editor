@@ -24,7 +24,9 @@ visualEditor
             }),
             Repeater("actions", {
                 label: "Actions",
-                itemLabel: "Bouton {{id}}",
+                itemLabel: "label",
+                max: 4,
+                min: 3,
                 fields: [
                     Row({
                         fields: [

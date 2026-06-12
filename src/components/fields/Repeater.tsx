@@ -10,11 +10,12 @@ import { v4 as uuid } from "uuid";
 import useBoolean from "../../hooks/useBoolean";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Sortable } from "../Sortable";
-import { Ref } from "react";
+import { Ref, useEffect } from "react";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DndContext, DragEndEvent, DraggableAttributes } from "@dnd-kit/core";
 import DraggableIcon from "../../assets/imgs/draggable.svg?react";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { Tooltip } from "../ui/Tooltip";
 
 type FieldArgs = {
     label: string;
@@ -22,6 +23,9 @@ type FieldArgs = {
     description?: string;
     defaultValue?: RepeaterItemValue[];
     itemLabel?: string;
+    min?: number;
+    max?: number;
+    addButtonLabel?: string;
 };
 
 type ComponentProps = {
@@ -29,6 +33,9 @@ type ComponentProps = {
     value: { [key: string]: any; _id: string }[];
     fields: FieldDefinition<any, any>[];
     itemLabel: string;
+    min: number;
+    max: number;
+    addButtonLabel: string;
 };
 
 type RepeaterItemValue = { [key: string]: any; _id: string };
@@ -38,6 +45,9 @@ function RepeaterComponent({
     value,
     fields,
     itemLabel,
+    addButtonLabel,
+    min,
+    max,
 }: ComponentProps & { fields: FieldDefinition<any, any>[] }) {
     const insertData = () => {
         const newBlocData = { _id: uuid() } as RepeaterItemValue;
@@ -47,8 +57,10 @@ function RepeaterComponent({
 
         onChange([...value, newBlocData]);
     };
-
+    const canDelete = value.length > min;
     const deleteData = (id: string) => {
+        if (!canDelete) return;
+
         const index = value.findIndex((v) => v._id == id);
 
         const newValue = deleteFromArray(value, index);
@@ -70,6 +82,24 @@ function RepeaterComponent({
         onChange(arrayMove(value, fromIndex, toIndex));
     };
 
+    useEffect(() => {
+        if (value.length >= min) return;
+
+        const missing = min - value.length;
+
+        const newItems = Array.from({ length: missing }, () => {
+            const newBlocData = { _id: uuid() } as RepeaterItemValue;
+
+            fields.forEach((field) => {
+                newBlocData[field.name] = field.options.defaultValue;
+            });
+
+            return newBlocData;
+        });
+
+        onChange([...value, ...newItems]);
+    }, [value.length, min]);
+
     return (
         <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
             <div className='flex flex-col'>
@@ -77,7 +107,7 @@ function RepeaterComponent({
                     {value.map((item, index) => {
                         const label =
                             itemLabel.indexOf("{{id}}") == -1
-                                ? (item[itemLabel] ?? index.toString()) || `#${index + 1}`
+                                ? (item[itemLabel] ?? `#${index + 1}`) || `#${index + 1}`
                                 : itemLabel.replace("{{id}}", `${index + 1}`);
 
                         return (
@@ -96,6 +126,8 @@ function RepeaterComponent({
                                         dragHandleRef={dragHandleRef}
                                         dragListeners={listeners}
                                         dragAttributes={attributes}
+                                        canDelete={canDelete}
+                                        min={min}
                                     />
                                 )}
                             </Sortable>
@@ -103,9 +135,13 @@ function RepeaterComponent({
                     })}
                 </SortableContext>
 
-                <button className='btn btn-primary' onClick={insertData}>
-                    Ajouter un bouton
-                </button>
+                <div className='w-full rounded-2 flex justify-end bg-dark/10'>
+                    <button
+                        className={`btn btn-outline-primary w-max ${value.length >= max ? "pointer-events-none opacity-40" : ""}`}
+                        onClick={insertData}>
+                        {addButtonLabel}
+                    </button>
+                </div>
             </div>
         </DndContext>
     );
@@ -123,6 +159,8 @@ function Item({
     dragListeners,
     dragAttributes,
     isDragging,
+    canDelete,
+    min,
 }: {
     onUpdate: (value: any, path: string) => void;
     data: Record<string, unknown>;
@@ -135,28 +173,33 @@ function Item({
     dragListeners: SyntheticListenerMap;
     dragAttributes: DraggableAttributes;
     isDragging: Boolean;
+    canDelete: boolean;
+    min: number;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
 
     return (
-        <div className='flex flex-col w-fullborder rounded px-2 p-bs-6 p-be-2 mb-2 border-[1px] border-dark/20 relative'>
+        <div className='flex flex-col w-full rounded px-2 p-bs-6 p-be-2 mb-2 border-[1px] border-dark/20 relative'>
             <div
                 ref={dragHandleRef}
-                className={`absolute flex w-full top-0 left-0 ${isDragging ? "cursor-grabbig" : "cursor-grab"}`}
+                className={`absolute flex w-full top-0 left-0 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
                 {...dragListeners}
                 {...dragAttributes}>
                 <DraggableIcon className='text-dark/30 text-6 rotate-90 mx-auto' />
             </div>
             <div onClick={toggle} className='flex items-center gap-2 mb-3 cursor-pointer header'>
                 <p className='font-700 flex-grow-1 overflow-hidden'>{label}</p>
-                <RoundedButton
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(id);
-                    }}
-                    classes='opacity-0 [.header:hover_&]:opacity-100 delete-btn p-1 hover:bg-dark/10 hover:text-danger ml-auto text-5 cursor-pointer'>
-                    <TrashIcon />
-                </RoundedButton>
+                <Tooltip
+                    text={`${canDelete ? "Supprimer" : `Impossible de supprimer :<br>${min} élément${min < 2 ? "" : "s"} minimum requi${min < 2 ? "" : "s"}.`}`}>
+                    <RoundedButton
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(id);
+                        }}
+                        classes={`opacity-0 [.header:hover_&]:opacity-100 delete-btn p-1 ml-auto text-5 ${canDelete ? "cursor-pointer  hover:bg-dark/10 hover:text-danger" : "cursor-not-allowed"} `}>
+                        <TrashIcon />
+                    </RoundedButton>
+                </Tooltip>
 
                 <RoundedButton
                     classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-dark/10 hover:bg-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
@@ -176,12 +219,21 @@ const Component: FieldComponent<FieldArgs, { [key: string]: any; _id: string }[]
                 itemLabel={options.itemLabel!}
                 onChange={onChange}
                 fields={options.fields}
+                min={options.min!}
+                max={options.max!}
+                addButtonLabel={options.addButtonLabel!}
             />
         </Field>
     );
 };
 
 export const Repeater = defineField<FieldArgs, RepeaterItemValue[]>({
-    defaultOptions: { defaultValue: [] as RepeaterItemValue[], itemLabel: "" },
+    defaultOptions: {
+        defaultValue: [] as RepeaterItemValue[],
+        itemLabel: "",
+        min: 0,
+        max: Infinity,
+        addButtonLabel: "Ajouter",
+    },
     render: Component,
 });

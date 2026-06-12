@@ -1,2 +1,2 @@
 @import "@unocss/reset/eric-meyer.css" layer(reset);
-
+@import "./components/tooltip.css" layer(custom);

@@ -12,6 +12,7 @@ export default defineConfig({
             if (layer == "default") {
                 return "ve-editor";
             }
+            return layer;
         },
         allLayers: true,
     },
@@ -25,13 +26,53 @@ export default defineConfig({
         shortcuts: 4,
         default: 5,
         "ve-editor": 6,
+        custom: 7,
     },
-    shortcuts: {
-        btn: "cursor-pointer rounded-2 px-5 py-3",
-        "btn-primary":
-            "bg-primary hover:bg-[color-mix(in_srgb,var(--colors-primary)_80%,#fff)] transition-background duration-300 text-white",
-        "btn-rounded": "rounded-full px-1 py-1",
-    },
+    shortcuts: [
+        ["btn", "cursor-pointer rounded-2 px-5 py-3 font-600"],
+        ["btn-rounded", "rounded-full px-1 py-1"],
+        [
+            /^btn-(.+)$/,
+            ([, color], { theme }) => {
+                const themeColor = theme.colors?.[color];
+
+                if (!themeColor || typeof themeColor !== "string") {
+                    return "";
+                }
+                return `
+                btn
+                text-white:not(.outline)
+                bg-[${themeColor}]
+                hover:bg-[color-mix(in_srgb,${themeColor}_85%,#000)]
+                transition-background
+                duration-300
+            `;
+            },
+        ],
+        [
+            /^btn-outline-(.+)$/,
+            ([, color], { theme }) => {
+                const themeColor = theme.colors?.[color];
+
+                if (!themeColor || typeof themeColor !== "string") {
+                    return "";
+                }
+                return `
+                btn
+                border-2
+                border-${themeColor}
+                border-solid
+                text-${themeColor}
+                hover:bg-[${themeColor}]
+                hover:text-${theme.colors?.light}
+                bg-${theme.colors?.["background-light"]}
+                transition-background
+                duration-300
+            `;
+            },
+        ],
+    ],
+
     rules: [
         [
             "shadow",

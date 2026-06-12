@@ -10,6 +10,7 @@ import { RoundedButton } from "../ui/roundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
 import useBoolean from "../../hooks/useBoolean";
+import { Tooltip } from "../ui/Tooltip";
 
 export const SidebarBloc = memo(function SidebarBloc({
     name,
@@ -44,16 +45,20 @@ export const SidebarBloc = memo(function SidebarBloc({
                 {...dragAttributes}>
                 <DraggableIcon className='text-dark/30 text-6 rotate-90 mx-auto' />
             </div>
-            <div onClick={toggle} className='header flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
-                <h2 className='font-bold text-5'>{blocDefinition?.label}</h2>{" "}
-                <RoundedButton
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        removeData(id);
-                    }}
-                    classes='p-1 delete-btn hover:bg-dark/10 hover:text-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
-                    <TrashIcon />
-                </RoundedButton>
+            <div
+                onClick={toggle}
+                className='header w-full flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
+                <h2 className='font-bold text-5 mr-auto'>{blocDefinition?.label}</h2>
+                <Tooltip axis='y' text='Supprimer le bloc'>
+                    <RoundedButton
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            removeData(id);
+                        }}
+                        classes='p-1 delete-btn hover:bg-dark/10 hover:text-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
+                        <TrashIcon />
+                    </RoundedButton>
+                </Tooltip>
                 <RoundedButton
                     classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-dark/10  hover:bg-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
                     <ArrowIcon />
