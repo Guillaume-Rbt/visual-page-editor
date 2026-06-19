@@ -29,7 +29,9 @@ export default defineConfig({
         custom: 7,
     },
     shortcuts: [
+        ["bordered-input", "border-1 border-dark/20 border-solid"],
         ["btn", "cursor-pointer rounded-2 px-5 py-3 font-600"],
+        ["disabled", "pointer-events-none opacity-40"],
         ["btn-rounded", "rounded-full px-1 py-1"],
         [
             /^btn-(.+)$/,
@@ -40,8 +42,7 @@ export default defineConfig({
                     return "";
                 }
                 return `
-                btn
-                text-white:not(.outline)
+                text-white
                 bg-[${themeColor}]
                 hover:bg-[color-mix(in_srgb,${themeColor}_85%,#000)]
                 transition-background
@@ -58,7 +59,6 @@ export default defineConfig({
                     return "";
                 }
                 return `
-                btn
                 border-2
                 border-${themeColor}
                 border-solid

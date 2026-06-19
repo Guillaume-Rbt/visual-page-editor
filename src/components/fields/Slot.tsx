@@ -8,7 +8,7 @@ import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import useBoolean from "../../hooks/useBoolean";
-import { RoundedButton } from "../ui/roundedButton";
+import { RoundedButton } from "../ui/RoundedButton";
 
 type FieldArgs = {
     label: string;

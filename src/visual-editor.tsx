@@ -91,3 +91,6 @@ export { Repeater } from "./components/fields/Repeater";
 export { Slot } from "./components/fields/Slot";
 export { Tabs } from "./components/fields/Tabs";
 export { Row } from "./components/fields/Row";
+export { Color } from "./components/fields/Color";
+export { NumberField as Number } from "./components/fields/Number";
+export { HTMLText } from "./components/fields/HTMLText";

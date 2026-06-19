@@ -26,10 +26,10 @@ function RowComponent({ onChange, options }: RowComponentProps) {
     return (
         <div
             style={{ gridTemplateColumns: `${gridTemplate}` }}
-            className={`grid ${options.collapsed ? "gap-0" : "gap-2"}`}>
+            className={`grid w-full ${options.collapsed ? "gap-0" : "gap-2"}`}>
             {fields.map((f, i) => {
                 return (
-                    <div style={{ marginLeft: `${!options.collapsed ? "0" : `calc(var(--spacing) / 4 * -${i})`}` }}>
+                    <div className='w-full' key={f.name}>
                         <FieldsRenderer key={f.name} fields={[f]} dataPath='' onUpdate={onUpdate} />
                     </div>
                 );

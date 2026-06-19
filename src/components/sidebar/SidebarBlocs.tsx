@@ -44,17 +44,11 @@ export function SidebarBlocs() {
                         {data.map((bloc, k) => {
                             return (
                                 <Sortable key={bloc._id} id={bloc._id}>
-                                    {({ dragHandleRef, listeners, attributes, isDragging }) => (
-                                        <SidebarBloc
-                                            hasInsertBefore={k === 0}
-                                            id={bloc._id}
-                                            name={bloc._name}
-                                            isDragging={isDragging}
-                                            dragHandleRef={dragHandleRef}
-                                            dragListeners={listeners}
-                                            dragAttributes={attributes}
-                                            onUpdate={updateData}></SidebarBloc>
-                                    )}
+                                    <SidebarBloc
+                                        hasInsertBefore={k === 0}
+                                        id={bloc._id}
+                                        name={bloc._name}
+                                        onUpdate={updateData}></SidebarBloc>
                                 </Sortable>
                             );
                         })}

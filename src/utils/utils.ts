@@ -2,16 +2,33 @@ import { v4 } from "uuid";
 import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent, Translation } from "../types";
 import { VisualEditor } from "../visual-editor";
 
-export function defineField<Options, Value>(args: {
-    defaultOptions: Partial<Options>;
-    render: FieldComponent<Options, Value>;
+type OptionalDefaultKeys<Options, Defaults extends Partial<Options>> = Extract<keyof Options, keyof Defaults>;
+
+type FieldInputOptions<Options, Defaults extends Partial<Options>> = Omit<
+    Options,
+    OptionalDefaultKeys<Options, Defaults>
+> &
+    Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>;
+
+type MergedFieldOptions<Options, Defaults extends Partial<Options>> = Omit<
+    Options,
+    OptionalDefaultKeys<Options, Defaults>
+> &
+    Required<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>;
+
+export function defineField<Options, Value, Defaults extends Partial<Options> = Partial<Options>>(args: {
+    defaultOptions: Defaults;
+    render: FieldComponent<MergedFieldOptions<Options, Defaults>, Value>;
 }) {
-    return (name: string, options = {} as Options): FieldDefinition<Options, Value> => {
+    return (
+        name: string,
+        options = {} as FieldInputOptions<Options, Defaults>,
+    ): FieldDefinition<MergedFieldOptions<Options, Defaults>, Value> => {
         const mergedOptions = { ...args.defaultOptions, ...options };
         return {
             ...args,
             name,
-            options: mergedOptions,
+            options: mergedOptions as MergedFieldOptions<Options, Defaults>,
         };
     };
 }

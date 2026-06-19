@@ -5,7 +5,7 @@ export function Tabs({ labels, children }: { labels: string[]; children: React.R
 
     return (
         <div className='flex flex-col w-full gap-3'>
-            <div className='flex gap-3 w-full'>
+            <div className='inline-grid grid-flow-col auto-cols-fr gap-3 w-max'>
                 {labels.map((t) => (
                     <Tab key={t} selected={activeTab === t} text={t} onClick={() => setActiveTab(t)} />
                 ))}
@@ -29,7 +29,7 @@ export function Tab({ selected = false, text, onClick }: { selected?: boolean; t
     return (
         <div
             onClick={onClick}
-            className={`transition-[background,color] px-4 py-2.5 font-600 rounded-full cursor-pointer ${selected ? "bg-primary/15 text-primary" : "bg-dark/08 text-dark"} duration-200`}>
+            className={`transition-[background,color] flex imtes-center justify-center px-4 py-2.5 font-600 rounded-full cursor-pointer ${selected ? "bg-primary/15 text-primary" : "bg-dark/08 text-dark"} duration-200`}>
             {text}
         </div>
     );

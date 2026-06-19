@@ -5,7 +5,7 @@ import { Field } from "./Field";
 type FieldArgs = {
     label: string;
     description?: string;
-    multiline: boolean;
+    multiline?: boolean;
     defaultValue?: string;
     placeholder?: string;
 };
@@ -16,7 +16,15 @@ type ComponentProps = {
     multiline: boolean;
     placeholder: string;
 };
-const textFieldClasses = "border-1 border-dark/20 p-2 focus:outline-none";
+
+const defaultOptions = {
+    multiline: false,
+    defaultValue: "",
+    placeholder: "",
+};
+
+const textFieldClasses =
+    "bordered-input p-2 w-full  focus:border-primary/20 focus:outline-2 focus:outline-solid focus:outline-primary/20";
 function TextComponent({ value, onChange, multiline, placeholder }: ComponentProps) {
     const Field = multiline ? (
         <textarea
@@ -38,24 +46,20 @@ function TextComponent({ value, onChange, multiline, placeholder }: ComponentPro
     return <>{Field}</>;
 }
 
-const Component: FieldComponent<FieldArgs, string> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({ value, onChange, options }) => {
     return (
         <Field label={options.label} description={options.description}>
             <TextComponent
                 multiline={options.multiline}
                 value={value}
                 onChange={onChange}
-                placeholder={options.placeholder!}
+                placeholder={options.placeholder}
             />
         </Field>
     );
 };
 
-export const Text = defineField<FieldArgs, string>({
-    defaultOptions: {
-        multiline: false,
-        defaultValue: "",
-        placeholder: "",
-    },
+export const Text = defineField<FieldArgs, string, typeof defaultOptions>({
+    defaultOptions,
     render: Component,
 });

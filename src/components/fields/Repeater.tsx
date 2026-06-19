@@ -4,16 +4,14 @@ import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
 import { deleteFromArray, setDeepValue } from "../../utils/utils";
-import { RoundedButton } from "../ui/roundedButton";
+import { RoundedButton } from "../ui/RoundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import { v4 as uuid } from "uuid";
 import useBoolean from "../../hooks/useBoolean";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Sortable } from "../Sortable";
-import { Ref, useEffect } from "react";
-import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { DndContext, DragEndEvent, DraggableAttributes } from "@dnd-kit/core";
-import DraggableIcon from "../../assets/imgs/draggable.svg?react";
+import { useEffect } from "react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { Tooltip } from "../ui/Tooltip";
 
@@ -37,7 +35,13 @@ type ComponentProps = {
     max: number;
     addButtonLabel: string;
 };
-
+const defaultOptions = {
+    defaultValue: [] as RepeaterItemValue[],
+    itemLabel: "",
+    min: 0,
+    max: Infinity,
+    addButtonLabel: "Ajouter",
+};
 type RepeaterItemValue = { [key: string]: any; _id: string };
 
 function RepeaterComponent({
@@ -102,7 +106,7 @@ function RepeaterComponent({
 
     return (
         <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
-            <div className='flex flex-col'>
+            <div className='flex flex-col gap-2'>
                 <SortableContext items={value.map((bloc) => bloc._id)} strategy={verticalListSortingStrategy}>
                     {value.map((item, index) => {
                         const label =
@@ -112,7 +116,7 @@ function RepeaterComponent({
 
                         return (
                             <Sortable key={item._id} id={item._id}>
-                                {({ dragHandleRef, listeners, attributes, isDragging }) => (
+                                {
                                     <Item
                                         key={item._id!}
                                         onUpdate={onUpdate}
@@ -122,14 +126,10 @@ function RepeaterComponent({
                                         label={label}
                                         onDelete={deleteData}
                                         id={item._id}
-                                        isDragging={isDragging}
-                                        dragHandleRef={dragHandleRef}
-                                        dragListeners={listeners}
-                                        dragAttributes={attributes}
                                         canDelete={canDelete}
                                         min={min}
                                     />
-                                )}
+                                }
                             </Sortable>
                         );
                     })}
@@ -137,7 +137,7 @@ function RepeaterComponent({
 
                 <div className='w-full rounded-2 flex justify-end bg-dark/10'>
                     <button
-                        className={`btn btn-outline-primary w-max ${value.length >= max ? "pointer-events-none opacity-40" : ""}`}
+                        className={`btn btn-outline-primary w-max ${value.length >= max ? "disabled" : ""}`}
                         onClick={insertData}>
                         {addButtonLabel}
                     </button>
@@ -155,10 +155,6 @@ function Item({
     label,
     onDelete,
     id,
-    dragHandleRef,
-    dragListeners,
-    dragAttributes,
-    isDragging,
     canDelete,
     min,
 }: {
@@ -169,25 +165,14 @@ function Item({
     label: string;
     onDelete: (id: string) => void;
     id: string;
-    dragHandleRef: Ref<HTMLDivElement>;
-    dragListeners: SyntheticListenerMap;
-    dragAttributes: DraggableAttributes;
-    isDragging: Boolean;
     canDelete: boolean;
     min: number;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
 
     return (
-        <div className='flex flex-col w-full rounded px-2 p-bs-6 p-be-2 mb-2 border-[1px] border-dark/20 relative'>
-            <div
-                ref={dragHandleRef}
-                className={`absolute flex w-full top-0 left-0 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
-                {...dragListeners}
-                {...dragAttributes}>
-                <DraggableIcon className='text-dark/30 text-6 rotate-90 mx-auto' />
-            </div>
-            <div onClick={toggle} className='flex items-center gap-2 mb-3 cursor-pointer header'>
+        <div className='flex flex-col w-full rounded p-is-5 p-ie-2 py-2 border-[1px] border-dark/20 relative'>
+            <div onClick={toggle} className='flex items-center gap-2  cursor-pointer header'>
                 <p className='font-700 flex-grow-1 overflow-hidden'>{label}</p>
                 <Tooltip
                     text={`${canDelete ? "Supprimer" : `Impossible de supprimer :<br>${min} élément${min < 2 ? "" : "s"} minimum requi${min < 2 ? "" : "s"}.`}`}>
@@ -211,29 +196,27 @@ function Item({
     );
 }
 
-const Component: FieldComponent<FieldArgs, { [key: string]: any; _id: string }[]> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs & typeof defaultOptions, { [key: string]: any; _id: string }[]> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field label={options.label} description={options.description}>
             <RepeaterComponent
                 value={value}
-                itemLabel={options.itemLabel!}
+                itemLabel={options.itemLabel}
                 onChange={onChange}
                 fields={options.fields}
-                min={options.min!}
-                max={options.max!}
-                addButtonLabel={options.addButtonLabel!}
+                min={options.min}
+                max={options.max}
+                addButtonLabel={options.addButtonLabel}
             />
         </Field>
     );
 };
 
-export const Repeater = defineField<FieldArgs, RepeaterItemValue[]>({
-    defaultOptions: {
-        defaultValue: [] as RepeaterItemValue[],
-        itemLabel: "",
-        min: 0,
-        max: Infinity,
-        addButtonLabel: "Ajouter",
-    },
+export const Repeater = defineField<FieldArgs, RepeaterItemValue[], typeof defaultOptions>({
+    defaultOptions,
     render: Component,
 });

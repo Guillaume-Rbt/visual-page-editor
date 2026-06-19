@@ -1,4 +1,4 @@
-import { Repeater, Text, VisualEditor, Slot, Tabs, Row } from "../src/visual-editor";
+import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
 
@@ -15,9 +15,11 @@ visualEditor
                 multiline: false,
                 placeholder: "Titre",
             }),
-            Text("siteDescription", {
+            HTMLText("siteDescription", {
                 label: "Description du site",
-                multiline: true,
+            }),
+            Number("cols", {
+                label: "Colonnes",
             }),
             Slot("content", {
                 label: "Contenu du hero",
@@ -50,6 +52,21 @@ visualEditor
                 {
                     name: "Contenu",
                     fields: [
+                        Color("background", {
+                            colors: [
+                                "#ff0000",
+                                "#4808df",
+                                "#0cf575",
+                                "#7f0fc0",
+                                "#06e9a5",
+                                "#f16d00",
+                                "#f005d0",
+                                "transparent",
+                                "var(--colors-primary)",
+                            ],
+                            label: "Fond",
+                            defaultValue: "",
+                        }),
                         Text("left", {
                             label: "Contenu",
                             multiline: true,
