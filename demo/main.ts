@@ -1,4 +1,4 @@
-import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText } from "../src/visual-editor";
+import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText, FR } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
 

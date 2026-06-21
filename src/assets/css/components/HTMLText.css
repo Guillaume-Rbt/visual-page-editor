@@ -1,0 +1,18 @@
+.tiptap 
+{
+  &  * {
+            font-weight: auto;
+    margin: initial;
+    padding: initial;
+    font-size: auto;
+    }
+    
+   & ul, & ol, & li {
+    margin: initial;
+    padding: initial;
+    list-style-position: initial;
+    list-style-type: initial;
+}
+}
+
+

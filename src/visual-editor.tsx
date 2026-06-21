@@ -83,6 +83,7 @@ function HiddenTextarea({ name = "content" }) {
 }
 export { VisualEditor, blocs };
 export { defineField, translation } from "./utils/utils";
+export { FR };
 
 // FIELD EXPORTS
 

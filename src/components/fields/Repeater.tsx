@@ -1,5 +1,5 @@
 import { FieldComponent, FieldDefinition } from "../../types";
-import { defineField } from "../../visual-editor";
+import { defineField, translation } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
@@ -40,7 +40,6 @@ const defaultOptions = {
     itemLabel: "",
     min: 0,
     max: Infinity,
-    addButtonLabel: "Ajouter",
 };
 type RepeaterItemValue = { [key: string]: any; _id: string };
 
@@ -210,7 +209,7 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, { [key: strin
                 fields={options.fields}
                 min={options.min}
                 max={options.max}
-                addButtonLabel={options.addButtonLabel}
+                addButtonLabel={options.addButtonLabel ?? translation("add")}
             />
         </Field>
     );
