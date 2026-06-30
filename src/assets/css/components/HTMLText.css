@@ -1,18 +1,26 @@
-.tiptap 
-{
-  &  * {
-            font-weight: auto;
-    margin: initial;
-    padding: initial;
-    font-size: auto;
-    }
-    
-   & ul, & ol, & li {
-    margin: initial;
-    padding: initial;
-    list-style-position: initial;
-    list-style-type: initial;
+.tiptap * {
+  font-weight: auto;
+  margin: initial;
+  padding: initial;
+  font-size: auto;
 }
+
+.tiptap ul,
+.tiptap ol,
+.tiptap li {
+  margin: initial;
+  padding: initial;
+  list-style-position: initial;
+  list-style-type: initial;
+}
+
+/* Required by TipTap Placeholder extension to display placeholder text. */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #9ca3af;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 

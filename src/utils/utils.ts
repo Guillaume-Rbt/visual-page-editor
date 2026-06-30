@@ -1,14 +1,36 @@
 import { v4 } from "uuid";
-import { FieldComponent, FieldDefinition, FieldsdGroupDefinition, FieldsGroupComponent, Translation } from "../types";
+import {
+    DataRef,
+    FieldComponent,
+    FieldDefinition,
+    FieldsdGroupDefinition,
+    FieldsGroupComponent,
+    Translation,
+} from "../types";
 import { VisualEditor } from "../visual-editor";
+
+/** Creates a reference to a sibling data field. The value is resolved at render time. */
+export function ref<T>(key: string): DataRef<T> {
+    return { __isDataRef: true, key };
+}
+
+/** Returns true if the value is a DataRef created with `ref()`. */
+export function isDataRef(value: unknown): value is DataRef<unknown> {
+    return typeof value === "object" && value !== null && (value as DataRef<unknown>).__isDataRef === true;
+}
 
 type OptionalDefaultKeys<Options, Defaults extends Partial<Options>> = Extract<keyof Options, keyof Defaults>;
 
-type FieldInputOptions<Options, Defaults extends Partial<Options>> = Omit<
-    Options,
-    OptionalDefaultKeys<Options, Defaults>
-> &
-    Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>;
+type MaybeDataRef<T> = T | DataRef<NonNullable<T>>;
+
+type WithDataRefs<T> = {
+    [K in keyof T]: MaybeDataRef<T[K]>;
+};
+
+type FieldInputOptions<Options, Defaults extends Partial<Options>> = WithDataRefs<
+    Omit<Options, OptionalDefaultKeys<Options, Defaults>> &
+        Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>
+>;
 
 type MergedFieldOptions<Options, Defaults extends Partial<Options>> = Omit<
     Options,
@@ -122,4 +144,17 @@ export function insertIntoArray<T>(array: T[], index: number, value: T): T[] {
 
 export function deleteFromArray<T>(array: T[], index: number): T[] {
     return [...array.slice(0, index), ...array.slice(index + 1)];
+}
+
+export function getScale(options: { element: HTMLElement; parent: HTMLElement }): number {
+    const { element, parent } = options;
+    const width = element.offsetWidth;
+    const height = element.offsetHeight;
+    const targetWidth = parent.offsetWidth;
+    const targetHeight = parent.offsetHeight;
+
+    const scaleX = width > 0 ? targetWidth / width : 1;
+    const scaleY = height > 0 ? targetHeight / height : 1;
+
+    return Math.min(scaleX == 1 ? 1 : scaleX - 0.02, scaleY == 1 ? 1 : scaleY - 0.02);
 }

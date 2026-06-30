@@ -1,5 +1,14 @@
 import { FunctionComponent } from "react";
 
+/**
+ * A reference to a sibling data field resolved at render time.
+ * Use the `ref<T>(key)` helper to create one.
+ */
+export type DataRef<T> = {
+    readonly __isDataRef: true;
+    readonly key: string;
+};
+
 export interface FieldProps {
     description?: string;
     label: string;
@@ -52,4 +61,12 @@ export type BlocValue = {
     _name: string;
     _id: string;
     data: Record<string, any>;
+};
+
+export type Device = {
+    name: string;
+    type: "desktop" | "tablet" | "mobile";
+    size: [number | string, number | string];
+    orientation?: "portrait" | "landscape";
+    default?: boolean;
 };

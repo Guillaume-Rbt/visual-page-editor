@@ -86,11 +86,13 @@ function RepeaterComponent({
     };
 
     useEffect(() => {
-        if (value.length >= min) return;
+        if (value.length >= min && value.length <= max) return;
 
         const missing = min - value.length;
-
-        const newItems = Array.from({ length: missing }, () => {
+        const exceeding = value.length - max;
+        
+        if (missing > 0) {
+              const newItems = Array.from({ length: missing }, () => {
             const newBlocData = { _id: uuid() } as RepeaterItemValue;
 
             fields.forEach((field) => {
@@ -100,8 +102,11 @@ function RepeaterComponent({
             return newBlocData;
         });
 
-        onChange([...value, ...newItems]);
-    }, [value.length, min]);
+            onChange([...value, ...newItems]);
+        } else if (exceeding > 0) {
+            onChange(value.slice(0, max));
+        }
+    }, [value.length, min, max]);
 
     return (
         <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>

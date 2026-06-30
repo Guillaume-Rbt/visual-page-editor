@@ -1,11 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useEditorContext, useDataGetter, usePartialStore } from "../../Store";
 import useBoolean from "../../hooks/useBoolean";
 import { Loader } from "../ui/Loader";
 import { PreviewBlocs } from "./PreviewBlocs";
 import { createPortal } from "react-dom";
-import { BlocValue } from "../../types";
+import { BlocValue, Device } from "../../types";
 import { useAsync } from "../../hooks/useAsync";
+import { translation, VisualEditor } from "../../visual-editor";
+import { getScale } from "../../utils/utils";
+import DesktopIcon from "../../assets/imgs/desktop.svg?react";
+import TabletPortraitIcon from "../../assets/imgs/tablet-landscape.svg?react";
+import TabletLandscapeIcon from "../../assets/imgs/tablet-portrait.svg?react";
+import MobilePortraitIcon from "../../assets/imgs/mobile-landscape.svg?react";
+import MobileLandscapeIcon from "../../assets/imgs/mobile-portrait.svg?react";
+import { Tooltip } from "../ui/Tooltip";
 
 export default function Preview() {
     const getData = useDataGetter();
@@ -14,8 +22,38 @@ export default function Preview() {
     const iframe = useRef<HTMLIFrameElement>(null);
     const htmlAdded = useRef(false);
     const root = useRef<HTMLDivElement>(null);
+    const frameWrapper = useRef<HTMLDivElement>(null);
+    const currentDevice = useRef<Device | null>(null);
     const initHTML = useRef({});
     const [loaded, setLoadedTrue] = useBoolean(false);
+
+    const handleDeviceChange = (device: Device) => {
+        currentDevice.current = device;
+
+        if (iframe.current && frameWrapper.current) {
+            iframe.current.style.width = typeof device.size[0] === "number" ? `${device.size[0]}px` : device.size[0];
+            iframe.current.style.height = typeof device.size[1] === "number" ? `${device.size[1]}px` : device.size[1];
+
+            const scale = getScale({ element: iframe.current, parent: frameWrapper.current });
+            iframe.current.style.transformOrigin = "center center";
+            iframe.current.style.transform = `scale(${scale})`;
+        }
+    };
+
+    useLayoutEffect(() => {
+        if (!frameWrapper.current || !iframe.current) return;
+
+        const observer = new ResizeObserver(() => {
+            if (currentDevice.current) {
+                handleDeviceChange(currentDevice.current);
+            }
+        });
+
+        observer.observe(frameWrapper.current);
+        observer.observe(iframe.current);
+
+        return () => observer.disconnect();
+    }, []);
 
     useAsync(async () => {
         data.current = getData();
@@ -47,13 +85,66 @@ export default function Preview() {
     };
 
     return (
-        <div className='w-[calc(100%_-_2_*var(--spacing))] h-full left-2 relative'>
+        <div className='w-[calc(100%_-_2_*var(--spacing))] h-full flex flex-col left-2 relative'>
             {!loaded && <Loader />}
-            <iframe
-                onLoad={onLoad}
-                className={`h-full top-0 left-0 position-absolute w-full transition-opacity ${!loaded ? "opacity-0" : "opacity-100"}`}
-                ref={iframe}></iframe>
-            {loaded && createPortal(<PreviewBlocs initHTML={initHTML.current}></PreviewBlocs>, root.current!)}
+            <PreviewSize onChange={handleDeviceChange}></PreviewSize>
+            <div
+                className={`relative w-full h-1 grow-1 flex items-center justify-center transition-opacity ${!loaded ? "opacity-0" : "opacity-100"} overflow-hidden rounded-3 bg-primary/2`}
+                ref={frameWrapper}>
+                <iframe
+                    onLoad={onLoad}
+                    className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-dark/5 shadow-lg`}
+                    ref={iframe}></iframe>
+                {loaded && createPortal(<PreviewBlocs initHTML={initHTML.current}></PreviewBlocs>, root.current!)}
+            </div>
+        </div>
+    );
+}
+
+const DevicesIcons = {
+    desktop: <DesktopIcon />,
+    tablet: {
+        portrait: <TabletPortraitIcon />,
+        landscape: <TabletLandscapeIcon />,
+    },
+    mobile: {
+        portrait: <MobilePortraitIcon />,
+        landscape: <MobileLandscapeIcon />,
+    },
+};
+
+function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
+    const [selectedIndex, setSelectedIndex] = useState(() => {
+        const index = VisualEditor.devices.findIndex((d) => d.default === true) || 0;
+        return index;
+    });
+    const devices = VisualEditor.devices;
+
+    const handleChange = (index: number) => {
+        setSelectedIndex(index);
+        onChange(devices[index]);
+    };
+
+    useEffect(() => {
+        handleChange(selectedIndex); // Set initial device size on mount
+    }, []);
+
+    return (
+        <div className='flex w-full justify-center'>
+            {devices.map((device, index) => (
+                <Tooltip
+                    key={device.name}
+                    text={`${translation("width")} : ${typeof device.size[0] === "number" ? device.size[0] + "px" : device.size[0]}<br>${translation("height")} : ${typeof device.size[1] === "number" ? device.size[1] + "px" : device.size[1]}`}>
+                    <button
+                        key={device.name}
+                        className={`px-4 py-2 text-5 ${selectedIndex === index ? "bg-blue-500 text-white" : "bg-white text-black"} cursor-pointer`}
+                        onClick={() => handleChange(index)}>
+                        {device.type === "desktop"
+                            ? DevicesIcons.desktop
+                            : DevicesIcons[device.type][device.orientation || "portrait"]}
+                    </button>
+                </Tooltip>
+            ))}
         </div>
     );
 }

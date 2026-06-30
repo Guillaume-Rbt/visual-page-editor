@@ -58,7 +58,7 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
 
         const interval = setInterval(() => {
             update(action);
-        }, 100);
+        }, 200);
 
         return () => clearInterval(interval);
     }, [active, action, update]);

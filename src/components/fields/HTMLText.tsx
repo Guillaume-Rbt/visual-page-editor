@@ -6,7 +6,6 @@ import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
-import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { defineField, translation } from "../../utils/utils";
@@ -579,9 +578,8 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
     };
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure(),
             Placeholder.configure({ placeholder }),
-            Underline,
             TextStyle,
             Color,
             Highlight.configure({ multicolor: true }),
@@ -948,7 +946,7 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({ 
 
 const defaultOptions = {
     defaultValue: "",
-    placeholder: "iii",
+    placeholder: "Votre texte ici...",
     buttons: [
         "bold",
         "italic",

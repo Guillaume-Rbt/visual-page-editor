@@ -1,4 +1,4 @@
-import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText, FR } from "../src/visual-editor";
+import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText, ref } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
 
@@ -27,8 +27,8 @@ visualEditor
             Repeater("actions", {
                 label: "Actions",
                 itemLabel: "label",
-                max: 4,
-                min: 3,
+                max: ref<number>("cols"),
+                min: 0,
                 fields: [
                     Row({
                         fields: [

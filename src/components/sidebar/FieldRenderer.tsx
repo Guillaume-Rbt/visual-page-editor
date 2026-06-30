@@ -1,5 +1,6 @@
 import { memo, useCallback } from "react";
 import { type BlocValue } from "../../types";
+import { isDataRef } from "../../utils/utils";
 
 export const FieldRenderer = memo(function FieldRenderer({
     field,
@@ -33,5 +34,14 @@ export const FieldRenderer = memo(function FieldRenderer({
         [dataPath, onChange],
     );
 
-    return <Component options={field.options} value={field.group ? data : data[field.name]} onChange={handleChange} />;
+    let fieldOptions = field.options;
+    for (const key in field.options) {
+        const optValue = field.options[key];
+        if (isDataRef(optValue)) {
+            if (fieldOptions === field.options) fieldOptions = { ...fieldOptions };
+            fieldOptions[key] = data[optValue.key];
+        }
+    }
+
+    return <Component options={fieldOptions} value={field.group ? data : data[field.name]} onChange={handleChange} />;
 });
