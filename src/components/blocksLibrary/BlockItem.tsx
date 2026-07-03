@@ -1,7 +1,7 @@
 import { useEditorContext } from "../../Store";
 import { translation } from "../../utils/utils";
 
-export function BlocItem({ name, label, handleClick }: { name: string; label: string; handleClick: () => void }) {
+export function BlockItem({ name, label, handleClick }: { name: string; label: string; handleClick: () => void }) {
     const { iconsUrl } = useEditorContext();
 
     const iconName = name.replace(/ /g, "-");

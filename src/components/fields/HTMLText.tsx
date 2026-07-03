@@ -11,6 +11,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { defineField, translation } from "../../utils/utils";
 import { FieldComponent } from "../../types";
 import { Field } from "./Field";
+import Select from "../ui/Select";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -183,13 +184,6 @@ type ToolbarButtonProps = {
     label: ReactNode;
     title: string;
     onClick: () => void;
-};
-
-type ToolbarSelectProps = {
-    value: string;
-    placeholder: string;
-    onChange: (value: string) => void;
-    options: { value: string; label: string }[];
 };
 
 const DEFAULT_HEADINGS = [1, 2, 3, 4, 5, 6];
@@ -448,95 +442,6 @@ function ToolbarButton({ active, label, title, onClick }: ToolbarButtonProps) {
     );
 }
 
-function ToolbarSelect({ value, placeholder, onChange, options }: ToolbarSelectProps) {
-    return (
-        <select
-            className='border-1 border-dark/20 rounded-2 px-2 h-8 bg-white text-4 min-w-[120px]'
-            value={value}
-            onChange={(event) => {
-                onChange(event.target.value);
-            }}>
-            <option value=''>{placeholder}</option>
-            {options.map((option) => {
-                return (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                );
-            })}
-        </select>
-    );
-}
-
-function ToolbarColorMenu({
-    colors,
-    selected,
-    title,
-    onClick,
-}: {
-    colors: ColorOption[];
-    selected: string;
-    title: string;
-    onClick: (color: string) => void;
-}) {
-    const detailsRef = useRef<HTMLDetailsElement | null>(null);
-
-    const selectColor = (color: string) => {
-        onClick(color);
-
-        if (detailsRef.current) {
-            detailsRef.current.open = false;
-        }
-    };
-
-    return (
-        <details ref={detailsRef} className='relative'>
-            <summary className='list-none border-1 border-dark/20 rounded-2 px-2 h-8 bg-white text-4 min-w-[150px] flex items-center justify-between gap-2 cursor-pointer'>
-                <span className='truncate'>{title}</span>
-                <span
-                    className='h-4 w-4 rounded-full border-1 border-solid border-dark/20 shrink-0'
-                    style={{ backgroundColor: selected || "transparent" }}
-                />
-            </summary>
-
-            <div className='absolute left-0 top-[calc(100%+6px)] z-10 w-[190px] rounded-2 border-1 border-solid border-dark/10 bg-white p-2 shadow-lg'>
-                <button
-                    type='button'
-                    className='mb-2 flex w-full items-center gap-2 rounded-2 border-1 border-solid border-dark/10 px-2 py-1 text-left text-4'
-                    onClick={() => {
-                        selectColor("");
-                    }}>
-                    <span className='h-4 w-4 rounded-full border-1 border-solid border-dark/20 bg-transparent shrink-0' />
-                    <span>{translation("richTextNoColor")}</span>
-                </button>
-
-                <div className='flex flex-col gap-1'>
-                    {colors.map((color) => {
-                        const active = selected === color.value;
-
-                        return (
-                            <button
-                                key={`${title}-${color.value}`}
-                                type='button'
-                                title={`${title} ${color.label}`}
-                                className={`flex items-center gap-2 rounded-2 px-2 py-1 text-left text-4 ${active ? "bg-primary/10" : "hover:bg-dark/5"}`}
-                                onClick={() => {
-                                    selectColor(color.value);
-                                }}>
-                                <span
-                                    className={`h-4 w-4 rounded-full border-2 border-solid shrink-0 ${active ? "border-primary" : "border-dark/15"}`}
-                                    style={{ backgroundColor: color.value }}
-                                />
-                                <span>{color.label}</span>
-                            </button>
-                        );
-                    })}
-                </div>
-            </div>
-        </details>
-    );
-}
-
 const textFieldClasses =
     "border-1 border-dark/20 p-2 w-full focus:outline-none focus:border-primary/20 focus:outline-2! focus:outline-solid focus:outline-primary/20";
 const richTextContentClasses =
@@ -635,11 +540,16 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
         <div>
             <div className='mb-2 flex flex-wrap items-center gap-2'>
                 {toolbar.headings && toolbar.headings.length > 0 && (
-                    <ToolbarSelect
-                        value={editorState.currentHeading ? `${editorState.currentHeading}` : ""}
-                        placeholder={translation("richTextHeading")}
+                    <Select
+                        classes='w-20'
+                        placeholder='Niveau'
+                        value={editorState.currentHeading ? `${editorState.currentHeading}` : "no-heading"}
+                        options={[
+                            { value: "no-heading", render: () => translation("richTextHeading") },
+                            ...toolbar.headings.map((level) => ({ value: level, render: () => `H${level}` })),
+                        ]}
                         onChange={(nextValue) => {
-                            if (nextValue === "") {
+                            if (nextValue === "no-heading") {
                                 editor.chain().focus().setParagraph().run();
                                 return;
                             }
@@ -650,13 +560,12 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                                 .setHeading({ level: Number(nextValue) as 1 | 2 | 3 | 4 | 5 | 6 })
                                 .run();
                         }}
-                        options={toolbar.headings.map((level) => ({ value: `${level}`, label: `H${level}` }))}
                     />
                 )}
 
                 {toolbar.fontFamilies && toolbar.fontFamilies.length > 0 && (
-                    <ToolbarSelect
-                        value={editorState.currentFontFamily}
+                    <Select
+                        value={toolbar.fontFamilies.find((font) => font === editorState.currentFontFamily) ?? ""}
                         placeholder={translation("richTextFontFamily")}
                         onChange={(nextValue) => {
                             const chain = editor.chain().focus();
@@ -668,31 +577,36 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                             chain.setFontFamily(nextValue).run();
                         }}
-                        options={toolbar.fontFamilies.map((font) => ({ value: font, label: font }))}
+                        options={[
+                            { value: "", render: () => "Par defaut" },
+                            ...toolbar.fontFamilies.map((font) => ({ value: font, render: () => font })),
+                        ]}
                     />
                 )}
 
                 {toolbar.fontSizes && toolbar.fontSizes.length > 0 && (
-                    <ToolbarSelect
-                        value={editorState.currentFontSize}
+                    <Select
+                        options={[
+                            { value: "", render: () => translation("defaultFontSize") },
+                            ...toolbar.fontSizes.map((s) => ({ value: s, render: () => s })),
+                        ]}
+                        value={toolbar.fontSizes.find((s) => s === editorState.currentFontSize) ?? ""}
                         placeholder={translation("richTextFontSize")}
-                        onChange={(nextValue) => {
+                        onChange={(s) => {
                             const chain = editor.chain().focus();
 
-                            if (nextValue === "") {
+                            if (s === "") {
                                 chain.unsetFontSize().run();
                                 return;
                             }
 
-                            chain.setFontSize(nextValue).run();
-                        }}
-                        options={toolbar.fontSizes.map((fontSize) => ({ value: fontSize, label: fontSize }))}
-                    />
+                            chain.setFontSize(s).run();
+                        }}></Select>
                 )}
 
                 {toolbar.fontWeights && toolbar.fontWeights.length > 0 && (
-                    <ToolbarSelect
-                        value={editorState.currentFontWeight}
+                    <Select
+                        value={toolbar.fontWeights.find((weight) => weight === editorState.currentFontWeight) ?? ""}
                         placeholder={translation("richTextFontWeight")}
                         onChange={(nextValue) => {
                             const chain = editor.chain().focus();
@@ -704,7 +618,13 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                             chain.setFontWeight(nextValue).run();
                         }}
-                        options={toolbar.fontWeights.map((fontWeight) => ({ value: fontWeight, label: fontWeight }))}
+                        options={[
+                            { value: "", render: () => "Par defaut" },
+                            ...toolbar.fontWeights.map((fontWeight) => ({
+                                value: fontWeight,
+                                render: () => fontWeight,
+                            })),
+                        ]}
                     />
                 )}
 
@@ -736,9 +656,8 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 )}
 
                 {toolbar.textStyle.items.length > 0 && toolbar.textStyle.mode === "select" && (
-                    <ToolbarSelect
+                    <Select
                         value={currentTextStyleValue}
-                        placeholder={translation("richTextStyle")}
                         onChange={(nextValue) => {
                             const chain = editor.chain().focus();
 
@@ -751,7 +670,10 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                                 chain.toggleItalic().run();
                             }
                         }}
-                        options={toolbar.textStyle.items.map((item) => ({ value: item, label: controlTitles[item] }))}
+                        options={toolbar.textStyle.items.map((item) => ({
+                            value: item,
+                            render: () => controlTitles[item],
+                        }))}
                     />
                 )}
 
@@ -783,7 +705,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 )}
 
                 {toolbar.textDecoration.items.length > 0 && toolbar.textDecoration.mode === "select" && (
-                    <ToolbarSelect
+                    <Select
                         value={currentTextDecorationValue}
                         placeholder={translation("richTextDecoration")}
                         onChange={(nextValue) => {
@@ -800,7 +722,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                         }}
                         options={toolbar.textDecoration.items.map((item) => ({
                             value: item,
-                            label: controlTitles[item],
+                            render: () => controlTitles[item],
                         }))}
                     />
                 )}
@@ -833,7 +755,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 )}
 
                 {toolbar.lists.items.length > 0 && toolbar.lists.mode === "select" && (
-                    <ToolbarSelect
+                    <Select
                         value={currentListValue}
                         placeholder={translation("richTextLists")}
                         onChange={(nextValue) => {
@@ -848,42 +770,134 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                                 chain.toggleOrderedList().run();
                             }
                         }}
-                        options={toolbar.lists.items.map((item) => ({ value: item, label: controlTitles[item] }))}
+                        options={toolbar.lists.items.map((item) => ({
+                            value: item,
+                            render: () => controlTitles[item],
+                        }))}
                     />
                 )}
 
                 {toolbar.colors && toolbar.colors.length > 0 && (
-                    <ToolbarColorMenu
-                        colors={toolbar.colors}
-                        selected={editorState.currentTextColor}
-                        title={translation("richTextTextColor")}
-                        onClick={(color) => {
+                    <Select
+                        options={[
+                            {
+                                value: "auto",
+                                render: () => {
+                                    return (
+                                        <div className='flex items-center w-full'>
+                                            <span>{translation("defaultColor")}</span>
+                                            <span
+                                                style={{ backgroundColor: "transparent" }}
+                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
+                                        </div>
+                                    );
+                                },
+                            },
+                            ...toolbar.colors.map((color) => ({
+                                value: color.value,
+                                render: () => {
+                                    return (
+                                        <div className='flex items-center w-full'>
+                                            <span>{color.label}</span>
+                                            <span
+                                                style={{ backgroundColor: color.value }}
+                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
+                                        </div>
+                                    );
+                                },
+                            })),
+                        ]}
+                        selectedRenderer={(options) => {
+                            const isDefaultColor = options.value === "auto";
+
+                            return (
+                                <div className='flex items-center grow-1'>
+                                    {translation("richTextTextColor")}
+                                    <span
+                                        style={{
+                                            backgroundColor: isDefaultColor ? "transparent" : (options.value as string),
+                                        }}
+                                        className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
+                                </div>
+                            );
+                        }}
+                        classes='w-50'
+                        value={
+                            toolbar.colors.find((color) => color.value === editorState.currentTextColor)?.value ??
+                            "auto"
+                        }
+                        placeholder={translation("richTextTextColor")}
+                        onChange={(nextValue) => {
                             const chain = editor.chain().focus();
 
-                            if (editorState.currentTextColor === color) {
+                            if (nextValue === "auto") {
                                 chain.unsetColor().run();
                                 return;
                             }
 
-                            chain.setColor(color).run();
+                            chain.setColor(nextValue).run();
                         }}
                     />
                 )}
 
                 {toolbar.backgroundColors && toolbar.backgroundColors.length > 0 && (
-                    <ToolbarColorMenu
-                        colors={toolbar.backgroundColors}
-                        selected={editorState.currentBackgroundColor}
-                        title={translation("richTextBackgroundColor")}
-                        onClick={(color) => {
+                    <Select
+                        options={[
+                            {
+                                value: "auto",
+                                render: () => {
+                                    return (
+                                        <div className='flex items-center w-full'>
+                                            <span>{translation("defaultColor")}</span>
+                                            <span
+                                                style={{ backgroundColor: "transparent" }}
+                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
+                                        </div>
+                                    );
+                                },
+                            },
+                            ...toolbar.backgroundColors.map((color) => ({
+                                value: color.value,
+                                render: () => {
+                                    return (
+                                        <div className='flex items-center w-full'>
+                                            <span>{color.label}</span>
+                                            <span
+                                                style={{ backgroundColor: color.value }}
+                                                className='w-4 h-4 rounded-full ml-auto'></span>
+                                        </div>
+                                    );
+                                },
+                            })),
+                        ]}
+                        selectedRenderer={(options) => {
+                            const isDefaultColor = options.value === "auto";
+
+                            return (
+                                <div className='flex items-center'>
+                                    {translation("richTextBackgroundColor")}
+                                    <span
+                                        style={{
+                                            backgroundColor: isDefaultColor ? "transparent" : (options.value as string),
+                                        }}
+                                        className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
+                                </div>
+                            );
+                        }}
+                        value={
+                            toolbar.backgroundColors.find((color) => color.value === editorState.currentBackgroundColor)
+                                ?.value ?? "auto"
+                        }
+                        placeholder={translation("richTextBackgroundColor")}
+                        onChange={(nextValue) => {
                             const chain = editor.chain().focus();
 
-                            if (editorState.currentBackgroundColor === color) {
+                            if (nextValue === "auto") {
                                 chain.unsetHighlight().run();
                                 return;
                             }
 
-                            chain.setHighlight({ color }).run();
+                            chain.setHighlight({ color: nextValue }).run();
                         }}
                     />
                 )}
@@ -907,8 +921,11 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 )}
 
                 {toolbar.textAlign.items.length > 0 && toolbar.textAlign.mode === "select" && (
-                    <ToolbarSelect
-                        value={editorState.currentTextAlign}
+                    <Select
+                        value={
+                            toolbar.textAlign.items.find((item) => item === editorState.currentTextAlign) ??
+                            toolbar.textAlign.items[0]
+                        }
                         placeholder={translation("richTextAlignment")}
                         onChange={(nextValue) => {
                             if (nextValue === "") {
@@ -922,7 +939,10 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                                 .setTextAlign(nextValue as TextAlignControl)
                                 .run();
                         }}
-                        options={toolbar.textAlign.items.map((item) => ({ value: item, label: controlTitles[item] }))}
+                        options={toolbar.textAlign.items.map((item) => ({
+                            value: item,
+                            render: () => controlTitles[item],
+                        }))}
                     />
                 )}
             </div>

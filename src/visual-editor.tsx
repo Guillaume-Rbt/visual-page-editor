@@ -1,4 +1,4 @@
-import { BlocDefinition, Device } from "./types";
+import { ComponentDefinition, Device } from "./types";
 import { createRoot } from "react-dom/client";
 import { VisualEditor as VisualEditorComponent } from "./VisualEditor";
 import { EditorContextProvider, usePartialStore } from "./Store";
@@ -13,7 +13,7 @@ const defaultDevices: Device[] = [
     { name: "Desktop", type: "desktop", size: ["100%", "100%"], default: true },
 ];
 
-const blocs: BlocDefinition[] = [];
+const components: ComponentDefinition[] = [];
 
 class VisualEditor {
     static lang: Translation = FR;
@@ -25,8 +25,8 @@ class VisualEditor {
         VisualEditor.devices = options.devices ?? defaultDevices;
     }
 
-    registerBloc(options: BlocDefinition) {
-        blocs.push({ usableInSlot: false, ...options });
+    registerBloc(options: ComponentDefinition) {
+        components.push({ usableInSlot: false, ...options });
 
         return this;
     }
@@ -69,7 +69,7 @@ class VisualEditor {
                     <EditorContextProvider
                         urlPreview={this.urlPreview}
                         iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
-                        blocs={blocs}
+                        blocs={components}
                         data={this.data}>
                         <VisualEditorComponent />
                         <HiddenTextarea name={this.name} />
@@ -90,7 +90,7 @@ function HiddenTextarea({ name = "content" }) {
 
     return <textarea readOnly hidden name={name} value={JSON.stringify(data)}></textarea>;
 }
-export { VisualEditor, blocs };
+export { VisualEditor, components as blocs };
 export { defineField, translation, ref } from "./utils/utils";
 export { FieldsRenderer } from "./components/sidebar/FieldsRenderer";
 export { FR };

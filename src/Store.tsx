@@ -1,18 +1,18 @@
 import { createContext, type ReactNode, useContext } from "react";
 import { create, useStore, UseBoundStore, StoreApi } from "zustand";
-import { BlocDefinition, BlocValue, FieldDefinition } from "./types";
+import { ComponentDefinition, ComponentValue, FieldDefinition } from "./types";
 import { combine } from "zustand/middleware";
 import { deleteFromArray, insertIntoArray, setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
 import { arrayMove } from "@dnd-kit/sortable";
 
 type StoreState = {
-    blocs: BlocDefinition[];
-    data: BlocValue[];
+    blocs: ComponentDefinition[];
+    data: ComponentValue[];
     blocsOrder: string[];
     insertIndex: number | null;
     setInsertIndex: (index: number | null) => void;
-    insertData: (bloc: BlocDefinition) => void;
+    insertData: (bloc: ComponentDefinition) => void;
     updateData: (v: unknown, path: string) => void;
     moveBloc: (fromIndex: number, toIndex: number) => void;
     getIndexById: (id: string) => number;
@@ -31,8 +31,8 @@ const EditorContext = createContext<EditorContextValue>({} as EditorContextValue
 
 type EditorContextProviderProps = {
     iconsUrl: string;
-    blocs: BlocDefinition[];
-    data: BlocValue[];
+    blocs: ComponentDefinition[];
+    data: ComponentValue[];
     urlPreview: string;
     children?: ReactNode;
 };
@@ -57,7 +57,7 @@ export const EditorContextProvider = ({
                     setInsertIndex: (index: number | null) => {
                         set({ insertIndex: index });
                     },
-                    insertData: (bloc: BlocDefinition) => {
+                    insertData: (bloc: ComponentDefinition) => {
                         const { data, insertIndex } = getState();
 
                         const newBlocData = {} as Record<string, any>;
@@ -197,7 +197,7 @@ export function useBlocDefinition(name: string) {
     return useStore(store, (state) => state.blocs.find((b) => b.name === name));
 }
 
-export function useDataGetter(): () => BlocValue[] {
+export function useDataGetter(): () => ComponentValue[] {
     const context = useContext(EditorContext);
     return () => context.store?.getState().data ?? [];
 }

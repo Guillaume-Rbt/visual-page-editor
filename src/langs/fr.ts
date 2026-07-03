@@ -5,6 +5,7 @@ export const fr: Translation = {
     iconFor: "Icône pour",
     slotAddComponent: "Ajouter un composant",
     add: "Ajouter",
+    selectSlotComponent: "Sélectionner un composant",
     width: "Largeur",
     height: "Hauteur",
     orientation: "Orientation",
@@ -42,4 +43,9 @@ export const fr: Translation = {
     richTextAlignCenterShort: "C",
     richTextAlignRightShort: "D",
     richTextAlignJustifyShort: "J",
+    default: "Par défaut",
+    defaultColor: "Couleur par défaut",
+    defaultBackgroundColor: "Couleur de fond par défaut",
+    defaultFontFamily: "Police par défaut",
+    defaultFontSize: "Taille par défaut",
 };

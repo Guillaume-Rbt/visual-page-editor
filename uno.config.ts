@@ -29,7 +29,7 @@ export default defineConfig({
         custom: 7,
     },
     shortcuts: [
-        ["bordered-input", "border-1 border-dark/20 border-solid"],
+        ["bordered-input", "shadow-[0_0_0_1px_color-mix(in_srgb,var(--colors-dark)_20%,transparent)_inset]"],
         ["btn", "cursor-pointer rounded-2 px-5 py-3 font-600"],
         ["disabled", "pointer-events-none opacity-40"],
         ["btn-rounded", "rounded-full px-1 py-1"],

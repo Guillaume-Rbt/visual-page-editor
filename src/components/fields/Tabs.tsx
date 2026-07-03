@@ -1,4 +1,4 @@
-import { BlocValue, FieldDefinition, FieldsGroupComponent } from "../../types";
+import { ComponentValue, FieldDefinition, FieldsGroupComponent } from "../../types";
 import { defineFieldsGroup } from "../../utils/utils";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import { Tabs as TabsLayout } from "../ui/Tabs";
@@ -7,14 +7,14 @@ type TabDefinition = {
     name: string;
     fields: FieldDefinition<any, any>[];
     useTabNameAsKey?: boolean;
-    key?: string
+    key?: string;
 };
 
 type FieldArgs = TabDefinition[];
 
 type TabsComponentProps = {
     options: FieldArgs;
-    value: BlocValue["data"];
+    value: ComponentValue["data"];
     onChange: (v: any) => void;
 };
 
@@ -55,8 +55,8 @@ function TabsComponent({ options, value, onChange }: TabsComponentProps) {
     );
 }
 
-const Component: FieldsGroupComponent<FieldArgs, BlocValue["data"]> = ({ onChange, options, value }) => {
+const Component: FieldsGroupComponent<FieldArgs, ComponentValue["data"]> = ({ onChange, options, value }) => {
     return <TabsComponent options={options} value={value} onChange={onChange} />;
 };
 
-export const Tabs = defineFieldsGroup<TabDefinition[], BlocValue["data"]>(Component);
+export const Tabs = defineFieldsGroup<TabDefinition[], ComponentValue["data"]>(Component);

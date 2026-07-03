@@ -1,5 +1,5 @@
 import { usePartialStore } from "../../Store";
-import { BlocDefinition, BlocValue, FieldComponent } from "../../types";
+import { ComponentDefinition, ComponentValue, FieldComponent } from "../../types";
 import { setDeepValue } from "../../utils/utils";
 import { defineField, translation } from "../../visual-editor";
 import { v4 as uuid } from "uuid";
@@ -9,6 +9,9 @@ import TrashIcon from "../../assets/imgs/delete.svg?react";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import useBoolean from "../../hooks/useBoolean";
 import { RoundedButton } from "../ui/RoundedButton";
+import { BlockItem } from "../blocksLibrary/BlockItem";
+import { useCallback, useEffect, useMemo } from "react";
+import Select from "../ui/Select";
 
 type FieldArgs = {
     label: string;
@@ -17,14 +20,24 @@ type FieldArgs = {
 
 type ComponentProps = {
     onChange: (value: any) => void;
-    value: BlocValue;
+    value: ComponentValue;
     label: string;
 };
 
 function SlotComponent({ value, onChange, label }: ComponentProps) {
     const { blocs } = usePartialStore("blocs");
 
-    const [libraryShown, showLibrary, hideLibrary] = useBoolean(false);
+    const options = useMemo(
+        () =>
+            blocs
+                .filter((b) => b.usableInSlot)
+                .map((b) => ({
+                    value: b,
+                    label: b.label,
+                    render: () => <BlockItem name={b.name} label={b.label} handleClick={() => {}} />,
+                })),
+        [blocs],
+    );
 
     const selectedBloc = blocs.find((b) => b.name === value?._name) ?? null;
 
@@ -32,8 +45,8 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
         onChange(null);
     };
 
-    const setBloc = (bloc: BlocDefinition) => {
-        const newBlocData = { _id: uuid(), _name: bloc.name, data: {} } as BlocValue;
+    const setBloc = (bloc: ComponentDefinition) => {
+        const newBlocData = { _id: uuid(), _name: bloc.name, data: {} } as ComponentValue;
         bloc.fields.forEach((field) => {
             newBlocData["data"][field.name!] = field.options.defaultValue;
         });
@@ -47,27 +60,8 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
 
         onChange(setDeepValue(value, keys, v));
     };
-
     return (
-        <div className='relative border border-dark/20 rounded p-2 bg-white'>
-            {libraryShown && (
-                <div className='position-absolute left-full'>
-                    {blocs
-                        .filter((b) => b.usableInSlot)
-                        .map((bloc) => {
-                            return (
-                                <button
-                                    key={bloc.name}
-                                    onClick={() => {
-                                        setBloc(bloc);
-                                        hideLibrary();
-                                    }}>
-                                    {bloc.name}
-                                </button>
-                            );
-                        })}
-                </div>
-            )}
+        <div className='slot relative border border-dark/20 rounded p-2 bg-white'>
             {selectedBloc && (
                 <SlotBloc
                     id={value._id}
@@ -79,9 +73,13 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
                 />
             )}
             {!selectedBloc && (
-                <button disabled={libraryShown} onClick={showLibrary} className='btn btn-primary'>
-                    {translation("slotAddComponent")}
-                </button>
+                <Select
+                    placeholder={translation("selectSlotComponent")}
+                    layout={{ cols: 3 }}
+                    hoverable={false}
+                    options={options}
+                    onChange={setBloc}
+                />
             )}
         </div>
     );
@@ -95,8 +93,8 @@ function SlotBloc({
     id,
     label,
 }: {
-    bloc: BlocDefinition;
-    value: BlocValue;
+    bloc: ComponentDefinition;
+    value: ComponentValue;
     onUpdate: (value: any, path: string) => void;
     id: string;
     removeBloc: () => void;
@@ -135,7 +133,7 @@ function SlotBloc({
     );
 }
 
-const Component: FieldComponent<FieldArgs, BlocValue> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs, ComponentValue> = ({ value, onChange, options }) => {
     return (
         <Field label={options.label} description={options.description}>
             <SlotComponent value={value} onChange={onChange} label={options.label} />
@@ -143,7 +141,7 @@ const Component: FieldComponent<FieldArgs, BlocValue> = ({ value, onChange, opti
     );
 };
 
-export const Slot = defineField<FieldArgs, BlocValue>({
+export const Slot = defineField<FieldArgs, ComponentValue>({
     defaultOptions: {},
     render: Component,
 });

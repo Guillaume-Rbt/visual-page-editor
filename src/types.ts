@@ -19,7 +19,7 @@ export interface FieldOptions {
     [key: string]: any;
 }
 
-export type BlocDefinition = {
+export type ComponentDefinition = {
     name: string;
     label: string;
     fields: { name?: string; options: FieldOptions; group?: boolean }[];
@@ -57,7 +57,7 @@ export type Translation = Record<string, string> & {
     slotAddComponent: string;
 };
 
-export type BlocValue = {
+export type ComponentValue = {
     _name: string;
     _id: string;
     data: Record<string, any>;

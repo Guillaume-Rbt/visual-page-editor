@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { BlocValue } from "../types";
+import { ComponentValue } from "../types";
 import { useDebounce } from "./useDebounce";
 
-export function useBlocPreview(data: BlocValue, previewUrl: string, initial: string) {
+export function useBlockPreview(data: ComponentValue, previewUrl: string, initial: string) {
     const [html, setHTML] = useState(initial);
     useDebounce(
         () => {

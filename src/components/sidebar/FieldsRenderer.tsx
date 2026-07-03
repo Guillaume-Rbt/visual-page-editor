@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { BlocDefinition } from "../../types";
+import { ComponentDefinition } from "../../types";
 import { FieldRenderer } from "./FieldRenderer";
 import { useBlocData } from "../../Store";
 
@@ -11,7 +11,7 @@ export const FieldsRenderer = memo(function FieldsRenderer({
     data = null as unknown as Record<string, any>,
     isVisible = true,
 }: {
-    fields: BlocDefinition["fields"];
+    fields: ComponentDefinition["fields"];
     dataPath: string;
     id?: string;
     isVisible?: Boolean;

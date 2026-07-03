@@ -2,9 +2,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useEditorContext, useDataGetter, usePartialStore } from "../../Store";
 import useBoolean from "../../hooks/useBoolean";
 import { Loader } from "../ui/Loader";
-import { PreviewBlocs } from "./PreviewBlocs";
+import { PreviewBlocks } from "./PreviewBlocks";
 import { createPortal } from "react-dom";
-import { BlocValue, Device } from "../../types";
+import { ComponentValue, Device } from "../../types";
 import { useAsync } from "../../hooks/useAsync";
 import { translation, VisualEditor } from "../../visual-editor";
 import { getScale } from "../../utils/utils";
@@ -18,7 +18,7 @@ import { Tooltip } from "../ui/Tooltip";
 export default function Preview() {
     const getData = useDataGetter();
     const { urlPreview } = useEditorContext();
-    const data = useRef<BlocValue[]>([]);
+    const data = useRef<ComponentValue[]>([]);
     const iframe = useRef<HTMLIFrameElement>(null);
     const htmlAdded = useRef(false);
     const root = useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ export default function Preview() {
                     onLoad={onLoad}
                     className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-dark/5 shadow-lg`}
                     ref={iframe}></iframe>
-                {loaded && createPortal(<PreviewBlocs initHTML={initHTML.current}></PreviewBlocs>, root.current!)}
+                {loaded && createPortal(<PreviewBlocks initHTML={initHTML.current}></PreviewBlocks>, root.current!)}
             </div>
         </div>
     );

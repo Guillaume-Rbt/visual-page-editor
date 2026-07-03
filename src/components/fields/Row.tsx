@@ -1,11 +1,11 @@
-import { BlocValue, FieldDefinition, FieldsGroupComponent } from "../../types";
+import { ComponentValue, FieldDefinition, FieldsGroupComponent } from "../../types";
 import { defineFieldsGroup } from "../../utils/utils";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 
 type FieldArgs = { fields: FieldDefinition<any, any>[]; columns?: string; collapsed?: boolean };
 type RowComponentProps = {
     options: FieldArgs;
-    value: BlocValue;
+    value: ComponentValue;
     onChange: (v: any) => void;
 };
 function RowComponent({ onChange, options }: RowComponentProps) {
@@ -38,8 +38,8 @@ function RowComponent({ onChange, options }: RowComponentProps) {
     );
 }
 
-const Component: FieldsGroupComponent<FieldArgs, BlocValue> = ({ onChange, options, value }) => {
+const Component: FieldsGroupComponent<FieldArgs, ComponentValue> = ({ onChange, options, value }) => {
     return <RowComponent options={options} value={value} onChange={onChange} />;
 };
 
-export const Row = defineFieldsGroup<FieldArgs & { name: string }, BlocValue>(Component); // add {name: string} in type if use in repeater
+export const Row = defineFieldsGroup<FieldArgs & { name: string }, ComponentValue>(Component); // add {name: string} in type if use in repeater

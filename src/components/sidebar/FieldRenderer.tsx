@@ -1,5 +1,5 @@
 import { memo, useCallback } from "react";
-import { type BlocValue } from "../../types";
+import { type ComponentValue } from "../../types";
 import { isDataRef } from "../../utils/utils";
 
 export const FieldRenderer = memo(function FieldRenderer({
@@ -9,7 +9,7 @@ export const FieldRenderer = memo(function FieldRenderer({
     onChange,
 }: {
     field: any;
-    data: BlocValue["data"];
+    data: ComponentValue["data"];
     dataPath: string;
     onChange: Function;
 }) {
