@@ -5,13 +5,14 @@ import FontFamily from "@tiptap/extension-font-family";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
-import { TextStyle } from "@tiptap/extension-text-style";
+import { BackgroundColor, TextStyle } from "@tiptap/extension-text-style";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { defineField, translation } from "../../utils/utils";
 import { FieldComponent } from "../../types";
 import { Field } from "./Field";
-import Select from "../ui/Select";
+import { Select } from "../ui/Select";
+import { Tooltip } from "../ui/Tooltip";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -541,7 +542,6 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
             <div className='mb-2 flex flex-wrap items-center gap-2'>
                 {toolbar.headings && toolbar.headings.length > 0 && (
                     <Select
-                        classes='w-20'
                         placeholder='Niveau'
                         value={editorState.currentHeading ? `${editorState.currentHeading}` : "no-heading"}
                         options={[
@@ -619,7 +619,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                             chain.setFontWeight(nextValue).run();
                         }}
                         options={[
-                            { value: "", render: () => "Par defaut" },
+                            { value: "", render: () => translation("defaultFontWeight") },
                             ...toolbar.fontWeights.map((fontWeight) => ({
                                 value: fontWeight,
                                 render: () => fontWeight,
@@ -778,128 +778,150 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 )}
 
                 {toolbar.colors && toolbar.colors.length > 0 && (
-                    <Select
-                        options={[
-                            {
-                                value: "auto",
-                                render: () => {
-                                    return (
-                                        <div className='flex items-center w-full'>
-                                            <span>{translation("defaultColor")}</span>
-                                            <span
-                                                style={{ backgroundColor: "transparent" }}
-                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
-                                        </div>
-                                    );
-                                },
-                            },
-                            ...toolbar.colors.map((color) => ({
-                                value: color.value,
-                                render: () => {
-                                    return (
-                                        <div className='flex items-center w-full'>
-                                            <span>{color.label}</span>
-                                            <span
-                                                style={{ backgroundColor: color.value }}
-                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
-                                        </div>
-                                    );
-                                },
-                            })),
-                        ]}
-                        selectedRenderer={(options) => {
-                            const isDefaultColor = options.value === "auto";
+                    <Tooltip text={translation("richTextColor")}>
+                        <Select
+                            layout={{ cols: 3, width: "1em" }}
+                            mode='menu'
+                            options={[
+                                {
+                                    value: "auto",
+                                    render: () => {
+                                        const selected =
+                                            (toolbar.colors?.find(
+                                                (color) => color.value === editorState.currentTextColor,
+                                            )?.value ?? "auto") == "auto";
 
-                            return (
-                                <div className='flex items-center grow-1'>
-                                    {translation("richTextTextColor")}
-                                    <span
-                                        style={{
-                                            backgroundColor: isDefaultColor ? "transparent" : (options.value as string),
-                                        }}
-                                        className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
-                                </div>
-                            );
-                        }}
-                        classes='w-50'
-                        value={
-                            toolbar.colors.find((color) => color.value === editorState.currentTextColor)?.value ??
-                            "auto"
-                        }
-                        placeholder={translation("richTextTextColor")}
-                        onChange={(nextValue) => {
-                            const chain = editor.chain().focus();
+                                        return (
+                                            <div className='flex items-center w-full gap-2'>
+                                                <span
+                                                    style={{ backgroundColor: "transparent" }}
+                                                    className={`w-4 h-4 rounded-full ml-auto border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                            </div>
+                                        );
+                                    },
+                                },
+                                ...toolbar.colors.map((color) => ({
+                                    value: color.value,
+                                    render: () => {
+                                        const selected = color.value === editorState.currentTextColor;
 
-                            if (nextValue === "auto") {
-                                chain.unsetColor().run();
-                                return;
+                                        return (
+                                            <Tooltip positionAnchor='pointer' text={color.label}>
+                                                <div className='flex items-center w-full'>
+                                                    <span
+                                                        style={{ backgroundColor: color.value }}
+                                                        className={`block w-4 h-4 rounded-full  border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                                </div>
+                                            </Tooltip>
+                                        );
+                                    },
+                                })),
+                            ]}
+                            selectedRenderer={(options) => {
+                                const isDefaultColor = options.value === "auto";
+
+                                return (
+                                    <div className='flex flex-grow items-center gap-2'>
+                                        <p
+                                            style={{ color: isDefaultColor ? "#000" : (options.value as string) }}
+                                            className='w-max flex-grow font-700'>
+                                            Aa
+                                        </p>
+                                    </div>
+                                );
+                            }}
+                            value={
+                                toolbar.colors.find((color) => color.value === editorState.currentTextColor)?.value ??
+                                "auto"
                             }
+                            placeholder={translation("richTextTextColor")}
+                            onChange={(nextValue) => {
+                                const chain = editor.chain().focus();
 
-                            chain.setColor(nextValue).run();
-                        }}
-                    />
+                                if (nextValue === "auto") {
+                                    chain.unsetColor().run();
+                                    return;
+                                }
+
+                                chain.setColor(nextValue).run();
+                            }}
+                        />
+                    </Tooltip>
                 )}
 
                 {toolbar.backgroundColors && toolbar.backgroundColors.length > 0 && (
-                    <Select
-                        options={[
-                            {
-                                value: "auto",
-                                render: () => {
-                                    return (
-                                        <div className='flex items-center w-full'>
-                                            <span>{translation("defaultColor")}</span>
-                                            <span
-                                                style={{ backgroundColor: "transparent" }}
-                                                className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
-                                        </div>
-                                    );
+                    <Tooltip text={translation("richTextBackgroundColor")}>
+                        <Select
+                            layout={{ cols: 3, width: "1em" }}
+                            mode='menu'
+                            options={[
+                                {
+                                    value: "auto",
+                                    render: () => {
+                                        const selected =
+                                            (toolbar.backgroundColors?.find(
+                                                (color) => color.value === editorState.currentBackgroundColor,
+                                            )?.value ?? "auto") == "auto";
+                                        return (
+                                            <div className='flex items-center w-full gap-2'>
+                                                <span
+                                                    style={{ backgroundColor: "transparent" }}
+                                                    className={`w-4 h-4 rounded-full ml-auto border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : ""}`}></span>
+                                            </div>
+                                        );
+                                    },
                                 },
-                            },
-                            ...toolbar.backgroundColors.map((color) => ({
-                                value: color.value,
-                                render: () => {
-                                    return (
-                                        <div className='flex items-center w-full'>
-                                            <span>{color.label}</span>
-                                            <span
-                                                style={{ backgroundColor: color.value }}
-                                                className='w-4 h-4 rounded-full ml-auto'></span>
-                                        </div>
-                                    );
-                                },
-                            })),
-                        ]}
-                        selectedRenderer={(options) => {
-                            const isDefaultColor = options.value === "auto";
+                                ...toolbar.backgroundColors.map((color) => ({
+                                    value: color.value,
+                                    render: () => {
+                                        const selected = color.value === editorState.currentBackgroundColor;
+                                        return (
+                                            <Tooltip positionAnchor='pointer' text={color.label}>
+                                                <div className='flex items-center w-full'>
+                                                    <span
+                                                        style={{ backgroundColor: color.value }}
+                                                        className={`block w-4 h-4 rounded-full  border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                                </div>
+                                            </Tooltip>
+                                        );
+                                    },
+                                })),
+                            ]}
+                            selectedRenderer={(options) => {
+                                const isDefaultColor = options.value === "auto";
 
-                            return (
-                                <div className='flex items-center'>
-                                    {translation("richTextBackgroundColor")}
-                                    <span
-                                        style={{
-                                            backgroundColor: isDefaultColor ? "transparent" : (options.value as string),
-                                        }}
-                                        className='w-4 h-4 rounded-full ml-auto border-1 border-dark/10'></span>
-                                </div>
-                            );
-                        }}
-                        value={
-                            toolbar.backgroundColors.find((color) => color.value === editorState.currentBackgroundColor)
-                                ?.value ?? "auto"
-                        }
-                        placeholder={translation("richTextBackgroundColor")}
-                        onChange={(nextValue) => {
-                            const chain = editor.chain().focus();
-
-                            if (nextValue === "auto") {
-                                chain.unsetHighlight().run();
-                                return;
+                                return (
+                                    <div className='flex items-center w-full'>
+                                        <p
+                                            style={{
+                                                backgroundColor: isDefaultColor
+                                                    ? "transparent"
+                                                    : (options.value as string),
+                                            }}
+                                            className='w-max font-700'>
+                                            Aa
+                                        </p>
+                                    </div>
+                                );
+                            }}
+                            value={
+                                toolbar.backgroundColors.find(
+                                    (color) => color.value === editorState.currentBackgroundColor,
+                                )?.value ?? "auto"
                             }
+                            placeholder={translation("richTextBackgroundColor")}
+                            onChange={(nextValue) => {
+                                const chain = editor.chain().focus();
 
-                            chain.setHighlight({ color: nextValue }).run();
-                        }}
-                    />
+                                if (nextValue === "auto") {
+                                    chain.unsetHighlight().run();
+                                    return;
+                                }
+
+                                chain.setHighlight({ color: nextValue }).run();
+                            }}
+                        />
+                    </Tooltip>
                 )}
 
                 {toolbar.textAlign.items.length > 0 && toolbar.textAlign.mode === "buttons" && (

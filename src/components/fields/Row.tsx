@@ -18,10 +18,8 @@ function RowComponent({ onChange, options }: RowComponentProps) {
         onChange(data);
     };
 
-    const gridTemplate = Array.isArray(options)
-        ? `repeat(${options.length}, 1fr)`
-        : (options.columns ?? `repeat(${options.fields.length}, 1fr)`);
-    const fields = Array.isArray(options) ? options : options.fields;
+    const fields = Array.isArray(options.fields) ? options.fields : [];
+    const gridTemplate = options.columns ?? `repeat(${fields.length}, 1fr)`;
 
     return (
         <div
@@ -42,4 +40,4 @@ const Component: FieldsGroupComponent<FieldArgs, ComponentValue> = ({ onChange, 
     return <RowComponent options={options} value={value} onChange={onChange} />;
 };
 
-export const Row = defineFieldsGroup<FieldArgs & { name: string }, ComponentValue>(Component); // add {name: string} in type if use in repeater
+export const Row = defineFieldsGroup<FieldArgs, ComponentValue>(Component);

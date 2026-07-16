@@ -25,7 +25,7 @@ class VisualEditor {
         VisualEditor.devices = options.devices ?? defaultDevices;
     }
 
-    registerBloc(options: ComponentDefinition) {
+    registerBlock(options: ComponentDefinition) {
         components.push({ usableInSlot: false, ...options });
 
         return this;
@@ -38,6 +38,10 @@ class VisualEditor {
             name = "content";
             urlPreview = "/preview";
 
+            static get observedAttributes() {
+                return ["previewUrl", "value", "iconsUrl", "shown"];
+            }
+
             constructor() {
                 super();
             }
@@ -47,31 +51,43 @@ class VisualEditor {
                 this.name = this.getAttribute("name") ?? "content";
                 this.urlPreview = this.getAttribute("urlPreview") ?? "";
 
-                this.root = createRoot(this);
+                if (!this.root) {
+                    this.root = createRoot(this);
+                }
 
                 this.render();
             }
 
-            attributesChangedCallback(name: string, oldValue: string, newValue: string) {
+            attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+                console.log("attributeChangedCallback", name, oldValue, newValue);
+                if (oldValue == newValue) {
+                    return;
+                }
                 switch (name) {
                     case "previewUrl":
-                        if (oldValue == newValue) {
-                            break;
-                        }
                         this.urlPreview = this.getAttribute("previewUrl") ?? "";
+                        break;
+                    case "shown":
                         this.render();
                         break;
                 }
+
+                this.render();
             }
 
             render() {
-                this.root!.render(
+                if (!this.root) {
+                    this.root = createRoot(this);
+                }
+
+                this.root.render(
                     <EditorContextProvider
+                        rootElement={this}
                         urlPreview={this.urlPreview}
                         iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
-                        blocs={components}
+                        blocks={components}
                         data={this.data}>
-                        <VisualEditorComponent />
+                        <VisualEditorComponent visible={this.getAttribute("shown") === "true"} />
                         <HiddenTextarea name={this.name} />
                     </EditorContextProvider>,
                 );
@@ -90,18 +106,22 @@ function HiddenTextarea({ name = "content" }) {
 
     return <textarea readOnly hidden name={name} value={JSON.stringify(data)}></textarea>;
 }
-export { VisualEditor, components as blocs };
+
+export { VisualEditor, components as blocks };
 export { defineField, translation, ref } from "./utils/utils";
 export { FieldsRenderer } from "./components/sidebar/FieldsRenderer";
 export { FR };
 
 // FIELD EXPORTS
 
-export { Text } from "./components/fields/Text";
+export { Checkbox } from "./components/fields/Checkbox";
+export { Color } from "./components/fields/Color";
+export { Column } from "./components/fields/Column";
+export { HTMLText } from "./components/fields/HTMLText";
+export { NumberField as Number } from "./components/fields/Number";
 export { Repeater } from "./components/fields/Repeater";
+export { Row } from "./components/fields/Row";
+export { Select } from "./components/fields/Select";
 export { Slot } from "./components/fields/Slot";
 export { Tabs } from "./components/fields/Tabs";
-export { Row } from "./components/fields/Row";
-export { Color } from "./components/fields/Color";
-export { NumberField as Number } from "./components/fields/Number";
-export { HTMLText } from "./components/fields/HTMLText";
+export { Text } from "./components/fields/Text";

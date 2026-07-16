@@ -52,21 +52,24 @@ function RepeaterComponent({
     min,
     max,
 }: ComponentProps & { fields: FieldDefinition<any, any>[] }) {
+    const safeFields = Array.isArray(fields) ? fields : [];
+    const safeValue = Array.isArray(value) ? value : [];
+
     const insertData = () => {
-        const newBlocData = { _id: uuid() } as RepeaterItemValue;
-        fields.forEach((field) => {
-            newBlocData[field.name] = field.options.defaultValue;
+        const newBlockData = { _id: uuid() } as RepeaterItemValue;
+        safeFields.forEach((field) => {
+            newBlockData[field.name] = field.options.defaultValue;
         });
 
-        onChange([...value, newBlocData]);
+        onChange([...safeValue, newBlockData]);
     };
-    const canDelete = value.length > min;
+    const canDelete = safeValue.length > min;
     const deleteData = (id: string) => {
         if (!canDelete) return;
 
-        const index = value.findIndex((v) => v._id == id);
+        const index = safeValue.findIndex((v) => v._id == id);
 
-        const newValue = deleteFromArray(value, index);
+        const newValue = deleteFromArray(safeValue, index);
         onChange(newValue);
     };
 
@@ -79,40 +82,40 @@ function RepeaterComponent({
 
         if (!over || active.id === over.id) return;
 
-        const fromIndex = value.findIndex((bloc) => bloc._id === active.id);
-        const toIndex = value.findIndex((bloc) => bloc._id === over.id);
+        const fromIndex = safeValue.findIndex((block) => block._id === active.id);
+        const toIndex = safeValue.findIndex((block) => block._id === over.id);
 
-        onChange(arrayMove(value, fromIndex, toIndex));
+        onChange(arrayMove(safeValue, fromIndex, toIndex));
     };
 
     useEffect(() => {
-        if (value.length >= min && value.length <= max) return;
+        if (safeValue.length >= min && safeValue.length <= max) return;
 
-        const missing = min - value.length;
-        const exceeding = value.length - max;
-        
+        const missing = min - safeValue.length;
+        const exceeding = safeValue.length - max;
+
         if (missing > 0) {
-              const newItems = Array.from({ length: missing }, () => {
-            const newBlocData = { _id: uuid() } as RepeaterItemValue;
+            const newItems = Array.from({ length: missing }, () => {
+                const newBlockData = { _id: uuid() } as RepeaterItemValue;
 
-            fields.forEach((field) => {
-                newBlocData[field.name] = field.options.defaultValue;
+                safeFields.forEach((field) => {
+                    newBlockData[field.name] = field.options.defaultValue;
+                });
+
+                return newBlockData;
             });
 
-            return newBlocData;
-        });
-
-            onChange([...value, ...newItems]);
+            onChange([...safeValue, ...newItems]);
         } else if (exceeding > 0) {
-            onChange(value.slice(0, max));
+            onChange(safeValue.slice(0, max));
         }
-    }, [value.length, min, max]);
+    }, [safeValue.length, min, max]);
 
     return (
         <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
             <div className='flex flex-col gap-2'>
-                <SortableContext items={value.map((bloc) => bloc._id)} strategy={verticalListSortingStrategy}>
-                    {value.map((item, index) => {
+                <SortableContext items={safeValue.map((block) => block._id)} strategy={verticalListSortingStrategy}>
+                    {safeValue.map((item, index) => {
                         const label =
                             itemLabel.indexOf("{{id}}") == -1
                                 ? (item[itemLabel] ?? `#${index + 1}`) || `#${index + 1}`
@@ -126,7 +129,7 @@ function RepeaterComponent({
                                         onUpdate={onUpdate}
                                         data={item}
                                         path={`${index}`}
-                                        fields={fields}
+                                        fields={safeFields}
                                         label={label}
                                         onDelete={deleteData}
                                         id={item._id}
@@ -141,7 +144,7 @@ function RepeaterComponent({
 
                 <div className='w-full rounded-2 flex justify-end bg-dark/10'>
                     <button
-                        className={`btn btn-outline-primary w-max ${value.length >= max ? "disabled" : ""}`}
+                        className={`btn btn-outline-primary w-max ${safeValue.length >= max ? "disabled" : ""}`}
                         onClick={insertData}>
                         {addButtonLabel}
                     </button>

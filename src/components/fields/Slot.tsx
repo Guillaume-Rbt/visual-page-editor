@@ -10,8 +10,8 @@ import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import useBoolean from "../../hooks/useBoolean";
 import { RoundedButton } from "../ui/RoundedButton";
 import { BlockItem } from "../blocksLibrary/BlockItem";
-import { useCallback, useEffect, useMemo } from "react";
-import Select from "../ui/Select";
+import { useMemo } from "react";
+import { Select } from "../ui/Select";
 
 type FieldArgs = {
     label: string;
@@ -25,32 +25,32 @@ type ComponentProps = {
 };
 
 function SlotComponent({ value, onChange, label }: ComponentProps) {
-    const { blocs } = usePartialStore("blocs");
+    const { blocks } = usePartialStore("blocks");
 
     const options = useMemo(
         () =>
-            blocs
+            blocks
                 .filter((b) => b.usableInSlot)
                 .map((b) => ({
                     value: b,
                     label: b.label,
                     render: () => <BlockItem name={b.name} label={b.label} handleClick={() => {}} />,
                 })),
-        [blocs],
+        [blocks],
     );
 
-    const selectedBloc = blocs.find((b) => b.name === value?._name) ?? null;
+    const selectedBlock = blocks.find((b) => b.name === value?._name) ?? null;
 
-    const removeBloc = () => {
+    const removeBlock = () => {
         onChange(null);
     };
 
-    const setBloc = (bloc: ComponentDefinition) => {
-        const newBlocData = { _id: uuid(), _name: bloc.name, data: {} } as ComponentValue;
-        bloc.fields.forEach((field) => {
-            newBlocData["data"][field.name!] = field.options.defaultValue;
+    const setBlock = (block: ComponentDefinition) => {
+        const newBlockData = { _id: uuid(), _name: block.name, data: {} } as ComponentValue;
+        block.fields.forEach((field) => {
+            newBlockData["data"][field.name!] = field.options.defaultValue;
         });
-        onChange(newBlocData);
+        onChange(newBlockData);
     };
 
     const onUpdate = (v: any, path: string) => {
@@ -62,42 +62,42 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
     };
     return (
         <div className='slot relative border border-dark/20 rounded p-2 bg-white'>
-            {selectedBloc && (
-                <SlotBloc
+            {selectedBlock && (
+                <SlotBlock
                     id={value._id}
                     value={value}
-                    bloc={selectedBloc}
-                    removeBloc={removeBloc}
+                    block={selectedBlock}
+                    removeBlock={removeBlock}
                     onUpdate={onUpdate}
                     label={label}
                 />
             )}
-            {!selectedBloc && (
+            {!selectedBlock && (
                 <Select
                     placeholder={translation("selectSlotComponent")}
                     layout={{ cols: 3 }}
                     hoverable={false}
                     options={options}
-                    onChange={setBloc}
+                    onChange={setBlock}
                 />
             )}
         </div>
     );
 }
 
-function SlotBloc({
-    bloc,
+function SlotBlock({
+    block,
     value,
     onUpdate,
-    removeBloc,
+    removeBlock,
     id,
     label,
 }: {
-    bloc: ComponentDefinition;
+    block: ComponentDefinition;
     value: ComponentValue;
     onUpdate: (value: any, path: string) => void;
     id: string;
-    removeBloc: () => void;
+    removeBlock: () => void;
     label: string;
 }) {
     const [isCollapsed, _, __, toggleCollapsed] = useBoolean(false);
@@ -106,12 +106,12 @@ function SlotBloc({
         <div className='flex flex-col '>
             <div className='w-full flex items-center header cursor-pointer gap-2' onClick={toggleCollapsed}>
                 <h3>
-                    <span className='font-600'>{label}</span> (composant : {bloc.label})
+                    <span className='font-600'>{label}</span> (composant : {block.label})
                 </h3>
                 <RoundedButton
                     onClick={(e) => {
                         e.stopPropagation();
-                        removeBloc();
+                        removeBlock();
                     }}
                     classes='p-1 delete-btn hover:bg-dark/10 hover:text-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
                     <TrashIcon />
@@ -124,7 +124,7 @@ function SlotBloc({
             {!isCollapsed && (
                 <FieldsRenderer
                     id={`${id}`}
-                    fields={bloc.fields}
+                    fields={block.fields}
                     data={value.data}
                     onUpdate={onUpdate}
                     dataPath={id}></FieldsRenderer>

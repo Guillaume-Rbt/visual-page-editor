@@ -7,17 +7,27 @@
         opacity: 0;
         z-index: 999;
 
-        &.displayed 
+
+        &:is(.displayed, .hint)
         {
-             translate: 0px 0px !important;
+            translate: 0px 0px  !important;
+        }
+
+        &:is(.displayed)
+        {
+             
             opacity: 1;
         }
+
+        
     }
-.tooltip::after {
+
+
+.tooltip:not(.hint)::after {
     content: "";
     display: block;
     aspect-ratio: 1 / 1;
-    height: 40%;
+    height: 10px;
     background:var(--colors-dark);
     transform-origin: 50% 50%;
     rotate: 45deg;
@@ -25,7 +35,10 @@
     z-index: -1
 }
 
-.tooltip[data-axis="y"]
+
+.tooltip:not(.hint)
+{
+    &[data-axis="y"]
 {
    
 
@@ -34,7 +47,7 @@
         left: 50%
     }
 }
-.tooltip[data-axis="x"]
+&[data-axis="x"]
 {
    
     &::after 
@@ -43,7 +56,7 @@
     }
 }
 
-.tooltip[data-pos="top"]
+&[data-pos="top"]
 {
 
     translate: 0 -10px;
@@ -55,7 +68,7 @@
     }
 }
 
-.tooltip[data-pos="bottom"]
+&[data-pos="bottom"]
 {
    translate: 0 10px;
 
@@ -66,7 +79,7 @@
     }
 }
 
-.tooltip[data-pos="left"]
+&[data-pos="left"]
 {
      translate: -10px 0px;
     
@@ -79,7 +92,7 @@
     
 }
 
-.tooltip[data-pos="right"]
+&[data-pos="right"]
 {
      translate: 10px 0px;
     
@@ -89,5 +102,8 @@
         translate: -50% -50%
     }
 }
+}
+
+
 
 

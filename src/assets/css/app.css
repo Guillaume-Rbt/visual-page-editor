@@ -2,11 +2,28 @@
 @import "./components/tooltip.css" layer(custom);
 @import "./components/HTMLText.css" layer(custom);
 
-
-@layer reset
-{
-    :is(input, [contenteditable]):focus
-    {
+@layer reset {
+    :is(input, [contenteditable]):focus {
         outline: none;
+    }
+}
+
+@layer custom {
+    .editor-hidden > *:nth-child(1),
+    .editor-hidden > *:nth-child(2),
+    .editor-visible > *:nth-child(1),
+    .editor-visible > *:nth-child(2) {
+        transition: translate 0.8s ease-in-out;
+    }
+
+    .editor-hidden > *:nth-child(1) {
+        translate: -100% 0;
+    }
+
+    .editor-hidden > *:nth-child(2) {
+        translate: 100% 0;
+    }
+    .editor-visible > * {
+        translate: 0 0;
     }
 }

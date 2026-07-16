@@ -14,6 +14,7 @@ import TabletLandscapeIcon from "../../assets/imgs/tablet-portrait.svg?react";
 import MobilePortraitIcon from "../../assets/imgs/mobile-landscape.svg?react";
 import MobileLandscapeIcon from "../../assets/imgs/mobile-portrait.svg?react";
 import { Tooltip } from "../ui/Tooltip";
+import unoCss from "virtual:uno.css?inline";
 
 export default function Preview() {
     const getData = useDataGetter();
@@ -70,16 +71,22 @@ export default function Preview() {
         htmlAdded.current = true;
     }, []);
 
-    const onLoad = () => {
+    const onLoad = async () => {
         if (!htmlAdded.current) return;
 
         const iFrameDoc = iframe.current!.contentDocument!;
+        
 
         const componentsRoot = iFrameDoc.querySelector("#components-root") as HTMLDivElement;
         root.current = componentsRoot;
         initHTML.current = Array.from(componentsRoot.children).reduce((acc, c, i) => {
             return { ...acc, [data.current[i]!._id]: c.outerHTML };
         }, {});
+
+     
+        const style = iFrameDoc.createElement("style");
+        style.textContent = unoCss;
+        iFrameDoc.head.appendChild(style);
         root.current.innerHTML = "";
         setLoadedTrue();
     };

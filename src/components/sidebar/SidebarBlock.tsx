@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useBlocDefinition, usePartialStore } from "../../Store";
+import { useBlockDefinition, usePartialStore } from "../../Store";
 import { FieldsRenderer } from "./FieldsRenderer";
 import { ButtonAddComponent } from "../ui/ButtonAddComponent";
 import { RoundedButton } from "../ui/RoundedButton";
@@ -7,8 +7,9 @@ import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
 import useBoolean from "../../hooks/useBoolean";
 import { Tooltip } from "../ui/Tooltip";
+import { translation } from "../../visual-editor";
 
-export const SidebarBloc = memo(function SidebarBloc({
+export const SidebarBlock = memo(function SidebarBlock({
     name,
     id,
     hasInsertBefore,
@@ -20,18 +21,18 @@ export const SidebarBloc = memo(function SidebarBloc({
     onUpdate: (v: any, path: string) => void;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
-    const blocDefinition = useBlocDefinition(name);
+    const blockDefinition = useBlockDefinition(name);
     const { removeData } = usePartialStore("removeData");
 
     return (
         <div className='relative bg-white w-full flex flex-col shadow rounded-.6 gap-4 border-[1px] border-dark/20 p-is-5 p-ie-2 py-2'>
-            {hasInsertBefore && <ButtonAddComponent addType='before' blocId={id} />}
+            {hasInsertBefore && <ButtonAddComponent addType='before' blockId={id} />}
 
             <div
                 onClick={toggle}
                 className='header w-full flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
-                <h2 className='font-bold text-5 mr-auto'>{blocDefinition?.label}</h2>
-                <Tooltip axis='y' text='Supprimer le bloc'>
+                <h2 className='font-bold text-5 mr-auto'>{blockDefinition?.label}</h2>
+                <Tooltip axis='y' text={translation("deleteComponent")}>
                     <RoundedButton
                         onClick={(e) => {
                             e.stopPropagation();
@@ -52,10 +53,10 @@ export const SidebarBloc = memo(function SidebarBloc({
                 onUpdate={onUpdate}
                 dataPath={`${id}`}
                 id={id}
-                fields={blocDefinition!.fields ?? []}
+                fields={blockDefinition!.fields ?? []}
             />
 
-            <ButtonAddComponent blocId={id} />
+            <ButtonAddComponent blockId={id} />
         </div>
     );
 });

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { ComponentDefinition } from "../../types";
 import { FieldRenderer } from "./FieldRenderer";
-import { useBlocData } from "../../Store";
+import { useBlockData } from "../../Store";
 
 export const FieldsRenderer = memo(function FieldsRenderer({
     fields,
@@ -20,7 +20,7 @@ export const FieldsRenderer = memo(function FieldsRenderer({
 }) {
     const isGroup = id === null;
 
-    const blocData = data ?? useBlocData(id).data;
+    const blockData = data ?? useBlockData(id).data;
 
     return (
         <div className={`flex flex-col gap-3 ${!isVisible ? "hidden" : ""}`}>
@@ -28,7 +28,7 @@ export const FieldsRenderer = memo(function FieldsRenderer({
                 <FieldRenderer
                     onChange={onUpdate}
                     dataPath={isGroup ? `${dataPath}` : `${dataPath}.data`}
-                    data={blocData}
+                    data={blockData}
                     key={`${id}-${field.name}`}
                     field={field}></FieldRenderer>
             ))}

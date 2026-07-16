@@ -53,8 +53,8 @@
     </nav>
 
     <div id="components-root">
-        @each (bloc in data)
-        @component(`components/${bloc._name}`, bloc.data)
+        @each (block in data)
+        @component(`components/${block._name}`, block.data)
         @endcomponent
         @endeach
     </div>

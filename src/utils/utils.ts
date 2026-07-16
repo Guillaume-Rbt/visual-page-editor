@@ -3,6 +3,7 @@ import {
     DataRef,
     FieldComponent,
     FieldDefinition,
+    FieldOptions,
     FieldsdGroupDefinition,
     FieldsGroupComponent,
     Translation,
@@ -19,34 +20,43 @@ export function isDataRef(value: unknown): value is DataRef<unknown> {
     return typeof value === "object" && value !== null && (value as DataRef<unknown>).__isDataRef === true;
 }
 
-type OptionalDefaultKeys<Options, Defaults extends Partial<Options>> = Extract<keyof Options, keyof Defaults>;
+type OptionalDefaultKeys<Options extends FieldOptions, Defaults extends Partial<Options>> = Extract<
+    keyof Options,
+    keyof Defaults
+>;
 
-type MaybeDataRef<T> = T | DataRef<NonNullable<T>>;
+type MaybeAsync<T> = T | Promise<Awaited<T>>;
+
+type MaybeDataRef<T> = MaybeAsync<T> | DataRef<NonNullable<T>>;
 
 type WithDataRefs<T> = {
     [K in keyof T]: MaybeDataRef<T[K]>;
 };
 
-type FieldInputOptions<Options, Defaults extends Partial<Options>> = WithDataRefs<
+type FieldInputOptions<Options extends FieldOptions, Defaults extends Partial<Options>> = WithDataRefs<
     Omit<Options, OptionalDefaultKeys<Options, Defaults>> &
-        Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>
+        Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>> &
+        Pick<FieldOptions, "enabled">
 >;
 
-type MergedFieldOptions<Options, Defaults extends Partial<Options>> = Omit<
+type MergedFieldOptions<Options extends FieldOptions, Defaults extends Partial<Options>> = Omit<
     Options,
     OptionalDefaultKeys<Options, Defaults>
 > &
-    Required<Pick<Options, OptionalDefaultKeys<Options, Defaults>>>;
+    Required<Pick<Options, OptionalDefaultKeys<Options, Defaults>>> & {
+        enabled: NonNullable<FieldOptions["enabled"]>;
+    };
 
-export function defineField<Options, Value, Defaults extends Partial<Options> = Partial<Options>>(args: {
-    defaultOptions: Defaults;
-    render: FieldComponent<MergedFieldOptions<Options, Defaults>, Value>;
-}) {
+export function defineField<
+    Options extends FieldOptions,
+    Value,
+    Defaults extends Partial<Options> = Partial<Options>,
+>(args: { defaultOptions: Defaults; render: FieldComponent<MergedFieldOptions<Options, Defaults>, Value> }) {
     return (
         name: string,
         options = {} as FieldInputOptions<Options, Defaults>,
     ): FieldDefinition<MergedFieldOptions<Options, Defaults>, Value> => {
-        const mergedOptions = { ...args.defaultOptions, ...options };
+        const mergedOptions = { enabled: true, ...args.defaultOptions, ...options };
         return {
             ...args,
             name,

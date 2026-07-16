@@ -17,12 +17,22 @@ type ComponentProps = {
     onChange: (v: string) => void;
 };
 
+const getColor = (color: string) => {
+    const regex = /^(none|default|auto)$/;
+
+    if (regex.test(color)) return "transparent";
+
+    return color;
+};
+
 const defaultOptions = {
     defaultValue: "",
 };
 
 function ColorComponent({ colors, value, onChange }: ComponentProps) {
     const [opened, open, close, toggle] = useBoolean(false);
+
+    console.log("value", value);
 
     const onUpdate = (c: string) => {
         onChange(c);
@@ -40,21 +50,23 @@ function ColorComponent({ colors, value, onChange }: ComponentProps) {
                             onClick={() => {
                                 onUpdate(c);
                             }}
-                            className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-white/30 ${c == "none" ? "no-color" : ""}`}
+                            className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-white/30`}
                             style={{
-                                background: c,
+                                background: getColor(c),
                             }}
                             key={c}>
-                            {c == "transparent" && <TransparentIcon className='w-full h-full'></TransparentIcon>}
+                            {getColor(c) == "transparent" && (
+                                <TransparentIcon className='w-full h-full'></TransparentIcon>
+                            )}
                         </button>
                     );
                 })}
             </div>
             <button
-                style={{ background: value }}
+                style={{ background: getColor(value) }}
                 className='w-7 h-7 border-1 rounded-2 border-solid border-dark/20 cursor-pointer overflow-hidden'
                 onClick={toggle}>
-                {value == "transparent" && <TransparentIcon className='w-full h-full'></TransparentIcon>}
+                {getColor(value) == "transparent" && <TransparentIcon className='w-full h-full'></TransparentIcon>}
             </button>
         </div>
     );

@@ -7,14 +7,14 @@ import { v4 as uuid } from "uuid";
 import { arrayMove } from "@dnd-kit/sortable";
 
 type StoreState = {
-    blocs: ComponentDefinition[];
+    blocks: ComponentDefinition[];
     data: ComponentValue[];
-    blocsOrder: string[];
+    blocksOrder: string[];
     insertIndex: number | null;
     setInsertIndex: (index: number | null) => void;
-    insertData: (bloc: ComponentDefinition) => void;
+    insertData: (block: ComponentDefinition) => void;
     updateData: (v: unknown, path: string) => void;
-    moveBloc: (fromIndex: number, toIndex: number) => void;
+    moveBlock: (fromIndex: number, toIndex: number) => void;
     getIndexById: (id: string) => number;
     removeData: (id: string) => void;
 };
@@ -31,38 +31,41 @@ const EditorContext = createContext<EditorContextValue>({} as EditorContextValue
 
 type EditorContextProviderProps = {
     iconsUrl: string;
-    blocs: ComponentDefinition[];
+    blocks: ComponentDefinition[];
     data: ComponentValue[];
     urlPreview: string;
     children?: ReactNode;
+    rootElement: HTMLElement;
 };
 
 export const EditorContextProvider = ({
-    blocs,
+    blocks: blocks,
     iconsUrl,
     urlPreview,
     children,
     data: data,
+    rootElement,
 }: EditorContextProviderProps) => {
     const store = create(
         combine(
             {
-                blocs: blocs,
+                blocks: blocks,
                 data: data,
-                blocsOrder: [] as string[],
+                blocksOrder: [] as string[],
                 insertIndex: null as number | null,
+                rootElement: rootElement,
             },
             (set, getState) => {
                 return {
                     setInsertIndex: (index: number | null) => {
                         set({ insertIndex: index });
                     },
-                    insertData: (bloc: ComponentDefinition) => {
+                    insertData: (block: ComponentDefinition) => {
                         const { data, insertIndex } = getState();
 
-                        const newBlocData = {} as Record<string, any>;
+                        const newBlockData = {} as Record<string, any>;
 
-                        bloc.fields.forEach((field) => {
+                        block.fields.forEach((field) => {
                             if (field.group) {
                                 const fields = (
                                     field.options[0].defaultValue // check if fiekdsDefinition[] | {fields : fiekdsDefinition[]}
@@ -99,26 +102,26 @@ export const EditorContextProvider = ({
                                             | { parent: string; field: FieldDefinition<any, any> },
                                     ) => {
                                         if ("parent" in f) {
-                                            newBlocData[f.parent] ??= {};
-                                            newBlocData[f.parent][f.field.name] = f.field.options.defaultValue;
+                                            newBlockData[f.parent] ??= {};
+                                            newBlockData[f.parent][f.field.name] = f.field.options.defaultValue;
                                             return;
                                         }
 
-                                        newBlocData[f.name] = f.options.defaultValue;
+                                        newBlockData[f.name] = f.options.defaultValue;
                                     },
                                 );
 
                                 return;
                             }
 
-                            newBlocData[field.name!] = field.options.defaultValue;
+                            newBlockData[field.name!] = field.options.defaultValue;
                         });
 
                         set({
                             data: insertIntoArray(data, insertIndex ?? data.length, {
-                                _name: bloc.name,
+                                _name: block.name,
                                 _id: uuid(),
-                                data: newBlocData,
+                                data: newBlockData,
                             }),
                         });
                     },
@@ -127,13 +130,13 @@ export const EditorContextProvider = ({
                         const keys = path.split(".");
                         set({ data: setDeepValue(data, keys, v) });
                     },
-                    moveBloc: (fromIndex: number, toIndex: number) => {
+                    moveBlock: (fromIndex: number, toIndex: number) => {
                         set((state) => {
                             const newData = arrayMove(state.data, fromIndex, toIndex);
 
                             return {
                                 data: newData,
-                                blocsOrder: newData.map((v) => v._id),
+                                blocksOrder: newData.map((v) => v._id),
                             };
                         });
                     },
@@ -176,12 +179,12 @@ export function usePartialStore(...keys: (keyof StoreState)[]) {
     >;
 }
 
-export function useBlocsLibraryVisible() {
+export function useBlocksLibraryVisible() {
     const { insertIndex } = usePartialStore("insertIndex");
     return insertIndex !== null;
 }
 
-export function useBlocData(id: string) {
+export function useBlockData(id: string) {
     const { store } = useEditorContext();
     return (
         useStore(store, (state) => state.data.find((b) => b._id == id)) || {
@@ -192,9 +195,9 @@ export function useBlocData(id: string) {
     );
 }
 
-export function useBlocDefinition(name: string) {
+export function useBlockDefinition(name: string) {
     const { store } = useEditorContext();
-    return useStore(store, (state) => state.blocs.find((b) => b.name === name));
+    return useStore(store, (state) => state.blocks.find((b) => b.name === name));
 }
 
 export function useDataGetter(): () => ComponentValue[] {

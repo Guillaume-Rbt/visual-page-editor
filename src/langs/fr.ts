@@ -1,7 +1,9 @@
 import { Translation } from "../types";
 
 export const fr: Translation = {
+    save: "Enregistrer",
     addComponent: "Ajouter un composant",
+    deleteComponent: "Supprimer le composant",
     iconFor: "Icône pour",
     slotAddComponent: "Ajouter un composant",
     add: "Ajouter",
@@ -19,7 +21,7 @@ export const fr: Translation = {
     richTextStyle: "Style",
     richTextDecoration: "Décoration",
     richTextLists: "Listes",
-    richTextTextColor: "Couleur du texte",
+    richTextColor: "Couleur du texte",
     richTextBackgroundColor: "Couleur de fond",
     richTextAlignment: "Alignement",
     richTextNoColor: "Aucune couleur",
@@ -44,8 +46,9 @@ export const fr: Translation = {
     richTextAlignRightShort: "D",
     richTextAlignJustifyShort: "J",
     default: "Par défaut",
-    defaultColor: "Couleur par défaut",
-    defaultBackgroundColor: "Couleur de fond par défaut",
+    defaultColor: "Automatique",
+    defaultBackgroundColor: "Automatique",
     defaultFontFamily: "Police par défaut",
     defaultFontSize: "Taille par défaut",
+    defaultFontWeight: "Standard",
 };

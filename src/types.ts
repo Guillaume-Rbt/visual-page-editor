@@ -12,10 +12,12 @@ export type DataRef<T> = {
 export interface FieldProps {
     description?: string;
     label: string;
+    enabled?: boolean;
 }
 
 export interface FieldOptions {
     defaultValue?: any;
+    enabled?: boolean | ((data: Record<string, any>) => boolean);
     [key: string]: any;
 }
 
@@ -27,29 +29,29 @@ export type ComponentDefinition = {
     category: string;
 };
 
-export type FieldDefinition<Options, Value = any> = {
+export type FieldDefinition<Options extends FieldOptions, Value = any> = {
     name: string;
-    options: FieldOptions;
+    options: Options;
     render: FieldComponent<Options, Value>;
 };
 
-export type FieldsdGroupDefinition<Options, Value> = {
+export type FieldsdGroupDefinition<Options extends FieldOptions, Value> = {
     group: true;
     options: Options;
     render: FieldsGroupComponent<Options, Value>;
     name: string;
 };
 
-export type FieldComponent<FieldOptions, FieldValue> = FunctionComponent<{
+export type FieldComponent<Options extends FieldOptions, FieldValue> = FunctionComponent<{
     value: FieldValue;
     onChange: (v: FieldValue) => void;
-    options: FieldOptions;
+    options: Options;
 }>;
 
-export type FieldsGroupComponent<FieldOptions, FieldValue> = FunctionComponent<{
+export type FieldsGroupComponent<Options extends FieldOptions, FieldValue> = FunctionComponent<{
     value: FieldValue;
     onChange: (v: FieldValue) => void;
-    options: FieldOptions;
+    options: Options;
 }>;
 export type Translation = Record<string, string> & {
     addComponent: string;

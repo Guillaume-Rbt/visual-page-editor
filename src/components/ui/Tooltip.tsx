@@ -1,4 +1,4 @@
-import { cloneElement, ReactElement, RefObject, useLayoutEffect, useRef, useState } from "react";
+import { cloneElement, ReactElement, RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import useBoolean from "../../hooks/useBoolean";
 
@@ -8,6 +8,7 @@ type TooltipAxis = "y" | "x";
 type TooltipChildProps = {
     ref?: React.Ref<HTMLElement>;
     onMouseEnter?: React.MouseEventHandler;
+    onMouseMove?: React.MouseEventHandler;
     onMouseLeave?: React.MouseEventHandler;
 };
 
@@ -16,14 +17,18 @@ export function Tooltip({
     text,
     axis = "y",
     force,
+    positionAnchor = "element",
 }: {
     text: string;
     children: ReactElement<TooltipChildProps>;
     axis?: TooltipAxis;
     force?: TooltipPos;
+    positionAnchor?: "element" | "pointer";
 }) {
     const [displayed, display, hide] = useBoolean(false);
     const target = useRef<HTMLElement | null>(null);
+    const [pointerCoords, setPointerCoords] = useState(null as { x: number; y: number } | null);
+    const to = useRef(null as number | null);
 
     return (
         <>
@@ -31,16 +36,43 @@ export function Tooltip({
                 ref: target,
                 onMouseEnter: (e) => {
                     children.props.onMouseEnter?.(e);
+                    if (positionAnchor === "pointer") {
+                        to.current = window.setTimeout(() => {
+                            display();
+                        }, 500);
+
+                        return;
+                    }
+
                     display();
                 },
+                onMouseMove: (e) => {
+                    children.props.onMouseMove?.(e);
+                    const coords = { x: e.clientX, y: e.clientY };
+                    if (positionAnchor === "pointer") {
+                        setPointerCoords(coords);
+                    }
+                },
+
                 onMouseLeave: (e) => {
                     children.props.onMouseLeave?.(e);
+                    if (to.current) {
+                        clearTimeout(to.current);
+                        to.current = null;
+                    }
                     hide();
                 },
             })}
 
             {createPortal(
-                <TooltipRender target={target} force={force} displayed={displayed} text={text} axis={axis} />,
+                <TooltipRender
+                    target={target}
+                    force={force}
+                    displayed={displayed}
+                    text={text}
+                    axis={axis}
+                    pointerCoords={pointerCoords}
+                />,
                 document.body,
             )}
         </>
@@ -53,12 +85,14 @@ function TooltipRender({
     displayed,
     axis,
     force,
+    pointerCoords,
 }: {
     target: RefObject<HTMLElement | null>;
     text: string;
     displayed: boolean;
     axis: TooltipAxis;
     force?: TooltipPos;
+    pointerCoords: { x: number; y: number } | null;
 }) {
     const element = useRef<HTMLDivElement>(null);
 
@@ -76,7 +110,7 @@ function TooltipRender({
         });
     };
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!target.current || !element.current) return;
 
         const t = target.current;
@@ -84,17 +118,68 @@ function TooltipRender({
 
         const targetBounding = t.getBoundingClientRect();
         const elementBounding = el.getBoundingClientRect();
+        const positionRef = {
+            x: {
+                left: pointerCoords ? pointerCoords.x : targetBounding.left,
+                right: pointerCoords ? window.innerWidth - pointerCoords.x : targetBounding.right,
+            },
+            y: {
+                top: pointerCoords ? pointerCoords.y : targetBounding.top,
+                bottom: pointerCoords ? window.innerHeight - pointerCoords.y : targetBounding.bottom,
+            },
+        };
 
         const positions = {
             y: {
-                top: targetBounding.top - elementBounding.height - 10,
-                bottom: targetBounding.bottom + 10,
+                top: pointerCoords
+                    ? positionRef.y.top - elementBounding.height
+                    : positionRef.y.top - elementBounding.height - 10,
+                bottom: pointerCoords ? positionRef.y.bottom : positionRef.y.bottom + 10,
             },
             x: {
-                left: targetBounding.left - elementBounding.width - 10,
-                right: targetBounding.right + 10,
+                left: pointerCoords ? positionRef.x.left : positionRef.x.left - elementBounding.width - 10,
+                right: pointerCoords ? positionRef.x.right : positionRef.x.right + 10,
             },
         };
+
+        if (el.classList.contains("hint")) {
+            if (pointerCoords && !el.classList.contains("displayed")) {
+                switch (axis) {
+                    case "y":
+                        if (positions.y.top > 10) {
+                            setPos("top");
+                            updateCoords({
+                                left: pointerCoords.x + 10,
+                                top: positions.y.top,
+                            });
+                        } else {
+                            setPos("bottom");
+                            updateCoords({
+                                left: pointerCoords.x + 10,
+                                top: positions.y.bottom,
+                            });
+                        }
+                        break;
+                    case "x":
+                        if (positions.x.left > 10) {
+                            setPos("left");
+                            updateCoords({
+                                top: pointerCoords.y,
+                                left: positions.x.left - 10,
+                            });
+                        } else {
+                            setPos("right");
+                            updateCoords({
+                                top: pointerCoords.y,
+                                left: positions.x.right + 10,
+                            });
+                        }
+                        break;
+                }
+            }
+
+            return;
+        }
 
         switch (axis) {
             case "y":
@@ -181,8 +266,8 @@ function TooltipRender({
                 break;
             }
         }
-    }, [displayed, text]);
-
+    }, [displayed, text, pointerCoords]);
+    console.log("render tooltip", displayed, text, pointerCoords);
     return (
         <div
             ref={element}
@@ -190,7 +275,7 @@ function TooltipRender({
             data-pos={pos}
             className={`pointer-events-none fixed z-9999 text-3.5 py-1.5 px-2 bg-dark text-light rounded-1 tooltip ${
                 displayed ? "displayed" : ""
-            }`}
+            } ${pointerCoords ? `hint` : ""}`}
             style={{
                 top: coords.top + "px",
                 left: coords.left + "px",

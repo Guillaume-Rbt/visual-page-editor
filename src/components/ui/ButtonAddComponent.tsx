@@ -3,17 +3,17 @@ import { usePartialStore } from "../../Store";
 import AddIcon from "../../assets/imgs/add.svg?react";
 import useBoolean from "../../hooks/useBoolean";
 
-export function ButtonAddComponent({ addType = "after", blocId }: { addType?: "before" | "after"; blocId: string }) {
+export function ButtonAddComponent({ addType = "after", blockId }: { addType?: "before" | "after"; blockId: string }) {
     const { setInsertIndex, getIndexById } = usePartialStore("setInsertIndex", "getIndexById");
 
     const [isDisplayed, show, hide] = useBoolean(false);
 
     const handleClick = useCallback(() => {
-        let index = getIndexById(blocId);
+        let index = getIndexById(blockId);
 
         if (addType === "after") index++;
         setInsertIndex(index);
-    }, [getIndexById, blocId, setInsertIndex]);
+    }, [getIndexById, blockId, setInsertIndex]);
 
     return (
         <div

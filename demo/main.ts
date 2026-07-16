@@ -1,15 +1,38 @@
-import { Repeater, Text, VisualEditor, Slot, Tabs, Row, Color, Number, HTMLText, ref } from "../src/visual-editor";
+import {
+    Repeater,
+    Text,
+    VisualEditor,
+    Slot,
+    Tabs,
+    Column,
+    Color,
+    Number,
+    HTMLText,
+    ref,
+    Checkbox,
+    Select,
+} from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
 
 visualEditor.defineElement("ve-editor");
 
+async function getData() {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+    return data.map((item: any) => ({ value: item.title, render: () => item.title }));
+}
+
 visualEditor
-    .registerBloc({
+    .registerBlock({
         name: "hero",
         label: "Hero",
         category: "hero",
         fields: [
+            Select("articles", {
+                label: "Colonnes",
+                options: getData(),
+            }),
             Text("siteTitle", {
                 label: "Titre du site",
                 multiline: false,
@@ -30,7 +53,7 @@ visualEditor
                 max: ref<number>("cols"),
                 min: 0,
                 fields: [
-                    Row({
+                    Column({
                         fields: [
                             Text("label", {
                                 label: "Label du bouton",
@@ -44,9 +67,12 @@ visualEditor
                                 defaultValue: "primary",
                             }),
                         ],
-                        name: "ggg",
                     }),
                 ],
+            }),
+            Checkbox("showTitle", {
+                label: "Afficher le titre",
+                defaultValue: true,
             }),
             Tabs([
                 {
@@ -54,6 +80,7 @@ visualEditor
                     fields: [
                         Color("background", {
                             colors: [
+                                "transparent",
                                 "#ff0000",
                                 "#4808df",
                                 "#0cf575",
@@ -61,11 +88,10 @@ visualEditor
                                 "#06e9a5",
                                 "#f16d00",
                                 "#f005d0",
-                                "transparent",
                                 "var(--colors-primary)",
                             ],
                             label: "Fond",
-                            defaultValue: "",
+                            defaultValue: "#ff0000",
                         }),
                         Text("left", {
                             label: "Contenu",
@@ -85,7 +111,7 @@ visualEditor
             ]),
         ],
     })
-    .registerBloc({
+    .registerBlock({
         name: "text",
         label: "Texte",
         category: "content",
@@ -118,3 +144,5 @@ visualEditor
             ]),
         ],
     });
+
+const editor = document.querySelector("ve-editor") as any;

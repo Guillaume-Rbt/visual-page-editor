@@ -2,20 +2,20 @@ import { usePartialStore } from "../../Store";
 import { BlockItem } from "./BlockItem";
 
 export function BlocksGrid() {
-    const { blocs, insertData, setInsertIndex } = usePartialStore("blocs", "insertData", "setInsertIndex");
+    const { blocks, insertData, setInsertIndex } = usePartialStore("blocks", "insertData", "setInsertIndex");
 
     return (
         <div className='grid  md-grid-cols-[repeat(5,170px)] sm-grid-cols-[repeat(auto-fit,1fr)]  gap-2 justify-start'>
-            {blocs.map((bloc) => {
+            {blocks.map((block) => {
                 return (
                     <BlockItem
                         handleClick={() => {
-                            insertData(bloc);
+                            insertData(block);
                             setInsertIndex(null);
                         }}
-                        key={bloc.label}
-                        name={bloc.name}
-                        label={bloc.label}
+                        key={block.label}
+                        name={block.name}
+                        label={block.label}
                     />
                 );
             })}
