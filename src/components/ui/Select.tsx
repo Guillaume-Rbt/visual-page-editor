@@ -13,12 +13,14 @@ export function Select({
     mode = "default",
     selectedRenderer,
     ref,
+    listMaxHeight = 100,
     ...props
 }: {
     options: { value: string | number | ComponentDefinition; render: () => React.ReactNode }[];
     onChange: (value: any) => void;
     hoverable?: boolean;
     placeholder?: string;
+    listMaxHeight?: string | number;
     value?: any;
     mode?: "default" | "menu";
     selectedRenderer?: (opt: {
@@ -33,6 +35,12 @@ export function Select({
           };
     ref?: Ref<HTMLDivElement>;
 }) {
+    const mHeight = listMaxHeight
+        ? typeof listMaxHeight === "number"
+            ? `calc(${listMaxHeight} * var(--spacing))`
+            : listMaxHeight
+        : "300px";
+
     const [isOpen, open, close, toggle] = useBoolean(false);
     const handlerRef = useRef(null as HTMLDivElement | null);
     const listRef = useRef(null as HTMLDivElement | null);
@@ -113,8 +121,9 @@ export function Select({
                 style={{
                     gridTemplateColumns:
                         layout == "column" ? "1fr" : `repeat(${layout.cols}, ${layout.width ?? "1fr"})`,
+                    maxHeight: mHeight,
                 }}
-                className={`gap-2 grid border-x-1 border-dark/30  min-w-full  top-full left-0 bg-white  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
+                className={`overflow-auto gap-2 grid border-x-1 border-dark/30  min-w-full  top-full left-0 bg-white  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
                 {options.map((option) => (
                     <div
                         key={option.value.toString()}

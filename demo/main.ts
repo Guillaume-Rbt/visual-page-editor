@@ -11,6 +11,7 @@ import {
     ref,
     Checkbox,
     Select,
+    Range,
 } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
@@ -29,6 +30,13 @@ visualEditor
         label: "Hero",
         category: "hero",
         fields: [
+            Range("width", {
+                label: "Largeur",
+                min: 1,
+                max: 12,
+                step: 1,
+                defaultValue: { min: 1, max: 12 },
+            }),
             Select("articles", {
                 label: "Colonnes",
                 options: getData(),

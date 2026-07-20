@@ -119,6 +119,7 @@ export { Color } from "./components/fields/Color";
 export { Column } from "./components/fields/Column";
 export { HTMLText } from "./components/fields/HTMLText";
 export { NumberField as Number } from "./components/fields/Number";
+export { Range } from "./components/fields/Range";
 export { Repeater } from "./components/fields/Repeater";
 export { Row } from "./components/fields/Row";
 export { Select } from "./components/fields/Select";

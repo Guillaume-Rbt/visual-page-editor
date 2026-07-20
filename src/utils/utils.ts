@@ -168,3 +168,28 @@ export function getScale(options: { element: HTMLElement; parent: HTMLElement })
 
     return Math.min(scaleX == 1 ? 1 : scaleX - 0.02, scaleY == 1 ? 1 : scaleY - 0.02);
 }
+export function eventPointerToLocalCoordinates(
+    event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
+    element: HTMLElement,
+): { x: number; y: number } {
+    const rect = element.getBoundingClientRect();
+    if ("touches" in event) {
+        const touch = event.touches.item(0) ?? event.changedTouches.item(0);
+        if (!touch) {
+            return { x: 0, y: 0 };
+        }
+
+        return {
+            x: touch.clientX - rect.left,
+            y: touch.clientY - rect.top,
+        };
+    }
+
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+    };
+}
+export function clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value));
+}

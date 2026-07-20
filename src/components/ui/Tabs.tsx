@@ -29,7 +29,7 @@ export function Tab({ selected = false, text, onClick }: { selected?: boolean; t
     return (
         <div
             onClick={onClick}
-            className={`transition-[background,color] flex imtes-center justify-center px-4 py-2.5 font-600 rounded-full cursor-pointer ${selected ? "bg-primary/15 text-primary" : "bg-dark/08 text-dark"} duration-200`}>
+            className={`transition-[background,color] flex items-center justify-center px-4 py-2.5 font-600 rounded-full cursor-pointer ${selected ? "bg-primary/15 text-primary" : "bg-dark/08 text-dark"} duration-200`}>
             {text}
         </div>
     );
