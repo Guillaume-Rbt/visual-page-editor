@@ -75,7 +75,6 @@ export default function Preview() {
         if (!htmlAdded.current) return;
 
         const iFrameDoc = iframe.current!.contentDocument!;
-        
 
         const componentsRoot = iFrameDoc.querySelector("#components-root") as HTMLDivElement;
         root.current = componentsRoot;
@@ -83,7 +82,6 @@ export default function Preview() {
             return { ...acc, [data.current[i]!._id]: c.outerHTML };
         }, {});
 
-     
         const style = iFrameDoc.createElement("style");
         style.textContent = unoCss;
         iFrameDoc.head.appendChild(style);

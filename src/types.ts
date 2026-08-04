@@ -72,3 +72,7 @@ export type Device = {
     orientation?: "portrait" | "landscape";
     default?: boolean;
 };
+
+export type DataAttributes = {
+    [K in `data-${string}`]?: string | number | boolean;
+};

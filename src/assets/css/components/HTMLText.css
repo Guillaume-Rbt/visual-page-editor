@@ -23,4 +23,8 @@
   pointer-events: none;
 }
 
+[data-grow]
+{
+  flex-grow: 1;
+}
 

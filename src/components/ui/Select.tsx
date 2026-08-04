@@ -1,7 +1,7 @@
 import { Ref, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import useBoolean from "../../hooks/useBoolean";
-import { ComponentDefinition } from "../../types";
+import { ComponentDefinition, DataAttributes } from "../../types";
 
 export function Select({
     options,
@@ -34,7 +34,7 @@ export function Select({
               width?: number | string;
           };
     ref?: Ref<HTMLDivElement>;
-}) {
+} & DataAttributes) {
     const mHeight = listMaxHeight
         ? typeof listMaxHeight === "number"
             ? `calc(${listMaxHeight} * var(--spacing))`

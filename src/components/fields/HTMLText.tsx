@@ -542,6 +542,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
             <div className='mb-2 flex flex-wrap items-center gap-2'>
                 {toolbar.headings && toolbar.headings.length > 0 && (
                     <Select
+                        data-grow
                         placeholder='Niveau'
                         value={editorState.currentHeading ? `${editorState.currentHeading}` : "no-heading"}
                         options={[
@@ -565,6 +566,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.fontFamilies && toolbar.fontFamilies.length > 0 && (
                     <Select
+                        data-grow
                         value={toolbar.fontFamilies.find((font) => font === editorState.currentFontFamily) ?? ""}
                         placeholder={translation("richTextFontFamily")}
                         onChange={(nextValue) => {
@@ -586,6 +588,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.fontSizes && toolbar.fontSizes.length > 0 && (
                     <Select
+                        data-grow
                         options={[
                             { value: "", render: () => translation("defaultFontSize") },
                             ...toolbar.fontSizes.map((s) => ({ value: s, render: () => s })),
@@ -606,6 +609,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.fontWeights && toolbar.fontWeights.length > 0 && (
                     <Select
+                        data-grow
                         value={toolbar.fontWeights.find((weight) => weight === editorState.currentFontWeight) ?? ""}
                         placeholder={translation("richTextFontWeight")}
                         onChange={(nextValue) => {
@@ -657,6 +661,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.textStyle.items.length > 0 && toolbar.textStyle.mode === "select" && (
                     <Select
+                        data-grow
                         value={currentTextStyleValue}
                         onChange={(nextValue) => {
                             const chain = editor.chain().focus();
@@ -706,6 +711,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.textDecoration.items.length > 0 && toolbar.textDecoration.mode === "select" && (
                     <Select
+                        data-grow
                         value={currentTextDecorationValue}
                         placeholder={translation("richTextDecoration")}
                         onChange={(nextValue) => {
@@ -756,6 +762,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.lists.items.length > 0 && toolbar.lists.mode === "select" && (
                     <Select
+                        data-grow
                         value={currentListValue}
                         placeholder={translation("richTextLists")}
                         onChange={(nextValue) => {
@@ -780,6 +787,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 {toolbar.colors && toolbar.colors.length > 0 && (
                     <Tooltip text={translation("richTextColor")}>
                         <Select
+                            data-grow
                             layout={{ cols: 3, width: "1em" }}
                             mode='menu'
                             options={[
@@ -852,6 +860,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
                 {toolbar.backgroundColors && toolbar.backgroundColors.length > 0 && (
                     <Tooltip text={translation("richTextBackgroundColor")}>
                         <Select
+                            data-grow
                             layout={{ cols: 3, width: "1em" }}
                             mode='menu'
                             options={[
@@ -944,6 +953,7 @@ function HTMLTextComponent({ value, onChange, placeholder, buttons }: ComponentP
 
                 {toolbar.textAlign.items.length > 0 && toolbar.textAlign.mode === "select" && (
                     <Select
+                        data-grow
                         value={
                             toolbar.textAlign.items.find((item) => item === editorState.currentTextAlign) ??
                             toolbar.textAlign.items[0]
