@@ -2,9 +2,13 @@ import { usePartialStore } from "../../Store";
 import { SidebarBlock } from "./SidebarBlock";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Sortable } from "../Sortable";
 import { translation } from "../../visual-editor";
+import { useState } from "react";
 
 export function SidebarBlocks() {
     const {
@@ -12,7 +16,20 @@ export function SidebarBlocks() {
         moveBlock: moveBlock,
         updateData,
         setInsertIndex,
-    } = usePartialStore("data", "moveBlock", "updateData", "setInsertIndex");
+        focusIndex,
+    } = usePartialStore(
+        "data",
+        "moveBlock",
+        "updateData",
+        "setInsertIndex",
+        "focusIndex",
+    );
+
+    const [isDragging, setIsDragging] = useState(false);
+
+    const handleDragStart = () => {
+        setIsDragging(true);
+    };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -23,6 +40,7 @@ export function SidebarBlocks() {
         const toIndex = data.findIndex((block) => block._id === over.id);
 
         moveBlock(fromIndex, toIndex);
+        setIsDragging(false);
     };
 
     return (
@@ -39,13 +57,20 @@ export function SidebarBlocks() {
             <DndContext
                 modifiers={[restrictToVerticalAxis]}
                 collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}>
+                onDragEnd={handleDragEnd}
+                onDragStart={handleDragStart}>
                 <div className='flex w-full h-full flex-col px-2 py-2 gap-1 isolate overflow-auto'>
-                    <SortableContext items={data.map((block) => block._id)} strategy={verticalListSortingStrategy}>
+                    <SortableContext
+                        items={data.map((block) => block._id)}
+                        strategy={verticalListSortingStrategy}>
                         {data.map((block, k) => {
                             return (
-                                <Sortable key={block._id} id={block._id}>
+                                <Sortable
+                                    animateReorder={!isDragging}
+                                    key={block._id}
+                                    id={block._id}>
                                     <SidebarBlock
+                                        isFocused={k === focusIndex}
                                         hasInsertBefore={k === 0}
                                         id={block._id}
                                         name={block._name}

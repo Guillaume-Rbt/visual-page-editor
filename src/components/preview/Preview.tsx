@@ -32,10 +32,19 @@ export default function Preview() {
         currentDevice.current = device;
 
         if (iframe.current && frameWrapper.current) {
-            iframe.current.style.width = typeof device.size[0] === "number" ? `${device.size[0]}px` : device.size[0];
-            iframe.current.style.height = typeof device.size[1] === "number" ? `${device.size[1]}px` : device.size[1];
+            iframe.current.style.width =
+                typeof device.size[0] === "number"
+                    ? `${device.size[0]}px`
+                    : device.size[0];
+            iframe.current.style.height =
+                typeof device.size[1] === "number"
+                    ? `${device.size[1]}px`
+                    : device.size[1];
 
-            const scale = getScale({ element: iframe.current, parent: frameWrapper.current });
+            const scale = getScale({
+                element: iframe.current,
+                parent: frameWrapper.current,
+            });
             iframe.current.style.transformOrigin = "center center";
             iframe.current.style.transform = `scale(${scale})`;
         }
@@ -76,14 +85,19 @@ export default function Preview() {
 
         const iFrameDoc = iframe.current!.contentDocument!;
 
-        const componentsRoot = iFrameDoc.querySelector("#components-root") as HTMLDivElement;
+        const componentsRoot = iFrameDoc.querySelector(
+            "#components-root",
+        ) as HTMLDivElement;
         root.current = componentsRoot;
-        initHTML.current = Array.from(componentsRoot.children).reduce((acc, c, i) => {
-            return { ...acc, [data.current[i]!._id]: c.outerHTML };
-        }, {});
+        initHTML.current = Array.from(componentsRoot.children).reduce(
+            (acc, c, i) => {
+                return { ...acc, [data.current[i]!._id]: c.outerHTML };
+            },
+            {},
+        );
 
         const style = iFrameDoc.createElement("style");
-        style.textContent = unoCss;
+        //style.textContent = unoCss;
         iFrameDoc.head.appendChild(style);
         root.current.innerHTML = "";
         setLoadedTrue();
@@ -100,7 +114,12 @@ export default function Preview() {
                     onLoad={onLoad}
                     className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-dark/5 shadow-lg`}
                     ref={iframe}></iframe>
-                {loaded && createPortal(<PreviewBlocks initHTML={initHTML.current}></PreviewBlocks>, root.current!)}
+                {loaded &&
+                    createPortal(
+                        <PreviewBlocks
+                            initHTML={initHTML.current}></PreviewBlocks>,
+                        root.current!,
+                    )}
             </div>
         </div>
     );
@@ -120,7 +139,8 @@ const DevicesIcons = {
 
 function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
     const [selectedIndex, setSelectedIndex] = useState(() => {
-        const index = VisualEditor.devices.findIndex((d) => d.default === true) || 0;
+        const index =
+            VisualEditor.devices.findIndex((d) => d.default === true) || 0;
         return index;
     });
     const devices = VisualEditor.devices;
@@ -146,7 +166,9 @@ function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
                         onClick={() => handleChange(index)}>
                         {device.type === "desktop"
                             ? DevicesIcons.desktop
-                            : DevicesIcons[device.type][device.orientation || "portrait"]}
+                            : DevicesIcons[device.type][
+                                  device.orientation || "portrait"
+                              ]}
                     </button>
                 </Tooltip>
             ))}

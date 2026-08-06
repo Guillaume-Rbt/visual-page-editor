@@ -1,6 +1,14 @@
 @import "@unocss/reset/eric-meyer.css" layer(reset);
 @import "./components/tooltip.css" layer(custom);
 @import "./components/HTMLText.css" layer(custom);
+@import "./Urbanist.css" layer(font);
+html {
+    font-family: "Urbanist", "times new roman",;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 @layer reset {
     :is(input, [contenteditable]):focus {

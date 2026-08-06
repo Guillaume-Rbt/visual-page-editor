@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useBlockDefinition, usePartialStore } from "../../Store";
 import { FieldsRenderer } from "./FieldsRenderer";
 import { ButtonAddComponent } from "../ui/ButtonAddComponent";
@@ -14,24 +14,52 @@ export const SidebarBlock = memo(function SidebarBlock({
     id,
     hasInsertBefore,
     onUpdate,
+    isFocused,
 }: {
     hasInsertBefore: boolean;
     name: string;
     id: string;
     onUpdate: (v: any, path: string) => void;
+    isFocused: boolean;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
     const blockDefinition = useBlockDefinition(name);
-    const { removeData } = usePartialStore("removeData");
+    const { removeData, setFocusIndex } = usePartialStore(
+        "removeData",
+        "setFocusIndex",
+    );
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (isFocused && ref.current) {
+            ref.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+
+            if (isCollapsed) {
+                toggle();
+            }
+        }
+    }, [isFocused, isCollapsed]);
 
     return (
-        <div className='relative bg-white w-full flex flex-col shadow rounded-.6 gap-4 border-[1px] border-dark/20 p-is-5 p-ie-2 py-2'>
-            {hasInsertBefore && <ButtonAddComponent addType='before' blockId={id} />}
+        <div
+            ref={ref}
+            className='relative bg-white w-full flex flex-col shadow rounded-.6 gap-4 border-[1px] border-dark/20 p-is-5 p-ie-2 py-2'>
+            {hasInsertBefore && (
+                <ButtonAddComponent addType='before' blockId={id} />
+            )}
 
             <div
-                onClick={toggle}
+                onClick={() => {
+                    setFocusIndex(null);
+                    toggle();
+                }}
                 className='header w-full flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
-                <h2 className='font-bold text-5 mr-auto'>{blockDefinition?.label}</h2>
+                <h2 className='font-bold text-5 mr-auto'>
+                    {blockDefinition?.label}
+                </h2>
                 <Tooltip axis='y' text={translation("deleteComponent")}>
                     <RoundedButton
                         onClick={(e) => {
