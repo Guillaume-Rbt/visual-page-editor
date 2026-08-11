@@ -12,6 +12,7 @@ import {
     Checkbox,
     Select,
     Range,
+    translation,
 } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
@@ -21,14 +22,17 @@ visualEditor.defineElement("ve-editor");
 async function getData() {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const data = await response.json();
-    return data.map((item: any) => ({ value: item.title, render: () => item.title }));
+    return data.map((item: any) => ({
+        value: item.title,
+        render: () => item.title,
+    }));
 }
 
 visualEditor
     .registerBlock({
         name: "hero",
         label: "Hero",
-        category: "hero",
+        category: translation("heroCategory"),
         fields: [
             Range("width", {
                 label: "Largeur",
@@ -122,7 +126,7 @@ visualEditor
     .registerBlock({
         name: "text",
         label: "Texte",
-        category: "content",
+        category: translation("contentCategory"),
         usableInSlot: true,
         fields: [
             Text("content", {

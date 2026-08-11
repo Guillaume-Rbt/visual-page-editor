@@ -1,9 +1,11 @@
+@layer reset, font, base, properties, theme, preflights, shortcuts, ve-editor, custom;
+
 @import "@unocss/reset/eric-meyer.css" layer(reset);
 @import "./components/tooltip.css" layer(custom);
 @import "./components/HTMLText.css" layer(custom);
 @import "./Urbanist.css" layer(font);
 html {
-    font-family: "Urbanist", "times new roman",;
+    font-family: "Urbanist", "sans-serif";
     font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;

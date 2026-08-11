@@ -1,13 +1,26 @@
 import { useState } from "react";
 
-export function Tabs({ labels, children }: { labels: string[]; children: React.ReactNode[] }) {
+export function Tabs({
+    labels,
+    children,
+}: {
+    labels: string[];
+    children: React.ReactNode[];
+}) {
     const [activeTab, setActiveTab] = useState(labels[0]);
+
+    console.log(labels, children, activeTab);
 
     return (
         <div className='flex flex-col w-full gap-3'>
-            <div className='inline-grid grid-flow-col auto-cols-fr gap-3 w-max'>
+            <div className='inline-grid grid-flow-col auto-cols-max gap-3 w-max max-w-full'>
                 {labels.map((t) => (
-                    <Tab key={t} selected={activeTab === t} text={t} onClick={() => setActiveTab(t)} />
+                    <Tab
+                        key={t}
+                        selected={activeTab === t}
+                        text={t}
+                        onClick={() => setActiveTab(t)}
+                    />
                 ))}
             </div>
             <div className='position-relative grid'>
@@ -25,7 +38,15 @@ export function Tabs({ labels, children }: { labels: string[]; children: React.R
     );
 }
 
-export function Tab({ selected = false, text, onClick }: { selected?: boolean; text: string; onClick: () => void }) {
+export function Tab({
+    selected = false,
+    text,
+    onClick,
+}: {
+    selected?: boolean;
+    text: string;
+    onClick: () => void;
+}) {
     return (
         <div
             onClick={onClick}

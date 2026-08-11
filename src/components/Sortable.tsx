@@ -1,5 +1,9 @@
 import { CSS } from "@dnd-kit/utilities";
-import { defaultAnimateLayoutChanges, useSortable, type AnimateLayoutChanges } from "@dnd-kit/sortable";
+import {
+    defaultAnimateLayoutChanges,
+    useSortable,
+    type AnimateLayoutChanges,
+} from "@dnd-kit/sortable";
 import { useLayoutEffect, useRef } from "react";
 
 const animateLayoutChanges: AnimateLayoutChanges = (args) => {
@@ -21,7 +25,15 @@ export function Sortable({
     interactable?: boolean;
     animateReorder?: boolean;
 }) {
-    const { attributes, setActivatorNodeRef, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    const {
+        attributes,
+        setActivatorNodeRef,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
         id,
         animateLayoutChanges,
         transition: {
@@ -52,7 +64,10 @@ export function Sortable({
 
             if (Math.abs(deltaX) > 0.5 || Math.abs(deltaY) > 0.5) {
                 node.animate(
-                    [{ transform: `translate(${deltaX}px, ${deltaY}px)` }, { transform: "translate(0px, 0px)" }],
+                    [
+                        { transform: `translate(${deltaX}px, ${deltaY}px)` },
+                        { transform: "translate(0px, 0px)" },
+                    ],
                     {
                         duration: 260,
                         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -70,7 +85,7 @@ export function Sortable({
                 nodeRef.current = node;
                 setNodeRef(node);
             }}
-            className='relative'
+            className='relative sortable'
             style={{
                 transform: CSS.Transform.toString(transform),
                 transition,

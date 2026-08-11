@@ -1,4 +1,4 @@
-import { Ref, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { Ref, useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import useBoolean from "../../hooks/useBoolean";
 import { ComponentDefinition, DataAttributes } from "../../types";
@@ -16,7 +16,10 @@ export function Select({
     listMaxHeight = 100,
     ...props
 }: {
-    options: { value: string | number | ComponentDefinition; render: () => React.ReactNode }[];
+    options: {
+        value: string | number | ComponentDefinition;
+        render: () => React.ReactNode;
+    }[];
     onChange: (value: any) => void;
     hoverable?: boolean;
     placeholder?: string;
@@ -45,11 +48,20 @@ export function Select({
     const handlerRef = useRef(null as HTMLDivElement | null);
     const listRef = useRef(null as HTMLDivElement | null);
     const selectedOption = useMemo(() => {
-        return options.find((option) => option.value === value || `${option.value}` === `${value}`);
+        return options.find(
+            (option) =>
+                option.value === value || `${option.value}` === `${value}`,
+        );
     }, [options, value]);
     const handleDocumentClick = useCallback(
         (e: MouseEvent) => {
-            if (isOpen && !((e.target as HTMLElement).closest(".list-handler") === handlerRef.current)) {
+            if (
+                isOpen &&
+                !(
+                    (e.target as HTMLElement).closest(".list-handler") ===
+                    handlerRef.current
+                )
+            ) {
                 close();
             }
         },
@@ -70,11 +82,14 @@ export function Select({
             ro = new ResizeObserver(() => {
                 if (listRef.current && handlerRef.current) {
                     if (isOpen || mode === "menu") return;
-                    listRef.current.style.width = "auto";
-                    handlerRef.current.style.width = "auto";
-                    const w = Math.max(handlerRef.current.offsetWidth, listRef.current.offsetWidth);
-                    listRef.current.style.width = `${w}px`;
-                    handlerRef.current.style.width = `${w}px`;
+                    listRef.current.style.minWidth = "auto";
+                    handlerRef.current.style.minWidth = "auto";
+                    const w = Math.max(
+                        handlerRef.current.offsetWidth,
+                        listRef.current.offsetWidth,
+                    );
+                    listRef.current.style.minWidth = `${w}px`;
+                    handlerRef.current.style.minWidth = `${w}px`;
                 }
             });
 
@@ -90,7 +105,7 @@ export function Select({
     }, [handleDocumentClick]);
 
     return (
-        <div className='flex relative flex-col'>
+        <div {...props} className='flex relative flex-col'>
             <div ref={ref} {...props}>
                 <div
                     onClick={() => {
@@ -114,16 +129,19 @@ export function Select({
             </div>
 
             <div
+                data-mode={mode}
                 onMouseOver={(e) => {
                     e.stopPropagation();
                 }}
                 ref={listRef}
                 style={{
                     gridTemplateColumns:
-                        layout == "column" ? "1fr" : `repeat(${layout.cols}, ${layout.width ?? "1fr"})`,
+                        layout == "column"
+                            ? "1fr"
+                            : `repeat(${layout.cols}, ${layout.width ?? "1fr"})`,
                     maxHeight: mHeight,
                 }}
-                className={`overflow-auto gap-2 grid border-x-1 border-dark/30  min-w-full  top-full left-0 bg-white  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
+                className={`select-list overflow-auto gap-2 grid border-x-1 border-dark/30  min-w-full  top-full left-0 bg-white  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
                 {options.map((option) => (
                     <div
                         key={option.value.toString()}

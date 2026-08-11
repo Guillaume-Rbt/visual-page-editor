@@ -20,7 +20,9 @@ class VisualEditor {
     static devices: Device[] = defaultDevices;
     root = null as unknown as Root;
 
-    constructor(options: { lang?: Translation; devices?: Device[]; name?: string } = {}) {
+    constructor(
+        options: { lang?: Translation; devices?: Device[]; name?: string } = {},
+    ) {
         VisualEditor.lang = options.lang ?? FR;
         VisualEditor.devices = options.devices ?? defaultDevices;
     }
@@ -58,8 +60,11 @@ class VisualEditor {
                 this.render();
             }
 
-            attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-                console.log("attributeChangedCallback", name, oldValue, newValue);
+            attributeChangedCallback(
+                name: string,
+                oldValue: string,
+                newValue: string,
+            ) {
                 if (oldValue == newValue) {
                     return;
                 }
@@ -87,7 +92,9 @@ class VisualEditor {
                         iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
                         blocks={components}
                         data={this.data}>
-                        <VisualEditorComponent visible={this.getAttribute("shown") === "true"} />
+                        <VisualEditorComponent
+                            visible={this.getAttribute("shown") === "true"}
+                        />
                         <HiddenTextarea name={this.name} />
                     </EditorContextProvider>,
                 );
@@ -104,7 +111,13 @@ class VisualEditor {
 function HiddenTextarea({ name = "content" }) {
     const { data } = usePartialStore("data");
 
-    return <textarea readOnly hidden name={name} value={JSON.stringify(data)}></textarea>;
+    return (
+        <textarea
+            readOnly
+            hidden
+            name={name}
+            value={JSON.stringify(data)}></textarea>
+    );
 }
 
 export { VisualEditor, components as blocks };

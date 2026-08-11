@@ -15,7 +15,7 @@ type StoreState = {
     setInsertIndex: (index: number | null) => void;
     insertData: (block: ComponentDefinition) => void;
     updateData: (v: unknown, path: string) => void;
-    moveBlock: (fromIndex: number, toIndex: number) => void;
+    moveBlock: (fromIndex: number, toIndex: number, setFocus?: boolean) => void;
     getIndexById: (id: string) => number;
     removeData: (id: string) => void;
     setFocusIndex: (index: number | null) => void;
@@ -104,7 +104,7 @@ export const EditorContextProvider = ({
                                               [],
                                           )
                                 ) as FieldDefinition<any, any>[];
-                                console.log(fields);
+
                                 fields.forEach(
                                     (
                                         f:
@@ -153,13 +153,24 @@ export const EditorContextProvider = ({
                         const keys = path.split(".");
                         set({ data: setDeepValue(data, keys, v) });
                     },
-                    moveBlock: (fromIndex: number, toIndex: number) => {
+                    moveBlock: (
+                        fromIndex: number,
+                        toIndex: number,
+                        setFocus: boolean = false,
+                    ) => {
                         set((state) => {
                             const newData = arrayMove(
                                 state.data,
                                 fromIndex,
                                 toIndex,
                             );
+
+                            if (
+                                setFocus &&
+                                fromIndex == getState().focusIndex
+                            ) {
+                                set({ focusIndex: toIndex });
+                            }
 
                             return {
                                 data: newData,
@@ -179,7 +190,6 @@ export const EditorContextProvider = ({
                         return data.findIndex((b) => b._id === id);
                     },
                     setFocusIndex: (index: number | null) => {
-                        console.log("setFocusIndex", index);
                         set({ focusIndex: index });
                     },
                 };

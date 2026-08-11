@@ -17,13 +17,7 @@ export function SidebarBlocks() {
         updateData,
         setInsertIndex,
         focusIndex,
-    } = usePartialStore(
-        "data",
-        "moveBlock",
-        "updateData",
-        "setInsertIndex",
-        "focusIndex",
-    );
+    } = usePartialStore("data", "moveBlock", "updateData", "setInsertIndex");
 
     const [isDragging, setIsDragging] = useState(false);
 
@@ -70,7 +64,6 @@ export function SidebarBlocks() {
                                     key={block._id}
                                     id={block._id}>
                                     <SidebarBlock
-                                        isFocused={k === focusIndex}
                                         hasInsertBefore={k === 0}
                                         id={block._id}
                                         name={block._name}

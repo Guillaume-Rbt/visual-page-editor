@@ -26,7 +26,7 @@ export type ComponentDefinition = {
     label: string;
     fields: { name?: string; options: FieldOptions; group?: boolean }[];
     usableInSlot?: boolean;
-    category: string;
+    category?: string;
 };
 
 export type FieldDefinition<Options extends FieldOptions, Value = any> = {
@@ -42,21 +42,74 @@ export type FieldsdGroupDefinition<Options extends FieldOptions, Value> = {
     name: string;
 };
 
-export type FieldComponent<Options extends FieldOptions, FieldValue> = FunctionComponent<{
+export type FieldComponent<
+    Options extends FieldOptions,
+    FieldValue,
+> = FunctionComponent<{
     value: FieldValue;
     onChange: (v: FieldValue) => void;
     options: Options;
 }>;
 
-export type FieldsGroupComponent<Options extends FieldOptions, FieldValue> = FunctionComponent<{
+export type FieldsGroupComponent<
+    Options extends FieldOptions,
+    FieldValue,
+> = FunctionComponent<{
     value: FieldValue;
     onChange: (v: FieldValue) => void;
     options: Options;
 }>;
 export type Translation = Record<string, string> & {
+    save: string;
     addComponent: string;
+    deleteComponent: string;
     iconFor: string;
     slotAddComponent: string;
+    add: string;
+    selectSlotComponent: string;
+    width: string;
+    height: string;
+    orientation: string;
+    desktop: string;
+    tablet: string;
+    mobile: string;
+    richTextHeading: string;
+    richTextFontFamily: string;
+    richTextFontSize: string;
+    richTextFontWeight: string;
+    richTextStyle: string;
+    richTextDecoration: string;
+    richTextLists: string;
+    richTextColor: string;
+    richTextBackgroundColor: string;
+    richTextAlignment: string;
+    richTextNoColor: string;
+    richTextBold: string;
+    richTextItalic: string;
+    richTextUnderline: string;
+    richTextStrike: string;
+    richTextBulletList: string;
+    richTextOrderedList: string;
+    richTextAlignLeft: string;
+    richTextAlignCenter: string;
+    richTextAlignRight: string;
+    richTextAlignJustify: string;
+    richTextBoldShort: string;
+    richTextItalicShort: string;
+    richTextUnderlineShort: string;
+    richTextStrikeShort: string;
+    richTextBulletListShort: string;
+    richTextOrderedListShort: string;
+    richTextAlignLeftShort: string;
+    richTextAlignCenterShort: string;
+    richTextAlignRightShort: string;
+    richTextAlignJustifyShort: string;
+    default: string;
+    defaultColor: string;
+    defaultBackgroundColor: string;
+    defaultFontFamily: string;
+    defaultFontSize: string;
+    defaultFontWeight: string;
 };
 
 export type ComponentValue = {

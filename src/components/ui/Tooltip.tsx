@@ -1,4 +1,12 @@
-import { cloneElement, ReactElement, RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+    cloneElement,
+    ReactElement,
+    RefObject,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from "react";
 import { createPortal } from "react-dom";
 import useBoolean from "../../hooks/useBoolean";
 
@@ -27,7 +35,9 @@ export function Tooltip({
 }) {
     const [displayed, display, hide] = useBoolean(false);
     const target = useRef<HTMLElement | null>(null);
-    const [pointerCoords, setPointerCoords] = useState(null as { x: number; y: number } | null);
+    const [pointerCoords, setPointerCoords] = useState(
+        null as { x: number; y: number } | null,
+    );
     const to = useRef(null as number | null);
 
     return (
@@ -96,7 +106,9 @@ function TooltipRender({
 }) {
     const element = useRef<HTMLDivElement>(null);
 
-    const [pos, setPos] = useState<TooltipPos>(force ?? (axis === "y" ? "top" : "right"));
+    const [pos, setPos] = useState<TooltipPos>(
+        force ?? (axis === "y" ? "top" : "right"),
+    );
 
     const [coords, setCoords] = useState({
         top: 0,
@@ -121,11 +133,15 @@ function TooltipRender({
         const positionRef = {
             x: {
                 left: pointerCoords ? pointerCoords.x : targetBounding.left,
-                right: pointerCoords ? window.innerWidth - pointerCoords.x : targetBounding.right,
+                right: pointerCoords
+                    ? window.innerWidth - pointerCoords.x
+                    : targetBounding.right,
             },
             y: {
                 top: pointerCoords ? pointerCoords.y : targetBounding.top,
-                bottom: pointerCoords ? window.innerHeight - pointerCoords.y : targetBounding.bottom,
+                bottom: pointerCoords
+                    ? window.innerHeight - pointerCoords.y
+                    : targetBounding.bottom,
             },
         };
 
@@ -134,11 +150,17 @@ function TooltipRender({
                 top: pointerCoords
                     ? positionRef.y.top - elementBounding.height
                     : positionRef.y.top - elementBounding.height - 10,
-                bottom: pointerCoords ? positionRef.y.bottom : positionRef.y.bottom + 10,
+                bottom: pointerCoords
+                    ? positionRef.y.bottom
+                    : positionRef.y.bottom + 10,
             },
             x: {
-                left: pointerCoords ? positionRef.x.left : positionRef.x.left - elementBounding.width - 10,
-                right: pointerCoords ? positionRef.x.right : positionRef.x.right + 10,
+                left: pointerCoords
+                    ? positionRef.x.left
+                    : positionRef.x.left - elementBounding.width - 10,
+                right: pointerCoords
+                    ? positionRef.x.right
+                    : positionRef.x.right + 10,
             },
         };
 
@@ -183,7 +205,10 @@ function TooltipRender({
 
         switch (axis) {
             case "y":
-                const left = targetBounding.left + targetBounding.width / 2 - elementBounding.width / 2;
+                const left =
+                    targetBounding.left +
+                    targetBounding.width / 2 -
+                    elementBounding.width / 2;
 
                 if (force) {
                     updateCoords({
@@ -221,7 +246,10 @@ function TooltipRender({
                 }
                 break;
             case "x": {
-                const top = targetBounding.top + targetBounding.height / 2 - elementBounding.height / 2;
+                const top =
+                    targetBounding.top +
+                    targetBounding.height / 2 -
+                    elementBounding.height / 2;
 
                 if (force) {
                     updateCoords({
@@ -243,7 +271,10 @@ function TooltipRender({
                         }
 
                     case "right":
-                        if (positions.x.right + elementBounding.width < window.innerWidth - 10) {
+                        if (
+                            positions.x.right + elementBounding.width <
+                            window.innerWidth - 10
+                        ) {
                             setPos("right");
 
                             updateCoords({
@@ -267,7 +298,6 @@ function TooltipRender({
             }
         }
     }, [displayed, text, pointerCoords]);
-    console.log("render tooltip", displayed, text, pointerCoords);
     return (
         <div
             ref={element}

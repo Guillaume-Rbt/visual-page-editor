@@ -37,17 +37,32 @@ export function PreviewBlockWrapper({
         const newIndex =
             direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
-        moveBlock(currentIndex, newIndex);
+        moveBlock(currentIndex, newIndex, true);
     };
 
     useLayoutEffect(() => {
         const currentId = getIndexById(id);
-        if (currentId === focusIndex) {
-            const top = hostRef.current?.offsetTop ?? 0;
-            const root = hostRef.current!.closest("html")!;
-            root.scrollTop = top;
+        if (currentId !== focusIndex) {
+            return;
         }
-    }, [focusIndex]);
+
+        const block = hostRef.current?.closest(
+            ".sortable",
+        ) as HTMLElement | null;
+        const doc = hostRef.current?.ownerDocument;
+        const scrollingElement = doc?.scrollingElement as HTMLElement | null;
+
+        if (!block || !scrollingElement) {
+            return;
+        }
+
+        const blockTop =
+            block.getBoundingClientRect().top + scrollingElement.scrollTop;
+        scrollingElement.scrollTo({
+            top: Math.max(0, blockTop - 32),
+            behavior: "auto",
+        });
+    }, [focusIndex, getIndexById, id]);
 
     useLayoutEffect(() => {
         const host = hostRef.current;
@@ -118,14 +133,14 @@ export function PreviewBlockWrapper({
                             setFocusIndex,
                             getIndexById(id),
                         )}
-                        className='absolute inset-0 group hover:border-1 border-primary'>
-                        <div className='flex absolute top-0 left--1 translate-y-[-100%] opacity-0 group-hover:opacity-100! transition-opacity duration-200'>
+                        className={`absolute inset-0 opacity-0 hover:opacity-100 border-1 border-primary ${getIndexById(id) === focusIndex ? "opacity-100" : ""}`}>
+                        <div className='flex absolute top-0 left--1 translate-y-[-100%] transition-opacity duration-200'>
                             <p className='bg-primary text-white px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
                                 {name}
                             </p>
                         </div>
 
-                        <div className='flex absolute top-0 right-1 gap-1 translate-y-[-100%] opacity-0 group-hover:opacity-100! transition-opacity duration-200 pointer-events-auto'>
+                        <div className='flex absolute top-0 right-1 gap-1 translate-y-[-100%]  pointer-events-auto'>
                             <button
                                 type='button'
                                 onClick={stopPropagation(removeData, id)}

@@ -18,15 +18,15 @@ export default defineConfig({
     },
 
     layers: {
-        reset: -1,
-        base: 0,
-        properties: 1,
-        theme: 2,
-        preflights: 3,
-        shortcuts: 4,
-        default: 5,
-        "ve-editor": 6,
-        custom: 7,
+        reset: 0,
+        base: 1,
+        properties: 2,
+        theme: 3,
+        preflights: 4,
+        shortcuts: 5,
+        default: 6,
+        "ve-editor": 7,
+        custom: 8,
     },
     shortcuts: [
         [

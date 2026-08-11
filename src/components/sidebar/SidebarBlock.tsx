@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useMemo } from "react";
 import { useBlockDefinition, usePartialStore } from "../../Store";
 import { FieldsRenderer } from "./FieldsRenderer";
 import { ButtonAddComponent } from "../ui/ButtonAddComponent";
@@ -14,34 +14,44 @@ export const SidebarBlock = memo(function SidebarBlock({
     id,
     hasInsertBefore,
     onUpdate,
-    isFocused,
 }: {
     hasInsertBefore: boolean;
     name: string;
     id: string;
     onUpdate: (v: any, path: string) => void;
-    isFocused: boolean;
 }) {
     const [isCollapsed, _, __, toggle] = useBoolean(false);
     const blockDefinition = useBlockDefinition(name);
-    const { removeData, setFocusIndex } = usePartialStore(
-        "removeData",
-        "setFocusIndex",
-    );
+    const { removeData, setFocusIndex, focusIndex, getIndexById } =
+        usePartialStore(
+            "removeData",
+            "setFocusIndex",
+            "focusIndex",
+            "getIndexById",
+        );
     const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (isFocused && ref.current) {
-            ref.current.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-            });
+    const isFocused = useMemo(
+        () => focusIndex === getIndexById(id),
+        [focusIndex, getIndexById, id],
+    );
 
-            if (isCollapsed) {
-                toggle();
-            }
+    useEffect(() => {
+        if (!isFocused || !ref.current) {
+            return;
         }
-    }, [isFocused, isCollapsed]);
+
+        ref.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }, [isFocused]);
+
+    useEffect(() => {
+        if (isFocused && isCollapsed) {
+            toggle();
+        }
+    }, [isFocused, isCollapsed, toggle]);
 
     return (
         <div

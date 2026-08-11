@@ -1,8 +1,12 @@
 import { usePartialStore } from "../../Store";
+import { ComponentDefinition } from "../../types";
 import { BlockItem } from "./BlockItem";
 
-export function BlocksGrid() {
-    const { blocks, insertData, setInsertIndex } = usePartialStore("blocks", "insertData", "setInsertIndex");
+export function BlocksGrid({ blocks }: { blocks: ComponentDefinition[] }) {
+    const { insertData, setInsertIndex } = usePartialStore(
+        "insertData",
+        "setInsertIndex",
+    );
 
     return (
         <div className='grid  md-grid-cols-[repeat(5,170px)] sm-grid-cols-[repeat(auto-fit,1fr)]  gap-2 justify-start'>

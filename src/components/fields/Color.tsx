@@ -32,8 +32,6 @@ const defaultOptions = {
 function ColorComponent({ colors, value, onChange }: ComponentProps) {
     const [opened, open, close, toggle] = useBoolean(false);
 
-    console.log("value", value);
-
     const onUpdate = (c: string) => {
         onChange(c);
         close();
@@ -42,7 +40,9 @@ function ColorComponent({ colors, value, onChange }: ComponentProps) {
     return (
         <div className='relative'>
             <div
-                style={{ gridTemplateColumns: `repeat(${Math.min(colors.length, 5)}, auto)` }}
+                style={{
+                    gridTemplateColumns: `repeat(${Math.min(colors.length, 5)}, auto)`,
+                }}
                 className={`absolute grid  rounded-2 gap-1 p-2 left-0 top-0 translate-y-[-110%] bg-dark ${opened ? "opacity-100" : "pointer-events-none opacity-0"}`}>
                 {colors.map((c) => {
                     return (
@@ -66,16 +66,26 @@ function ColorComponent({ colors, value, onChange }: ComponentProps) {
                 style={{ background: getColor(value) }}
                 className='w-7 h-7 border-1 rounded-2 border-solid border-dark/20 cursor-pointer overflow-hidden'
                 onClick={toggle}>
-                {getColor(value) == "transparent" && <TransparentIcon className='w-full h-full'></TransparentIcon>}
+                {getColor(value) == "transparent" && (
+                    <TransparentIcon className='w-full h-full'></TransparentIcon>
+                )}
             </button>
         </div>
     );
 }
 
-const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field label={options.label} description={options.description}>
-            <ColorComponent colors={options.colors} value={value} onChange={onChange} />
+            <ColorComponent
+                colors={options.colors}
+                value={value}
+                onChange={onChange}
+            />
         </Field>
     );
 };
