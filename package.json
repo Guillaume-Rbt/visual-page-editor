@@ -12,6 +12,9 @@
     "main": "./dist/visual-editor.js",
     "module": "./dist/visual-editor.js",
     "types": "./dist/visual-editor.d.ts",
+    "files": [
+        "dist"
+    ],
     "exports": {
         ".": {
             "types": "./dist/visual-editor.d.ts",
