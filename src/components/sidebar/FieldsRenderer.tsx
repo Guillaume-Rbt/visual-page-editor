@@ -23,7 +23,7 @@ export const FieldsRenderer = memo(function FieldsRenderer({
     const blockData = data ?? useBlockData(id).data;
 
     return (
-        <div className={`flex flex-col gap-3 ${!isVisible ? "hidden" : ""}`}>
+        <div className={`flex flex-col gap-5 ${!isVisible ? "hidden" : ""}`}>
             {fields.map((field) => (
                 <FieldRenderer
                     onChange={onUpdate}

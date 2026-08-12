@@ -1,6 +1,17 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { FieldComponent } from "../../types";
-import { clamp, defineField, eventPointerToLocalCoordinates } from "../../utils/utils";
+import {
+    clamp,
+    defineField,
+    eventPointerToLocalCoordinates,
+} from "../../utils/utils";
 import { Field } from "./Field";
 
 type RangeValue = number | { min: number; max: number };
@@ -33,7 +44,11 @@ type RangeContextValue = {
     singleValue: number;
     rangeValue: RangeObject;
     trackRef: React.MutableRefObject<HTMLDivElement | null>;
-    setFromTrackPosition: (x: number, width: number, preferredThumb?: ThumbKey) => void;
+    setFromTrackPosition: (
+        x: number,
+        width: number,
+        preferredThumb?: ThumbKey,
+    ) => void;
     valueFromTrackPosition: (x: number, width: number) => number;
     getClosestThumb: (value: number) => ThumbKey;
     startDragging: (thumb: ThumbKey) => void;
@@ -43,7 +58,12 @@ type RangeContextValue = {
 const RangeContext = createContext<RangeContextValue | null>(null);
 
 function isRangeValue(value: RangeValue | undefined): value is RangeObject {
-    return typeof value === "object" && value !== null && "min" in value && "max" in value;
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "min" in value &&
+        "max" in value
+    );
 }
 
 function normalizeStep(step: number | undefined): number {
@@ -55,26 +75,42 @@ function toStep(value: number, min: number, step: number): number {
     return min + Math.round(ratio) * step;
 }
 
-function RangeComponent({ min, max, step, value, defaultValue, onChange }: RangeComponentProps) {
+function RangeComponent({
+    min,
+    max,
+    step,
+    value,
+    defaultValue,
+    onChange,
+}: RangeComponentProps) {
     const trackRef = useRef<HTMLDivElement>(null);
     const [draggingThumb, setDraggingThumb] = useState<ThumbKey | null>(null);
     const stepValue = normalizeStep(step);
     const isRange = isRangeValue(value) || isRangeValue(defaultValue);
 
     const singleValue = useMemo(() => {
-        const raw = typeof value === "number" ? value : typeof defaultValue === "number" ? defaultValue : min;
+        const raw =
+            typeof value === "number"
+                ? value
+                : typeof defaultValue === "number"
+                  ? defaultValue
+                  : min;
         return clamp(toStep(raw, min, stepValue), min, max);
     }, [defaultValue, max, min, stepValue, value]);
 
     const rangeValue = useMemo(() => {
         const fromValue = isRangeValue(value) ? value : undefined;
-        const fromDefault = isRangeValue(defaultValue) ? defaultValue : undefined;
+        const fromDefault = isRangeValue(defaultValue)
+            ? defaultValue
+            : undefined;
         const source = fromValue ?? fromDefault ?? { min, max };
 
         const nextMin = clamp(toStep(source.min, min, stepValue), min, max);
         const nextMax = clamp(toStep(source.max, min, stepValue), min, max);
 
-        return nextMin <= nextMax ? { min: nextMin, max: nextMax } : { min: nextMax, max: nextMin };
+        return nextMin <= nextMax
+            ? { min: nextMin, max: nextMax }
+            : { min: nextMax, max: nextMin };
     }, [defaultValue, max, min, stepValue, value]);
 
     const getClosestThumb = (nextValue: number): ThumbKey => {
@@ -87,7 +123,10 @@ function RangeComponent({ min, max, step, value, defaultValue, onChange }: Range
         return toMin <= toMax ? "min" : "max";
     };
 
-    const updateValue = (nextValue: number, preferredThumb: ThumbKey = "single") => {
+    const updateValue = (
+        nextValue: number,
+        preferredThumb: ThumbKey = "single",
+    ) => {
         const stepped = clamp(toStep(nextValue, min, stepValue), min, max);
 
         if (!isRange) {
@@ -95,7 +134,10 @@ function RangeComponent({ min, max, step, value, defaultValue, onChange }: Range
             return;
         }
 
-        const thumb = preferredThumb === "single" ? getClosestThumb(stepped) : preferredThumb;
+        const thumb =
+            preferredThumb === "single"
+                ? getClosestThumb(stepped)
+                : preferredThumb;
 
         if (thumb === "min") {
             if (stepped <= rangeValue.max) {
@@ -129,7 +171,11 @@ function RangeComponent({ min, max, step, value, defaultValue, onChange }: Range
         return min + ratio * (max - min);
     };
 
-    const setFromTrackPosition = (x: number, width: number, preferredThumb: ThumbKey = "single") => {
+    const setFromTrackPosition = (
+        x: number,
+        width: number,
+        preferredThumb: ThumbKey = "single",
+    ) => {
         updateValue(valueFromTrackPosition(x, width), preferredThumb);
     };
 
@@ -149,7 +195,11 @@ function RangeComponent({ min, max, step, value, defaultValue, onChange }: Range
             }
 
             const rect = track.getBoundingClientRect();
-            setFromTrackPosition(clientX - rect.left, rect.width, draggingThumb);
+            setFromTrackPosition(
+                clientX - rect.left,
+                rect.width,
+                draggingThumb,
+            );
         };
 
         const onMouseMove = (event: MouseEvent) => {
@@ -184,7 +234,12 @@ function RangeComponent({ min, max, step, value, defaultValue, onChange }: Range
 
     const getThumbLeft = (thumb: ThumbKey): string => {
         const safeRange = max - min || 1;
-        const v = thumb === "single" ? singleValue : thumb === "min" ? rangeValue.min : rangeValue.max;
+        const v =
+            thumb === "single"
+                ? singleValue
+                : thumb === "min"
+                  ? rangeValue.min
+                  : rangeValue.max;
         const percentage = clamp(((v - min) / safeRange) * 100, 0, 100);
         return `clamp(${THUMB_RADIUS_PX}px, ${percentage}%, calc(100% - ${THUMB_RADIUS_PX}px))`;
     };
@@ -266,7 +321,11 @@ function Track({ children }: { children: React.ReactNode }) {
         startDragging,
     } = context;
 
-    const handlePointerDown = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    const handlePointerDown = (
+        event:
+            | React.MouseEvent<HTMLDivElement>
+            | React.TouchEvent<HTMLDivElement>,
+    ) => {
         if (!trackRef.current) {
             return;
         }
@@ -293,19 +352,26 @@ function Track({ children }: { children: React.ReactNode }) {
     return (
         <div
             ref={trackRef}
-            className='inline-block h-2 rounded-2 relative bordered-input w-full touch-none'
+            className='mt-1 inline-block h-2 rounded-2 relative bordered-input w-full touch-none'
             onMouseDown={handlePointerDown}
             onTouchStart={handlePointerDown}>
             <span
                 className='absolute top-0 h-full bg-primary/30 rounded-2'
-                style={{ left: `${clamp(selectedLeft, 0, 100)}%`, width: `${clamp(selectedWidth, 0, 100)}%` }}
+                style={{
+                    left: `${clamp(selectedLeft, 0, 100)}%`,
+                    width: `${clamp(selectedWidth, 0, 100)}%`,
+                }}
             />
             {children}
         </div>
     );
 }
 
-const Component: FieldComponent<FieldArgs, RangeValue> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs, RangeValue> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field
             label={`${options.label} (${typeof value === "number" ? value : `min : ${value.min}, max : ${value.max}`})`}

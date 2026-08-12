@@ -11,7 +11,7 @@ export function Field({
     return (
         <div
             className={`w-full flex flex-col ${!enabled ? "opacity-0 pointer-events-none" : ""}`}>
-            <p className='font-regular text-dark/60 text-4.2 mb-2'>{label}</p>
+            <p className='font-500 text-dark/60 text-4.2 mb-2'>{label}</p>
             {description && (
                 <p className='text-dark/70 text-3.5 font-italic'>
                     {description}

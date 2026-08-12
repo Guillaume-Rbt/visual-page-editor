@@ -13,8 +13,9 @@ export default defineConfig({
         },
     },
     build: {
+        copyPublicDir: false,
         lib: {
-            entry: "./src/visual-editor.ts",
+            entry: "./src/visual-editor.tsx",
             formats: ["es"],
             fileName: () => "visual-editor.js",
         },
