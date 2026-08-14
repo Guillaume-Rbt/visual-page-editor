@@ -9,8 +9,6 @@ export function Tabs({
 }) {
     const [activeTab, setActiveTab] = useState(labels[0]);
 
-    console.log(labels, children, activeTab);
-
     return (
         <div className='flex flex-col w-full gap-3'>
             <div className='inline-grid grid-flow-col auto-cols-max gap-3 w-max max-w-full'>

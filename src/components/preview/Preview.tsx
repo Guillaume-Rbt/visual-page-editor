@@ -104,7 +104,7 @@ export default function Preview() {
     };
 
     return (
-        <div className='w-[calc(100%_-_2_*var(--spacing))] h-full flex flex-col left-2 relative'>
+        <div className='md:w-[calc(100%_-_2_*var(--spacing))] h-full flex flex-col md-left-2 relative'>
             <PreviewSize onChange={handleDeviceChange}></PreviewSize>
             {!loaded && <Loader />}
             <div
@@ -155,7 +155,7 @@ function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
     }, []);
 
     return (
-        <div className='flex w-full justify-center'>
+        <div className='flex w-full justify-center max-md:hidden'>
             {devices.map((device, index) => (
                 <Tooltip
                     key={device.name}

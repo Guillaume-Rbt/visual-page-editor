@@ -9,7 +9,7 @@ export function BlocksGrid({ blocks }: { blocks: ComponentDefinition[] }) {
     );
 
     return (
-        <div className='grid  md-grid-cols-[repeat(5,170px)] sm-grid-cols-[repeat(auto-fit,1fr)]  gap-2 justify-start'>
+        <div className='grid  grid-cols-[repeat(auto-fit,minmax(170px,250px))]   gap-2 justify-start'>
             {blocks.map((block) => {
                 return (
                     <BlockItem

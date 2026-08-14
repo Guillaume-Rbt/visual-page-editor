@@ -16,7 +16,6 @@ export function SidebarBlocks() {
         moveBlock: moveBlock,
         updateData,
         setInsertIndex,
-        focusIndex,
     } = usePartialStore("data", "moveBlock", "updateData", "setInsertIndex");
 
     const [isDragging, setIsDragging] = useState(false);

@@ -51,7 +51,9 @@ export const fr: Translation = {
     defaultFontFamily: "Police par défaut",
     defaultFontSize: "Taille par défaut",
     defaultFontWeight: "Standard",
+    allCategory: "Tous",
+    searchComponentPlaceholder: "Rechercher un composant...",
+
     heroCategory: "Hero",
     contentCategory: "Contenu",
-    allCategory: "Tous",
 };

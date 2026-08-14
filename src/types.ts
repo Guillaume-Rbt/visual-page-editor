@@ -110,6 +110,8 @@ export type Translation = Record<string, string> & {
     defaultFontFamily: string;
     defaultFontSize: string;
     defaultFontWeight: string;
+    allCategory: string;
+    searchComponentPlaceholder: string;
 };
 
 export type ComponentValue = {

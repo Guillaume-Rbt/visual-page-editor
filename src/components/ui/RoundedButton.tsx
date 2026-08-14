@@ -14,7 +14,11 @@ export function RoundedButton({
     classes: string | string[];
 }) {
     return (
-        <button ref={ref} {...props} onClick={onClick} className={`square rounded-full ${stringifyValue(classes)}`}>
+        <button
+            ref={ref}
+            {...props}
+            onClick={onClick}
+            className={`square rounded-full cursor-pointer ${stringifyValue(classes)}`}>
             {children}
         </button>
     );

@@ -67,8 +67,8 @@ export default defineConfig({
                 border-solid
                 text-${themeColor}
                 hover:bg-[${themeColor}]
-                hover:text-${theme.colors?.light}
-                bg-${theme.colors?.["background-light"]}
+                hover:text-${theme.colors ? theme.colors["ve-light"] : "#ffffff"}
+                bg-${theme.colors ? theme.colors["ve-light"] : "#ffffff"}
                 transition-colors
                 duration-300
             `;
