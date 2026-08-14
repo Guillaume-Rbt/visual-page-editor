@@ -13,7 +13,7 @@ export function Loader() {
                         fill='none'
                         stroke='currentColor'
                         strokeWidth='5'
-                        className='text-dark/20'
+                        className='text-ve-dark/20'
                     />
 
                     <circle
@@ -25,7 +25,7 @@ export function Loader() {
                         strokeWidth='4'
                         strokeLinecap='round'
                         strokeDasharray='50 100'
-                        className='text-primary'
+                        className='text-ve-primary'
                     />
                 </svg>
             </div>

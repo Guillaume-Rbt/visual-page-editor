@@ -303,7 +303,7 @@ function TooltipRender({
             ref={element}
             data-axis={axis}
             data-pos={pos}
-            className={`pointer-events-none fixed z-9999 text-3.5 py-1.5 px-2 bg-dark text-light rounded-1 tooltip ${
+            className={`pointer-events-none fixed z-999 text-3.5 py-1.5 px-2 bg-ve-dark text-ve-light rounded-1 tooltip ${
                 displayed ? "displayed" : ""
             } ${pointerCoords ? `hint` : ""}`}
             style={{

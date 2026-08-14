@@ -32,9 +32,17 @@ const defaultOptions = {
     suffix: "",
 };
 
-function NumberComponent({ value, onChange, each, max, min }: NumberComponentProps) {
+function NumberComponent({
+    value,
+    onChange,
+    each,
+    max,
+    min,
+}: NumberComponentProps) {
     const [active, setActiveTrue, setActiveFalse] = useBoolean(false);
-    const [action, setAction] = useState<"increment" | "decrement" | null>(null);
+    const [action, setAction] = useState<"increment" | "decrement" | null>(
+        null,
+    );
     const [inputValue, setInputValue] = useState(String(value));
 
     const allowDecimals = !Number.isInteger(each);
@@ -46,7 +54,10 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
 
     const update = useCallback(
         (type: "increment" | "decrement") => {
-            const nextValue = type === "increment" ? Math.min(value + each, max) : Math.max(value - each, min);
+            const nextValue =
+                type === "increment"
+                    ? Math.min(value + each, max)
+                    : Math.max(value - each, min);
 
             onChange(Number(nextValue.toFixed(decimals)));
         },
@@ -75,7 +86,11 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
 
         setInputValue(v);
 
-        if (v === "" || v === "-" || (allowDecimals && (v === "." || v === "-."))) {
+        if (
+            v === "" ||
+            v === "-" ||
+            (allowDecimals && (v === "." || v === "-."))
+        ) {
             return;
         }
 
@@ -88,11 +103,16 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
 
     return (
         <div className='w-full flex relative bordered-input p-is-2'>
-            <input type='text' value={inputValue} onChange={(e) => onInput(e.target.value)} className='flex-grow' />
+            <input
+                type='text'
+                value={inputValue}
+                onChange={(e) => onInput(e.target.value)}
+                className='flex-grow'
+            />
 
             <div
                 onMouseLeave={stop}
-                className='flex flex-col  border-1 border-solid border-transparent hover:border-primary'>
+                className='flex flex-col  border-1 border-solid border-transparent hover:border-ve-primary'>
                 <button
                     type='button'
                     onMouseDown={() => {
@@ -101,7 +121,7 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
                         setActiveTrue();
                     }}
                     onMouseUp={stop}
-                    className='hover:bg-primary/10'>
+                    className='hover:bg-ve-primary/10'>
                     <ChevronIcon className='w-6 rotate-180' />
                 </button>
 
@@ -113,7 +133,7 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
                         setActiveTrue();
                     }}
                     onMouseUp={stop}
-                    className='hover:bg-primary/10'>
+                    className='hover:bg-ve-primary/10'>
                     <ChevronIcon className='w-6' />
                 </button>
             </div>
@@ -121,7 +141,11 @@ function NumberComponent({ value, onChange, each, max, min }: NumberComponentPro
     );
 }
 
-const Component: FieldComponent<FieldArgs & typeof defaultOptions, number> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs & typeof defaultOptions, number> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field label={options.label} description={options.description}>
             <NumberComponent
@@ -136,7 +160,11 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, number> = ({ 
     );
 };
 
-export const NumberField = defineField<FieldArgs, number, typeof defaultOptions>({
+export const NumberField = defineField<
+    FieldArgs,
+    number,
+    typeof defaultOptions
+>({
     defaultOptions,
     render: Component,
 });

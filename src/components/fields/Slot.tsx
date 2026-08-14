@@ -1,5 +1,9 @@
 import { usePartialStore } from "../../Store";
-import { ComponentDefinition, ComponentValue, FieldComponent } from "../../types";
+import {
+    ComponentDefinition,
+    ComponentValue,
+    FieldComponent,
+} from "../../types";
 import { setDeepValue } from "../../utils/utils";
 import { defineField, translation } from "../../visual-editor";
 import { v4 as uuid } from "uuid";
@@ -34,7 +38,13 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
                 .map((b) => ({
                     value: b,
                     label: b.label,
-                    render: () => <BlockItem name={b.name} label={b.label} handleClick={() => {}} />,
+                    render: () => (
+                        <BlockItem
+                            name={b.name}
+                            label={b.label}
+                            handleClick={() => {}}
+                        />
+                    ),
                 })),
         [blocks],
     );
@@ -46,7 +56,11 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
     };
 
     const setBlock = (block: ComponentDefinition) => {
-        const newBlockData = { _id: uuid(), _name: block.name, data: {} } as ComponentValue;
+        const newBlockData = {
+            _id: uuid(),
+            _name: block.name,
+            data: {},
+        } as ComponentValue;
         block.fields.forEach((field) => {
             newBlockData["data"][field.name!] = field.options.defaultValue;
         });
@@ -61,7 +75,7 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
         onChange(setDeepValue(value, keys, v));
     };
     return (
-        <div className='slot relative border border-dark/20 rounded p-2 bg-white'>
+        <div className='slot relative border border-ve-dark/20 rounded p-2 bg-ve-light'>
             {selectedBlock && (
                 <SlotBlock
                     id={value._id}
@@ -104,20 +118,23 @@ function SlotBlock({
 
     return (
         <div className='flex flex-col '>
-            <div className='w-full flex items-center header cursor-pointer gap-2' onClick={toggleCollapsed}>
+            <div
+                className='w-full flex items-center header cursor-pointer gap-2'
+                onClick={toggleCollapsed}>
                 <h3>
-                    <span className='font-600'>{label}</span> (composant : {block.label})
+                    <span className='font-600'>{label}</span> (composant :{" "}
+                    {block.label})
                 </h3>
                 <RoundedButton
                     onClick={(e) => {
                         e.stopPropagation();
                         removeBlock();
                     }}
-                    classes='p-1 delete-btn hover:bg-dark/10 hover:text-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
+                    classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
                     <TrashIcon />
                 </RoundedButton>
                 <RoundedButton
-                    classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-dark/10  hover:bg-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
+                    classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-ve-dark/10  hover:bg-ve-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
                     <ArrowIcon />
                 </RoundedButton>
             </div>
@@ -133,10 +150,18 @@ function SlotBlock({
     );
 }
 
-const Component: FieldComponent<FieldArgs, ComponentValue> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs, ComponentValue> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field label={options.label} description={options.description}>
-            <SlotComponent value={value} onChange={onChange} label={options.label} />
+            <SlotComponent
+                value={value}
+                onChange={onChange}
+                label={options.label}
+            />
         </Field>
     );
 };

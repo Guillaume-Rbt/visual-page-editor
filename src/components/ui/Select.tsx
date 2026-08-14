@@ -112,7 +112,7 @@ export function Select({
                         toggle();
                     }}
                     ref={handlerRef}
-                    className={`gap-2 relative box-border cursor-pointer list-handler flex items-center p-2 ${isOpen ? "shadow-[0_0_0_1px_var(--colors-dark)_inset]" : "bordered-input"} `}>
+                    className={`gap-2 relative box-border cursor-pointer list-handler flex items-center p-2 ${isOpen ? "shadow-[0_0_0_1px_var(--colors-ve-dark)_inset]" : "bordered-input"} `}>
                     {selectedOption ? (
                         selectedRenderer ? (
                             selectedRenderer(selectedOption)
@@ -120,7 +120,7 @@ export function Select({
                             selectedOption.render()
                         )
                     ) : (
-                        <span className='text-gray-500'>{placeholder}</span>
+                        <span className='text-ve-dark/50'>{placeholder}</span>
                     )}
                     <ArrowIcon
                         className={`right-2 text-4 shrink-0 transition-transform ml-auto ${isOpen ? "rotate-180" : ""}`}
@@ -141,7 +141,7 @@ export function Select({
                             : `repeat(${layout.cols}, ${layout.width ?? "1fr"})`,
                     maxHeight: mHeight,
                 }}
-                className={`select-list overflow-auto gap-2 grid border-x-1 border-dark/30  min-w-full  top-full left-0 bg-white  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
+                className={`select-list overflow-auto gap-2 grid border-x-1 border-ve-dark/30  min-w-full  top-full left-0 bg-ve-light  z-10 px-2 ${isOpen ? "opacity-100 pointer-events-auto py-2 h-auto absolute border-y-1" : "opacity-0 pointer-events-none py-0  h-0 border-y-0"} ${mode == "menu" ? "absolute" : ""}`}>
                 {options.map((option) => (
                     <div
                         key={option.value.toString()}
@@ -149,7 +149,7 @@ export function Select({
                             e.stopPropagation();
                             handleSelect(option.value);
                         }}
-                        className={`w-full text-left  cursor-pointer ${selectedOption?.value === option.value || `${selectedOption?.value}` === `${option.value}` ? "bg-primary/5" : ""}  ${hoverable ? "hover:bg-primary/10" : ""} ${layout == "column" ? "mr-4 p-1" : ""} rounded-2`}>
+                        className={`w-full text-left  cursor-pointer ${selectedOption?.value === option.value || `${selectedOption?.value}` === `${option.value}` ? "bg-ve-primary/5" : ""}  ${hoverable ? "hover:bg-ve-primary/10" : ""} ${layout == "column" ? "mr-4 p-1" : ""} rounded-2`}>
                         {option.render()}
                     </div>
                 ))}

@@ -8,7 +8,11 @@ import { RoundedButton } from "../ui/RoundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import { v4 as uuid } from "uuid";
 import useBoolean from "../../hooks/useBoolean";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+    arrayMove,
+    SortableContext,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Sortable } from "../Sortable";
 import { useEffect } from "react";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
@@ -82,7 +86,9 @@ function RepeaterComponent({
 
         if (!over || active.id === over.id) return;
 
-        const fromIndex = safeValue.findIndex((block) => block._id === active.id);
+        const fromIndex = safeValue.findIndex(
+            (block) => block._id === active.id,
+        );
         const toIndex = safeValue.findIndex((block) => block._id === over.id);
 
         onChange(arrayMove(safeValue, fromIndex, toIndex));
@@ -112,13 +118,18 @@ function RepeaterComponent({
     }, [safeValue.length, min, max]);
 
     return (
-        <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
+        <DndContext
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}>
             <div className='flex flex-col gap-2'>
-                <SortableContext items={safeValue.map((block) => block._id)} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                    items={safeValue.map((block) => block._id)}
+                    strategy={verticalListSortingStrategy}>
                     {safeValue.map((item, index) => {
                         const label =
                             itemLabel.indexOf("{{id}}") == -1
-                                ? (item[itemLabel] ?? `#${index + 1}`) || `#${index + 1}`
+                                ? (item[itemLabel] ?? `#${index + 1}`) ||
+                                  `#${index + 1}`
                                 : itemLabel.replace("{{id}}", `${index + 1}`);
 
                         return (
@@ -142,9 +153,9 @@ function RepeaterComponent({
                     })}
                 </SortableContext>
 
-                <div className='w-full rounded-2 flex justify-end bg-dark/10'>
+                <div className='w-full rounded-2 flex justify-end bg-ve-dark/10'>
                     <button
-                        className={`btn btn-outline-primary w-max ${safeValue.length >= max ? "disabled" : ""}`}
+                        className={`btn btn-outline-ve-primary w-max ${safeValue.length >= max ? "disabled" : ""}`}
                         onClick={insertData}>
                         {addButtonLabel}
                     </button>
@@ -178,8 +189,10 @@ function Item({
     const [isCollapsed, _, __, toggle] = useBoolean(false);
 
     return (
-        <div className='flex flex-col w-full rounded p-is-5 p-ie-2 py-2 border-[1px] border-dark/20 relative'>
-            <div onClick={toggle} className='flex items-center gap-2  cursor-pointer header'>
+        <div className='flex flex-col w-full rounded p-is-5 p-ie-2 py-2 border-[1px] border-ve-dark/20 relative'>
+            <div
+                onClick={toggle}
+                className='flex items-center gap-2  cursor-pointer header'>
                 <p className='font-700 flex-grow-1 overflow-hidden'>{label}</p>
                 <Tooltip
                     text={`${canDelete ? "Supprimer" : `Impossible de supprimer :<br>${min} élément${min < 2 ? "" : "s"} minimum requi${min < 2 ? "" : "s"}.`}`}>
@@ -188,26 +201,31 @@ function Item({
                             e.stopPropagation();
                             onDelete(id);
                         }}
-                        classes={`opacity-0 [.header:hover_&]:opacity-100 delete-btn p-1 ml-auto text-5 ${canDelete ? "cursor-pointer  hover:bg-dark/10 hover:text-danger" : "cursor-not-allowed"} `}>
+                        classes={`opacity-0 [.header:hover_&]:opacity-100 delete-btn p-1 ml-auto text-5 ${canDelete ? "cursor-pointer  hover:bg-ve-dark/10 hover:text-ve-danger" : "cursor-not-allowed"} `}>
                         <TrashIcon />
                     </RoundedButton>
                 </Tooltip>
 
                 <RoundedButton
-                    classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-dark/10 hover:bg-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
+                    classes={`[.header:hover:not(:has(.delete-btn:hover))_&]:bg-ve-dark/10 hover:bg-ve-dark/10 p-.5 text-6 cursor-pointer transition-transform transition-200  ${isCollapsed ? "rotate--90" : "rotate-0"}`}>
                     <ArrowIcon />
                 </RoundedButton>
             </div>
-            <FieldsRenderer isVisible={!isCollapsed} onUpdate={onUpdate} fields={fields} data={data} dataPath={path} />
+            <FieldsRenderer
+                isVisible={!isCollapsed}
+                onUpdate={onUpdate}
+                fields={fields}
+                data={data}
+                dataPath={path}
+            />
         </div>
     );
 }
 
-const Component: FieldComponent<FieldArgs & typeof defaultOptions, { [key: string]: any; _id: string }[]> = ({
-    value,
-    onChange,
-    options,
-}) => {
+const Component: FieldComponent<
+    FieldArgs & typeof defaultOptions,
+    { [key: string]: any; _id: string }[]
+> = ({ value, onChange, options }) => {
     return (
         <Field label={options.label} description={options.description}>
             <RepeaterComponent
@@ -223,7 +241,11 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, { [key: strin
     );
 };
 
-export const Repeater = defineField<FieldArgs, RepeaterItemValue[], typeof defaultOptions>({
+export const Repeater = defineField<
+    FieldArgs,
+    RepeaterItemValue[],
+    typeof defaultOptions
+>({
     defaultOptions,
     render: Component,
 });

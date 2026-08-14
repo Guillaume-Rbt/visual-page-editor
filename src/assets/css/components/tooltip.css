@@ -1,109 +1,77 @@
-   .tooltip 
-    {
-        transition-property: opacity, translate;
-        transition-duration: 200ms, 200ms;
-        width:max-content;
-        transition-timing-function: ease-out;
-        opacity: 0;
-        z-index: 999;
+.tooltip {
+    transition-property: opacity, translate;
+    transition-duration: 200ms, 200ms;
+    width: max-content;
+    transition-timing-function: ease-out;
+    opacity: 0;
+    z-index: 999;
 
-
-        &:is(.displayed, .hint)
-        {
-            translate: 0px 0px  !important;
-        }
-
-        &:is(.displayed)
-        {
-             
-            opacity: 1;
-        }
-
-        
+    &:is(.displayed, .hint) {
+        translate: 0px 0px !important;
     }
 
+    &:is(.displayed) {
+        opacity: 1;
+    }
+}
 
 .tooltip:not(.hint)::after {
     content: "";
     display: block;
     aspect-ratio: 1 / 1;
     height: 10px;
-    background:var(--colors-dark);
+    background: var(--colors-ve-dark);
     transform-origin: 50% 50%;
     rotate: 45deg;
     position: absolute;
-    z-index: -1
+    z-index: -1;
 }
 
+.tooltip:not(.hint) {
+    &[data-axis="y"] {
+        &::after {
+            left: 50%;
+        }
+    }
+    &[data-axis="x"] {
+        &::after {
+            top: 50%;
+        }
+    }
 
-.tooltip:not(.hint)
-{
-    &[data-axis="y"]
-{
-   
+    &[data-pos="top"] {
+        translate: 0 -10px;
 
-    &::after 
-    {
-        left: 50%
+        &::after {
+            bottom: 0;
+            translate: -50% 50%;
+        }
+    }
+
+    &[data-pos="bottom"] {
+        translate: 0 10px;
+
+        &::after {
+            top: 0;
+            translate: -50% -50%;
+        }
+    }
+
+    &[data-pos="left"] {
+        translate: -10px 0px;
+
+        &::after {
+            right: 0;
+            translate: 50% -50%;
+        }
+    }
+
+    &[data-pos="right"] {
+        translate: 10px 0px;
+
+        &::after {
+            left: 0;
+            translate: -50% -50%;
+        }
     }
 }
-&[data-axis="x"]
-{
-   
-    &::after 
-    {
-        top: 50%
-    }
-}
-
-&[data-pos="top"]
-{
-
-    translate: 0 -10px;
-
-       &::after 
-    {
-        bottom: 0;
-        translate: -50% 50%
-    }
-}
-
-&[data-pos="bottom"]
-{
-   translate: 0 10px;
-
-   &::after 
-    {
-        top: 0;
-        translate: -50% -50%
-    }
-}
-
-&[data-pos="left"]
-{
-     translate: -10px 0px;
-    
-    
-   &::after 
-    {
-        right: 0;
-        translate: 50% -50%
-    }
-    
-}
-
-&[data-pos="right"]
-{
-     translate: 10px 0px;
-    
-      &::after 
-    {
-        left: 0;
-        translate: -50% -50%
-    }
-}
-}
-
-
-
-

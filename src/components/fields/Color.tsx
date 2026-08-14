@@ -43,14 +43,14 @@ function ColorComponent({ colors, value, onChange }: ComponentProps) {
                 style={{
                     gridTemplateColumns: `repeat(${Math.min(colors.length, 5)}, auto)`,
                 }}
-                className={`absolute grid  rounded-2 gap-1 p-2 left-0 top-0 translate-y-[-110%] bg-dark ${opened ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+                className={`absolute grid  rounded-2 gap-1 p-2 left-0 top-0 translate-y-[-110%] bg-ve-dark ${opened ? "opacity-100" : "pointer-events-none opacity-0"}`}>
                 {colors.map((c) => {
                     return (
                         <button
                             onClick={() => {
                                 onUpdate(c);
                             }}
-                            className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-white/30`}
+                            className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-ve-light/30`}
                             style={{
                                 background: getColor(c),
                             }}
@@ -64,7 +64,7 @@ function ColorComponent({ colors, value, onChange }: ComponentProps) {
             </div>
             <button
                 style={{ background: getColor(value) }}
-                className='w-7 h-7 border-1 rounded-2 border-solid border-dark/20 cursor-pointer overflow-hidden'
+                className='w-7 h-7 border-1 rounded-2 border-solid border-ve-dark/20 cursor-pointer overflow-hidden'
                 onClick={toggle}>
                 {getColor(value) == "transparent" && (
                     <TransparentIcon className='w-full h-full'></TransparentIcon>

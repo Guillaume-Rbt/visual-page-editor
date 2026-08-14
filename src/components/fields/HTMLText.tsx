@@ -500,7 +500,7 @@ function ToolbarButton({ active, label, title, onClick }: ToolbarButtonProps) {
         <button
             type='button'
             title={title}
-            className={`rounded-2 cursor-pointer flex items-center justify-center py-1.5 px-1.5 text-4  ${active ? "bg-dark/20" : "hover:bg-dark/10"}`}
+            className={`rounded-2 cursor-pointer flex items-center justify-center py-1.5 px-1.5 text-4  ${active ? "bg-ve-dark/20" : "hover:bg-ve-dark/10"}`}
             onClick={onClick}>
             {label}
         </button>
@@ -508,7 +508,7 @@ function ToolbarButton({ active, label, title, onClick }: ToolbarButtonProps) {
 }
 
 const textFieldClasses =
-    "border-1 border-dark/20 p-2 w-full focus:outline-none focus:border-primary/20 focus:outline-2! focus:outline-solid focus:outline-primary/20";
+    "border-1 border-ve-dark/20 p-2 w-full focus:outline-none focus:border-ve-primary/20 focus:outline-2! focus:outline-solid focus:outline-ve-primary/20";
 const richTextContentClasses =
     "[&_em]:italic [&_i]:italic [&_strong]:font-bold [&_b]:font-bold [&_h1]:text-8 [&_h1]:font-700 [&_h2]:text-7 [&_h2]:font-700 [&_h3]:text-6 [&_h3]:font-700 [&_h4]:text-5 [&_h4]:font-700 [&_h5]:text-4 [&_h5]:font-700 [&_h6]:text-4 [&_h6]:font-600";
 function HTMLTextComponent({
@@ -956,7 +956,7 @@ function HTMLTextComponent({
                                                         backgroundColor:
                                                             "transparent",
                                                     }}
-                                                    className={`w-4 h-4 rounded-full ml-auto border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                                    className={`w-4 h-4 rounded-full ml-auto border-1 border-ve-dark/10 ${selected ? "outline-2 outline-ve-primary" : "hover:outline-2 hover:outline-ve-primary"}`}></span>
                                             </div>
                                         );
                                     },
@@ -978,7 +978,7 @@ function HTMLTextComponent({
                                                             backgroundColor:
                                                                 color.value,
                                                         }}
-                                                        className={`block w-4 h-4 rounded-full  border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                                        className={`block w-4 h-4 rounded-full  border-1 border-ve-dark/10 ${selected ? "outline-2 outline-ve-primary" : "hover:outline-2 hover:outline-ve-primary"}`}></span>
                                                 </div>
                                             </Tooltip>
                                         );
@@ -1048,7 +1048,7 @@ function HTMLTextComponent({
                                                             backgroundColor:
                                                                 "transparent",
                                                         }}
-                                                        className={`w-4 h-4 rounded-full ml-auto border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : ""}`}></span>
+                                                        className={`w-4 h-4 rounded-full ml-auto border-1 border-ve-dark/10 ${selected ? "outline-2 outline-ve-primary" : ""}`}></span>
                                                 </div>
                                             );
                                         },
@@ -1070,7 +1070,7 @@ function HTMLTextComponent({
                                                                     backgroundColor:
                                                                         color.value,
                                                                 }}
-                                                                className={`block w-4 h-4 rounded-full  border-1 border-dark/10 ${selected ? "outline-2 outline-primary" : "hover:outline-2 hover:outline-primary"}`}></span>
+                                                                className={`block w-4 h-4 rounded-full  border-1 border-ve-dark/10 ${selected ? "outline-2 outline-ve-primary" : "hover:outline-2 hover:outline-ve-primary"}`}></span>
                                                         </div>
                                                     </Tooltip>
                                                 );

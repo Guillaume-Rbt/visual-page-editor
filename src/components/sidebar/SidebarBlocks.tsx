@@ -44,7 +44,7 @@ export function SidebarBlocks() {
                     onClick={() => {
                         setInsertIndex(0);
                     }}
-                    className='btn btn-primary mt-2'>
+                    className='btn btn-ve-primary mt-2'>
                     {translation("addComponent")}
                 </button>
             )}

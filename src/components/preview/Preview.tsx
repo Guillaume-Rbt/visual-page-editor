@@ -105,14 +105,14 @@ export default function Preview() {
 
     return (
         <div className='w-[calc(100%_-_2_*var(--spacing))] h-full flex flex-col left-2 relative'>
-            {!loaded && <Loader />}
             <PreviewSize onChange={handleDeviceChange}></PreviewSize>
+            {!loaded && <Loader />}
             <div
-                className={`relative w-full h-1 grow-1 flex items-center justify-center transition-opacity ${!loaded ? "opacity-0" : "opacity-100"} overflow-hidden rounded-3 bg-primary/2`}
+                className={`relative w-full h-1 grow-1 flex items-center justify-center transition-opacity ${!loaded ? "opacity-0" : "opacity-100"} overflow-hidden rounded-3 bg-ve-primary/2`}
                 ref={frameWrapper}>
                 <iframe
                     onLoad={onLoad}
-                    className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-dark/5 shadow-lg`}
+                    className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-ve-dark/5 shadow-lg`}
                     ref={iframe}></iframe>
                 {loaded &&
                     createPortal(
@@ -162,7 +162,7 @@ function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
                     text={`${translation("width")} : ${typeof device.size[0] === "number" ? device.size[0] + "px" : device.size[0]}<br>${translation("height")} : ${typeof device.size[1] === "number" ? device.size[1] + "px" : device.size[1]}`}>
                     <button
                         key={device.name}
-                        className={`px-4 py-2 text-5 ${selectedIndex === index ? "bg-blue-500 text-white" : "bg-white text-black"} cursor-pointer`}
+                        className={`px-4 py-2 text-5 ${selectedIndex === index ? "bg-ve-primary text-ve-light" : "bg-ve-light text-black"} cursor-pointer`}
                         onClick={() => handleChange(index)}>
                         {device.type === "desktop"
                             ? DevicesIcons.desktop

@@ -293,11 +293,11 @@ function Thumb({ thumb }: { thumb: ThumbKey }) {
 
     return (
         <span
-            className='group inline-flex justify-center items-center absolute w-5 h-5 rounded-full bg-primary top--1.5 left-0 -translate-x-1/2 cursor-pointer z-1'
+            className='group inline-flex justify-center items-center absolute w-5 h-5 rounded-full bg-ve-primary top--1.5 left-0 -translate-x-1/2 cursor-pointer z-1'
             style={{ left: getThumbLeft(thumb) }}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}>
-            <span className='group-hover:scale-125 inline-block w-2.5 h-2.5 rounded-full bg-white'></span>
+            <span className='group-hover:scale-125 inline-block w-2.5 h-2.5 rounded-full bg-ve-light'></span>
         </span>
     );
 }
@@ -356,7 +356,7 @@ function Track({ children }: { children: React.ReactNode }) {
             onMouseDown={handlePointerDown}
             onTouchStart={handlePointerDown}>
             <span
-                className='absolute top-0 h-full bg-primary/30 rounded-2'
+                className='absolute top-0 h-full bg-ve-primary/30 rounded-2'
                 style={{
                     left: `${clamp(selectedLeft, 0, 100)}%`,
                     width: `${clamp(selectedWidth, 0, 100)}%`,

@@ -29,6 +29,6 @@
     flex-grow: 1;
 }
 
-.editor-controls .select-list:not([data-mode]) {
+.editor-controls .select-list:not([data-mode="menu"]) {
     width: 100% !important;
 }

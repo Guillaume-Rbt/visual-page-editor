@@ -133,9 +133,9 @@ export function PreviewBlockWrapper({
                             setFocusIndex,
                             getIndexById(id),
                         )}
-                        className={`absolute inset-0 opacity-0 hover:opacity-100 border-1 border-primary ${getIndexById(id) === focusIndex ? "opacity-100" : ""}`}>
+                        className={`absolute inset-0 opacity-0 hover:opacity-100 border-1 border-ve-primary ${getIndexById(id) === focusIndex ? "opacity-100" : ""}`}>
                         <div className='flex absolute top-0 left--1 translate-y-[-100%] transition-opacity duration-200'>
-                            <p className='bg-primary text-white px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
+                            <p className='bg-ve-primary text-ve-light px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
                                 {name}
                             </p>
                         </div>
@@ -144,22 +144,22 @@ export function PreviewBlockWrapper({
                             <button
                                 type='button'
                                 onClick={stopPropagation(removeData, id)}
-                                className='btn btn-danger px-1 py-.7 text-white rounded-b-0'>
+                                className='btn btn-ve-danger px-1 py-.7 text-ve-light rounded-b-0'>
                                 <DeleteIcon className='text-[16px]' />
                             </button>
 
                             <button
                                 type='button'
                                 onClick={stopPropagation(handleMove, "down")}
-                                className='btn btn-primary px-1 pt-1 pb-1  rounded-b-0'>
-                                <ChevronIcon className='text-[16px] text-white' />
+                                className='btn btn-ve-primary px-1 pt-1 pb-1  rounded-b-0'>
+                                <ChevronIcon className='text-[16px] text-ve-light' />
                             </button>
 
                             <button
                                 type='button'
                                 onClick={stopPropagation(handleMove, "up")}
-                                className='btn btn-primary px-1 pt-1 pb-1 rounded-b-0'>
-                                <ChevronIcon className='text-[16px] text-white rotate-180' />
+                                className='btn btn-ve-primary px-1 pt-1 pb-1 rounded-b-0'>
+                                <ChevronIcon className='text-[16px] text-ve-light rotate-180' />
                             </button>
                         </div>
                     </div>,

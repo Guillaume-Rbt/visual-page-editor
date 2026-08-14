@@ -3,8 +3,17 @@ import { usePartialStore } from "../../Store";
 import AddIcon from "../../assets/imgs/add.svg?react";
 import useBoolean from "../../hooks/useBoolean";
 
-export function ButtonAddComponent({ addType = "after", blockId }: { addType?: "before" | "after"; blockId: string }) {
-    const { setInsertIndex, getIndexById } = usePartialStore("setInsertIndex", "getIndexById");
+export function ButtonAddComponent({
+    addType = "after",
+    blockId,
+}: {
+    addType?: "before" | "after";
+    blockId: string;
+}) {
+    const { setInsertIndex, getIndexById } = usePartialStore(
+        "setInsertIndex",
+        "getIndexById",
+    );
 
     const [isDisplayed, show, hide] = useBoolean(false);
 
@@ -17,7 +26,7 @@ export function ButtonAddComponent({ addType = "after", blockId }: { addType?: "
 
     return (
         <div
-            className={`w-full left-0 h-.5 isolate z-2 rounded-1 flex bg-dark/40 position-absolute flex flex-justify-center flex-items-center ${isDisplayed ? "opacity-100" : "opacity-0"} ${addType === "after" ? "top-full mt-.5" : "top--.5 mb-.5"}`}>
+            className={`w-full left-0 h-.5 isolate z-2 rounded-1 flex bg-ve-dark/40 position-absolute flex flex-justify-center flex-items-center ${isDisplayed ? "opacity-100" : "opacity-0"} ${addType === "after" ? "top-full mt-.5" : "top--.5 mb-.5"}`}>
             <div
                 onMouseMove={show}
                 onMouseEnter={show}
@@ -26,7 +35,7 @@ export function ButtonAddComponent({ addType = "after", blockId }: { addType?: "
             <button
                 onMouseEnter={show}
                 onMouseLeave={hide}
-                className={`btn btn-primary btn-rounded position-relative ${isDisplayed ? "" : "pointer-events-none"}`}
+                className={`btn btn-ve-primary btn-rounded position-relative ${isDisplayed ? "" : "pointer-events-none"}`}
                 onClick={handleClick}>
                 <AddIcon className='text-6' />
             </button>

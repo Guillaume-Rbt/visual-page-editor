@@ -24,8 +24,13 @@ const defaultOptions = {
 };
 
 const textFieldClasses =
-    "bordered-input p-2 w-full  focus:border-primary/20 focus:outline-2 focus:outline-solid focus:outline-primary/20";
-function TextComponent({ value, onChange, multiline, placeholder }: ComponentProps) {
+    "bordered-input p-2 w-full  focus:border-ve-primary/20 focus:outline-2 focus:outline-solid focus:outline-ve-primary/20";
+function TextComponent({
+    value,
+    onChange,
+    multiline,
+    placeholder,
+}: ComponentProps) {
     const Field = multiline ? (
         <textarea
             className={`${textFieldClasses}`}
@@ -46,7 +51,11 @@ function TextComponent({ value, onChange, multiline, placeholder }: ComponentPro
     return <>{Field}</>;
 }
 
-const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({ value, onChange, options }) => {
+const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({
+    value,
+    onChange,
+    options,
+}) => {
     return (
         <Field label={options.label} description={options.description}>
             <TextComponent
