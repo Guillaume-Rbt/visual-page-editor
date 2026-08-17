@@ -1,12 +1,9 @@
 import { defineField } from "../../utils/utils";
-import { FieldComponent } from "../../types";
+import { FieldComponent, ValueFieldOptions } from "../../types";
 import { Field } from "./Field";
 
-type FieldArgs = {
-    label: string;
-    description?: string;
+type FieldArgs = ValueFieldOptions<string> & {
     multiline?: boolean;
-    defaultValue?: string;
     placeholder?: string;
 };
 

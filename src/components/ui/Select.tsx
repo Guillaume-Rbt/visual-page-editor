@@ -2,6 +2,33 @@ import { Ref, useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import useBoolean from "../../hooks/useBoolean";
 import { ComponentDefinition, DataAttributes } from "../../types";
+import { isHTMLElement } from "../../utils/utils";
+
+type SelectRenderValue = React.ReactNode | HTMLElement;
+
+function RenderValue({ render }: { render: () => SelectRenderValue }) {
+    const value = render();
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    useLayoutEffect(() => {
+        if (!isHTMLElement(value) || !containerRef.current) return;
+
+        const container = containerRef.current;
+        container.replaceChildren(value);
+
+        return () => {
+            if (value.parentNode === container) {
+                container.removeChild(value);
+            }
+        };
+    }, [value]);
+
+    return (
+        <div ref={isHTMLElement(value) ? containerRef : undefined}>
+            {isHTMLElement(value) ? null : value}
+        </div>
+    );
+}
 
 export function Select({
     options,
@@ -18,7 +45,7 @@ export function Select({
 }: {
     options: {
         value: string | number | ComponentDefinition;
-        render: () => React.ReactNode;
+        render: () => SelectRenderValue;
     }[];
     onChange: (value: any) => void;
     hoverable?: boolean;
@@ -28,7 +55,7 @@ export function Select({
     mode?: "default" | "menu";
     selectedRenderer?: (opt: {
         value: string | number | ComponentDefinition;
-        render: () => React.ReactNode;
+        render: () => SelectRenderValue;
     }) => React.ReactNode;
     layout?:
         | "column"
@@ -117,7 +144,7 @@ export function Select({
                         selectedRenderer ? (
                             selectedRenderer(selectedOption)
                         ) : (
-                            selectedOption.render()
+                            <RenderValue render={selectedOption.render} />
                         )
                     ) : (
                         <span className='text-ve-dark/50'>{placeholder}</span>
@@ -150,7 +177,7 @@ export function Select({
                             handleSelect(option.value);
                         }}
                         className={`w-full text-left  cursor-pointer ${selectedOption?.value === option.value || `${selectedOption?.value}` === `${option.value}` ? "bg-ve-primary/5" : ""}  ${hoverable ? "hover:bg-ve-primary/10" : ""} ${layout == "column" ? "mr-4 p-1" : ""} rounded-2`}>
-                        {option.render()}
+                        <RenderValue render={option.render} />
                     </div>
                 ))}
             </div>

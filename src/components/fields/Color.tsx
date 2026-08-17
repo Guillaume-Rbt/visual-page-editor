@@ -1,14 +1,12 @@
 import useBoolean from "../../hooks/useBoolean";
-import { FieldComponent } from "../../types";
+import { FieldComponent, ValueFieldOptions } from "../../types";
 import { defineField } from "../../visual-editor";
 import { Field } from "./Field";
 import TransparentIcon from "../../assets/imgs/transparent.svg?react";
 
-type FieldArgs = {
+type FieldArgs = ValueFieldOptions<string> & {
     colors: string[];
-    label: string;
     defaultValue: string;
-    description?: string;
 };
 
 type ComponentProps = {

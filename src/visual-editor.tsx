@@ -132,6 +132,7 @@ export { Color } from "./components/fields/Color";
 export { Column } from "./components/fields/Column";
 export { HTMLText } from "./components/fields/HTMLText";
 export { NumberField as Number } from "./components/fields/Number";
+export { Radio } from "./components/fields/Radio";
 export { Range } from "./components/fields/Range";
 export { Repeater } from "./components/fields/Repeater";
 export { Row } from "./components/fields/Row";

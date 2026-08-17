@@ -6,7 +6,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { FieldComponent } from "../../types";
+import { FieldComponent, ValueFieldOptions } from "../../types";
 import {
     clamp,
     defineField,
@@ -19,13 +19,10 @@ type RangeObject = { min: number; max: number };
 type ThumbKey = "single" | "min" | "max";
 const THUMB_RADIUS_PX = 10;
 
-type FieldArgs = {
-    label: string;
-    description?: string;
+type FieldArgs = ValueFieldOptions<RangeValue> & {
     min: number;
     max: number;
     step?: number;
-    defaultValue?: RangeValue;
 };
 
 type RangeComponentProps = {

@@ -1,14 +1,11 @@
 import { useEffect, useCallback, useState } from "react";
 import ChevronIcon from "../../assets/imgs/arrow.svg?react";
 import useBoolean from "../../hooks/useBoolean";
-import { FieldComponent } from "../../types";
+import { FieldComponent, ValueFieldOptions } from "../../types";
 import { defineField } from "../../visual-editor";
 import { Field } from "./Field";
 
-type FieldArgs = {
-    label: string;
-    description?: string;
-    defaultValue?: number;
+type FieldArgs = ValueFieldOptions<number> & {
     min?: number;
     max?: number;
     each?: number;

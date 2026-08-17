@@ -12,7 +12,7 @@ export function BlockItem({
 }) {
     const { iconsUrl } = useEditorContext();
 
-    const iconName = name.replace(/ /g, "-");
+    const iconName = name.trim().toLowerCase().replace(/\s+/g, "-");
     const iconUrl = iconsUrl.replace("{{name}}", iconName);
 
     return (

@@ -1,4 +1,8 @@
-import { FieldComponent, FieldDefinition } from "../../types";
+import {
+    FieldComponent,
+    FieldDefinition,
+    ValueFieldOptions,
+} from "../../types";
 import { defineField, translation } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
@@ -19,11 +23,8 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { Tooltip } from "../ui/Tooltip";
 
-type FieldArgs = {
-    label: string;
+type FieldArgs = ValueFieldOptions<RepeaterItemValue[]> & {
     fields: FieldDefinition<any, any>[];
-    description?: string;
-    defaultValue?: RepeaterItemValue[];
     itemLabel?: string;
     min?: number;
     max?: number;

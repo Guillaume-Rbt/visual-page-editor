@@ -3,7 +3,6 @@ import {
     ReactElement,
     RefObject,
     useEffect,
-    useLayoutEffect,
     useRef,
     useState,
 } from "react";
@@ -39,6 +38,11 @@ export function Tooltip({
         null as { x: number; y: number } | null,
     );
     const to = useRef(null as number | null);
+
+    useEffect(() => {
+        document.addEventListener("mousewheel", hide);
+        return document.removeEventListener("scroll", hide);
+    }, []);
 
     return (
         <>

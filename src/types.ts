@@ -15,7 +15,12 @@ export interface FieldProps {
     enabled?: boolean;
 }
 
+export type ValueFieldOptions<Value> = FieldProps & {
+    defaultValue?: Value;
+};
+
 export interface FieldOptions {
+    label?: string;
     defaultValue?: any;
     enabled?: boolean | ((data: Record<string, any>) => boolean);
     [key: string]: any;

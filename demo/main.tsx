@@ -13,6 +13,7 @@ import {
     Select,
     Range,
     translation,
+    Radio,
 } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
@@ -34,6 +35,21 @@ visualEditor
         label: "Hero",
         category: translation("heroCategory"),
         fields: [
+            Radio("alignment", {
+                label: "Alignement",
+                collapsed: false,
+                layout: "row",
+                options: [
+                    {
+                        tooltip: "test",
+                        value: "left",
+                        label: "Gauche",
+                    },
+                    { label: () => "Centre", value: "center" },
+                    { label: () => "Droite", value: "right" },
+                ],
+                defaultValue: "left",
+            }),
             Range("width", {
                 label: "Largeur",
                 min: 1,

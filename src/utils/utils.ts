@@ -1,3 +1,4 @@
+import { RadioLabel } from "../components/fields/Radio";
 import {
     DataRef,
     FieldComponent,
@@ -234,4 +235,7 @@ export function stopPropagation(cb: Function, ...args: any[]): any {
         e.stopPropagation();
         cb(...args);
     };
+}
+export function isHTMLElement(value: RadioLabel): value is HTMLElement {
+    return typeof HTMLElement !== "undefined" && value instanceof HTMLElement;
 }
