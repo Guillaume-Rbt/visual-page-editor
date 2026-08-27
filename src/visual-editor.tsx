@@ -1,4 +1,4 @@
-import { ComponentDefinition, Device } from "./types";
+import { ComponentDefinition, ComponentValue, Device } from "./types";
 import { createRoot } from "react-dom/client";
 import { VisualEditor as VisualEditorComponent } from "./VisualEditor";
 import { EditorContextProvider, usePartialStore } from "./Store";
@@ -14,6 +14,19 @@ const defaultDevices: Device[] = [
 ];
 
 const components: ComponentDefinition[] = [];
+
+const isValidData = (data: any): data is ComponentValue[] => {
+    return (
+        Array.isArray(data) &&
+        data.every(
+            (item) =>
+                typeof item === "object" &&
+                item !== null &&
+                "_id" in item &&
+                "_name" in item,
+        )
+    );
+};
 
 class VisualEditor {
     static lang: Translation = FR;
@@ -39,6 +52,7 @@ class VisualEditor {
             data = [];
             name = "content";
             urlPreview = "/preview";
+            pasteData = false;
 
             static get observedAttributes() {
                 return ["previewUrl", "value", "iconsUrl", "shown"];
@@ -57,7 +71,32 @@ class VisualEditor {
                     this.root = createRoot(this);
                 }
 
+                document.addEventListener(
+                    "paste",
+                    this.handlePasteData.bind(this),
+                );
+                document.addEventListener("copy", (event) => {
+                    this.pasteData = false;
+                });
+
                 this.render();
+            }
+
+            async handlePasteData() {
+                if (this.pasteData) {
+                    await navigator.clipboard.readText().then((text) => {
+                        const pasteData = JSON.parse(text);
+
+                        if (!isValidData(pasteData)) {
+                            console.error("Invalid data format for paste");
+                            return;
+                        }
+
+                        this.data = JSON.parse(text);
+
+                        this.render();
+                    });
+                }
             }
 
             attributeChangedCallback(

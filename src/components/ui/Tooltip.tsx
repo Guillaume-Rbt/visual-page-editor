@@ -32,6 +32,8 @@ export function Tooltip({
     force?: TooltipPos;
     positionAnchor?: "element" | "pointer";
 }) {
+    if (!text) return children;
+
     const [displayed, display, hide] = useBoolean(false);
     const target = useRef<HTMLElement | null>(null);
     const [pointerCoords, setPointerCoords] = useState(
@@ -41,7 +43,7 @@ export function Tooltip({
 
     useEffect(() => {
         document.addEventListener("mousewheel", hide);
-        return document.removeEventListener("scroll", hide);
+        return () => document.removeEventListener("mousewheel", hide);
     }, []);
 
     return (
@@ -113,6 +115,9 @@ function TooltipRender({
     const [pos, setPos] = useState<TooltipPos>(
         force ?? (axis === "y" ? "top" : "right"),
     );
+
+    const [effectiveAxis, setEffectiveAxis] = useState<TooltipAxis>(axis);
+    const axisRef = useRef(axis);
 
     const [coords, setCoords] = useState({
         top: 0,
@@ -207,7 +212,50 @@ function TooltipRender({
             return;
         }
 
-        switch (axis) {
+        // fallback on the other axis if the natural one would overflow the viewport
+        let currentAxis: TooltipAxis = axis;
+        if (!force) {
+            if (axis === "y") {
+                const leftCheck =
+                    targetBounding.left +
+                    targetBounding.width / 2 -
+                    elementBounding.width / 2;
+                if (
+                    leftCheck < 10 ||
+                    leftCheck + elementBounding.width > window.innerWidth - 10
+                ) {
+                    currentAxis = "x";
+                }
+            } else {
+                const topCheck =
+                    targetBounding.top +
+                    targetBounding.height / 2 -
+                    elementBounding.height / 2;
+                if (
+                    topCheck < 10 ||
+                    topCheck + elementBounding.height > window.innerHeight - 10
+                ) {
+                    currentAxis = "y";
+                }
+            }
+        }
+
+        if (currentAxis !== effectiveAxis) {
+            setEffectiveAxis(currentAxis);
+        }
+
+        const axisJustChanged = currentAxis !== axisRef.current;
+        if (axisJustChanged) {
+            axisRef.current = currentAxis;
+            setPos(currentAxis === "y" ? "top" : "right");
+        }
+
+        // use a fresh default when the axis just flipped, pos state hasn't re-rendered yet
+        const effectivePos: TooltipPos = axisJustChanged
+            ? (force ?? (currentAxis === "y" ? "top" : "right"))
+            : pos;
+
+        switch (currentAxis) {
             case "y":
                 const left =
                     targetBounding.left +
@@ -221,7 +269,7 @@ function TooltipRender({
                     });
                     break;
                 }
-                switch (pos) {
+                switch (effectivePos) {
                     case "bottom":
                         if (positions.y.bottom < window.innerHeight - 10) {
                             updateCoords({
@@ -263,7 +311,7 @@ function TooltipRender({
                     break;
                 }
 
-                switch (pos) {
+                switch (effectivePos) {
                     case "left":
                         if (positions.x.left > 10) {
                             updateCoords({
@@ -305,7 +353,7 @@ function TooltipRender({
     return (
         <div
             ref={element}
-            data-axis={axis}
+            data-axis={effectiveAxis}
             data-pos={pos}
             className={`pointer-events-none fixed z-999 text-3.5 py-1.5 px-2 bg-ve-dark text-ve-light rounded-1 tooltip ${
                 displayed ? "displayed" : ""

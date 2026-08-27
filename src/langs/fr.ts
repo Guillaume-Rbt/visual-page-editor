@@ -53,6 +53,7 @@ export const fr: Translation = {
     defaultFontWeight: "Standard",
     allCategory: "Tous",
     searchComponentPlaceholder: "Rechercher un composant...",
+    closeEditor: "Fermer l'éditeur",
 
     heroCategory: "Hero",
     contentCategory: "Contenu",

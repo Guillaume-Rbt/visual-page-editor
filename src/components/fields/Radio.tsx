@@ -128,6 +128,7 @@ function RadioItem({
                 items-center
                 gap-2
                 cursor-pointer
+                group
                 ${checked ? "checked" : ""}
             `}>
             <input
@@ -154,6 +155,7 @@ function RadioItem({
                 <>
                     <div
                         className='
+                        group-hover:bg-ve-primary/10
                             w-4
                             h-4
                             rounded-full

@@ -322,7 +322,7 @@ function normalizeColorOptions(colors: ColorOptionInput[]): ColorOption[] {
     for (const color of colors) {
         if (typeof color === "string") {
             if (!uniqueColors.has(color)) {
-                uniqueColors.set(color, { value: color, label: color });
+                uniqueColors.set(color, { value: color, label: "" });
             }
 
             continue;
@@ -1185,7 +1185,7 @@ function HTMLTextComponent({
             </div>
             <EditorContent
                 editor={editor}
-                className={`${textFieldClasses} ${richTextContentClasses} min-h-[100px]`}
+                className={`${textFieldClasses} ${richTextContentClasses} min-h-[100px] max-h-[200px] overflow-y-auto`}
             />
         </div>
     );
@@ -1217,7 +1217,7 @@ const defaultOptions = {
         "underline",
         "strike",
         { headings: [1, 2, 3] },
-        { colors: ["red", "green", "blue"] },
+        { colors: ["red", "green", { value: "blue", label: "Blue" }] },
         { backgroundColors: ["#ff0000", "lightgray"] },
         { fontSizes: ["12px", "14px", "16px", "20px", "24px", "32px"] },
         "orderedList",

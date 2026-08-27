@@ -6,8 +6,10 @@ import { RoundedButton } from "../ui/RoundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
 import useBoolean from "../../hooks/useBoolean";
+import SettingsIcon from "../../assets/imgs/settings.svg?react";
 import { Tooltip } from "../ui/Tooltip";
 import { translation } from "../../visual-editor";
+import { BlockConfig } from "./BlockConfig";
 
 export const SidebarBlock = memo(function SidebarBlock({
     name,
@@ -20,7 +22,11 @@ export const SidebarBlock = memo(function SidebarBlock({
     id: string;
     onUpdate: (v: any, path: string) => void;
 }) {
-    const [isCollapsed, _, __, toggle] = useBoolean(false);
+    const [isCollapsed, collapse, extended, toggle] = useBoolean(false);
+
+    const [settingsOpened, openSettings, closeSettings, toggleSettings] =
+        useBoolean(false);
+
     const blockDefinition = useBlockDefinition(name);
     const { removeData, setFocusIndex, focusIndex, getIndexById } =
         usePartialStore(
@@ -28,6 +34,7 @@ export const SidebarBlock = memo(function SidebarBlock({
             "setFocusIndex",
             "focusIndex",
             "getIndexById",
+            "setFocusIndex",
         );
     const ref = useRef<HTMLDivElement>(null);
 
@@ -66,17 +73,26 @@ export const SidebarBlock = memo(function SidebarBlock({
                     setFocusIndex(null);
                     toggle();
                 }}
-                className='header w-full flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
+                className='group w-full flex justify-start gap-2 w-full cursor-pointer flex-items-center'>
                 <h2 className='font-bold text-5 mr-auto'>
                     {blockDefinition?.label}
                 </h2>
+                <RoundedButton
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        toggleSettings();
+                        extended();
+                    }}
+                    classes='p-1 delete-btn hover:bg-ve-dark/10  ml-auto text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
+                    <SettingsIcon />
+                </RoundedButton>
                 <Tooltip axis='y' text={translation("deleteComponent")}>
                     <RoundedButton
                         onClick={(e) => {
                             e.stopPropagation();
                             removeData(id);
                         }}
-                        classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger ml-auto text-5 cursor-pointer opacity-0 [.header:hover_&]:opacity-100'>
+                        classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger  text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
                         <TrashIcon />
                     </RoundedButton>
                 </Tooltip>
@@ -86,8 +102,12 @@ export const SidebarBlock = memo(function SidebarBlock({
                 </RoundedButton>
             </div>
 
+            {settingsOpened && !isCollapsed && (
+                <BlockConfig id={id} onUpdate={onUpdate} />
+            )}
+
             <FieldsRenderer
-                isVisible={!isCollapsed}
+                isVisible={!isCollapsed && !settingsOpened}
                 onUpdate={onUpdate}
                 dataPath={`${id}`}
                 id={id}

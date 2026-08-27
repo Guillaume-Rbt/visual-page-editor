@@ -12,6 +12,7 @@ type StoreState = {
     blocksOrder: string[];
     insertIndex: number | null;
     focusIndex: number | null;
+    animReorder: boolean;
     setInsertIndex: (index: number | null) => void;
     insertData: (block: ComponentDefinition) => void;
     updateData: (v: unknown, path: string) => void;
@@ -27,6 +28,7 @@ type EditorContextValue = {
     store: Store;
     iconsUrl: string;
     urlPreview: string;
+    rootElement: HTMLElement & { pasteData?: boolean };
 };
 
 const EditorContext = createContext<EditorContextValue>(
@@ -39,7 +41,7 @@ type EditorContextProviderProps = {
     data: ComponentValue[];
     urlPreview: string;
     children?: ReactNode;
-    rootElement: HTMLElement;
+    rootElement: HTMLElement & { pasteData?: boolean };
 };
 
 export const EditorContextProvider = ({
@@ -55,6 +57,7 @@ export const EditorContextProvider = ({
             {
                 blocks: blocks,
                 data: data,
+                animReorder: false,
                 blocksOrder: [] as string[],
                 focusIndex: null as number | null,
                 insertIndex: null as number | null,
@@ -151,26 +154,28 @@ export const EditorContextProvider = ({
                     updateData: (v: unknown, path: string) => {
                         const { data } = getState();
                         const keys = path.split(".");
-                        set({ data: setDeepValue(data, keys, v) });
+                        set({
+                            data: setDeepValue(data, keys, v),
+                            animReorder: false,
+                        });
                     },
                     moveBlock: (
                         fromIndex: number,
                         toIndex: number,
                         setFocus: boolean = false,
                     ) => {
+                        if (setFocus && fromIndex == getState().focusIndex) {
+                            set({ focusIndex: toIndex });
+                        }
+
+                        set({ animReorder: true });
+
                         set((state) => {
                             const newData = arrayMove(
                                 state.data,
                                 fromIndex,
                                 toIndex,
                             );
-
-                            if (
-                                setFocus &&
-                                fromIndex == getState().focusIndex
-                            ) {
-                                set({ focusIndex: toIndex });
-                            }
 
                             return {
                                 data: newData,
@@ -203,6 +208,7 @@ export const EditorContextProvider = ({
                 store: store,
                 iconsUrl: iconsUrl,
                 urlPreview: urlPreview,
+                rootElement: rootElement,
             }}>
             {children}
         </EditorContext.Provider>

@@ -4,11 +4,9 @@ import { useEditorContext } from "../../Store";
 import { ComponentValue } from "../../types";
 
 export function component({
-    id,
     html: initial,
     data,
 }: {
-    id: string;
     html: string;
     data: ComponentValue;
 }) {

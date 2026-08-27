@@ -23,7 +23,7 @@ html {
     .editor-hidden > *:nth-child(2),
     .editor-visible > *:nth-child(1),
     .editor-visible > *:nth-child(2) {
-        transition: translate 0.8s ease-in-out;
+        transition: translate 0.6s ease-out;
     }
 
     .editor-hidden > *:nth-child(1) {

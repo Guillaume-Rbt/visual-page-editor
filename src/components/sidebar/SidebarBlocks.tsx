@@ -15,8 +15,15 @@ export function SidebarBlocks() {
         data,
         moveBlock: moveBlock,
         updateData,
+        animReorder,
         setInsertIndex,
-    } = usePartialStore("data", "moveBlock", "updateData", "setInsertIndex");
+    } = usePartialStore(
+        "data",
+        "moveBlock",
+        "updateData",
+        "setInsertIndex",
+        "animReorder",
+    );
 
     const [isDragging, setIsDragging] = useState(false);
 
@@ -59,7 +66,7 @@ export function SidebarBlocks() {
                         {data.map((block, k) => {
                             return (
                                 <Sortable
-                                    animateReorder={!isDragging}
+                                    animateReorder={!isDragging && animReorder}
                                     key={block._id}
                                     id={block._id}>
                                     <SidebarBlock

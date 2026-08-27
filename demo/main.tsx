@@ -116,8 +116,9 @@ visualEditor
                                 "#06e9a5",
                                 "#f16d00",
                                 "#f005d0",
-                                "var(--colors-primary)",
+                                "var(--colors-ve-primary)",
                             ],
+                            enableCustomColor: true,
                             label: "Fond",
                             defaultValue: "#ff0000",
                         }),
@@ -173,4 +174,11 @@ visualEditor
         ],
     });
 
-const editor = document.querySelector("ve-editor") as any;
+const displayEditor = document.querySelector("#display-editor");
+
+const editor = document.querySelector("ve-editor");
+
+displayEditor?.addEventListener("click", () => {
+    console.log("editor", editor);
+    editor?.setAttribute("shown", "true");
+});

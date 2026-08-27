@@ -123,6 +123,7 @@ export type ComponentValue = {
     _name: string;
     _id: string;
     data: Record<string, any>;
+    config?: { id: string; class: string; css: string };
 };
 
 export type Device = {

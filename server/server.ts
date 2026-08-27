@@ -19,7 +19,16 @@ app.register(fastifyStatic, {
 });
 
 app.post("/preview", async (req, res) => {
-    const data = req.body as Record<string, unknown>[] | Record<string, unknown>;
+    const data = req.body as
+        | Record<string, unknown>[]
+        | Record<string, unknown>;
+
+    console.log(
+        "Preview data",
+        "first rerender :",
+        Array.isArray(data),
+        Array.isArray(data) ? data[0] : data,
+    );
 
     const html = Array.isArray(data)
         ? await edge.render("home", { data: data })
