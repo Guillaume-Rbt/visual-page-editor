@@ -1,11 +1,12 @@
 import { ComponentDefinition } from "../../types";
 import { Tabs } from "../ui/Tabs";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { BlocksGrid } from "./BlocksGrid";
 import { translation } from "../../visual-editor";
 import { Search } from "../ui/Search";
 
 export function Categories({ blocks }: { blocks: ComponentDefinition[] }) {
+    const tabsContainerRef = useRef<HTMLDivElement | null>(null);
     const [searchValue, setSearchValue] = useState("");
     const blocsCategories = useMemo(() => {
         const blocsCategories = new Map<string, ComponentDefinition[]>();
@@ -39,7 +40,11 @@ export function Categories({ blocks }: { blocks: ComponentDefinition[] }) {
 
     return (
         <div className='flex flex-col gap-7 w-full'>
-            <div className='mt-7 flex justify-center'>
+            <div className='mt-7 flex justify-center flex-wrap-reverse gap-2'>
+                <div
+                    ref={tabsContainerRef}
+                    className='flex  justify-start flex-grow-1 mx-auto mr-auto flex-wrap gap-2.5'></div>
+
                 <Search
                     onChange={(value) => {
                         setSearchValue(value);
@@ -49,7 +54,9 @@ export function Categories({ blocks }: { blocks: ComponentDefinition[] }) {
             </div>
 
             {(blocsCategories.size > 1 && (
-                <Tabs labels={Array.from(blocsCategories.keys())}>
+                <Tabs
+                    labels={Array.from(blocsCategories.keys())}
+                    tabsContainer={tabsContainerRef.current}>
                     {Array.from(blocsCategories.entries()).map(
                         ([category, blocks]) => (
                             <BlocksGrid

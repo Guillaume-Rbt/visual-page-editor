@@ -15,15 +15,19 @@ export const FieldRenderer = memo(function FieldRenderer({
     field: any;
     data: ComponentValue["data"];
     dataPath: string;
-    onChange: Function;
+    onChange: (v: unknown, path: string) => void;
 }) {
     const Component = field.render;
-    const [resolvedAsyncOptions, setResolvedAsyncOptions] = useState<Record<string, unknown>>({});
+    const [resolvedAsyncOptions, setResolvedAsyncOptions] = useState<
+        Record<string, unknown>
+    >({});
 
     useEffect(() => {
         let cancelled = false;
 
-        const asyncEntries = Object.entries(field.options).filter(([, value]) => isPromiseLike(value));
+        const asyncEntries = Object.entries(field.options).filter(([, value]) =>
+            isPromiseLike(value),
+        );
 
         if (asyncEntries.length === 0) {
             setResolvedAsyncOptions({});
@@ -36,11 +40,17 @@ export const FieldRenderer = memo(function FieldRenderer({
             Promise.resolve(promise)
                 .then((value) => {
                     if (cancelled) return;
-                    setResolvedAsyncOptions((prev) => ({ ...prev, [key]: value }));
+                    setResolvedAsyncOptions((prev) => ({
+                        ...prev,
+                        [key]: value,
+                    }));
                 })
                 .catch(() => {
                     if (cancelled) return;
-                    setResolvedAsyncOptions((prev) => ({ ...prev, [key]: undefined }));
+                    setResolvedAsyncOptions((prev) => ({
+                        ...prev,
+                        [key]: undefined,
+                    }));
                 });
         });
 
@@ -70,17 +80,26 @@ export const FieldRenderer = memo(function FieldRenderer({
 
     const hasPendingAsyncOptions = useMemo(() => {
         return Object.entries(field.options).some(
-            ([key, value]) => isPromiseLike(value) && !Object.prototype.hasOwnProperty.call(resolvedAsyncOptions, key),
+            ([key, value]) =>
+                isPromiseLike(value) &&
+                !Object.prototype.hasOwnProperty.call(
+                    resolvedAsyncOptions,
+                    key,
+                ),
         );
     }, [field.options, resolvedAsyncOptions]);
 
     const fieldOptions = useMemo(() => {
-        const options = Array.isArray(field.options) ? [...field.options] : { ...field.options };
+        const options = Array.isArray(field.options)
+            ? [...field.options]
+            : { ...field.options };
 
         Object.entries(options).forEach(([key, optionValue]) => {
             let nextValue = optionValue;
 
-            if (Object.prototype.hasOwnProperty.call(resolvedAsyncOptions, key)) {
+            if (
+                Object.prototype.hasOwnProperty.call(resolvedAsyncOptions, key)
+            ) {
                 nextValue = resolvedAsyncOptions[key];
             }
 
@@ -99,10 +118,12 @@ export const FieldRenderer = memo(function FieldRenderer({
     }
 
     const enabled = fieldOptions.enabled;
-    const isEnabled = typeof enabled === "function" ? enabled(data) : enabled !== false;
+    const isEnabled =
+        typeof enabled === "function" ? enabled(data) : enabled !== false;
 
     return (
-        <div className={`w-full ${!isEnabled ? "opacity-50 pointer-events-none" : ""}`}>
+        <div
+            className={`w-full ${!isEnabled ? "opacity-50 pointer-events-none" : ""}`}>
             <Component
                 enabled={isEnabled}
                 options={fieldOptions}

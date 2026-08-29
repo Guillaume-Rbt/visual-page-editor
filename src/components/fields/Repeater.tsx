@@ -122,7 +122,8 @@ function RepeaterComponent({
         <DndContext
             onDragEnd={handleDragEnd}
             modifiers={[restrictToVerticalAxis]}>
-            <div className='flex flex-col gap-2'>
+            <div
+                className={`flex flex-col gap-2 ${safeValue.length > 0 ? "border-l-[2px] border-ve-dark/20 pl-4" : ""}`}>
                 <SortableContext
                     items={safeValue.map((block) => block._id)}
                     strategy={verticalListSortingStrategy}>

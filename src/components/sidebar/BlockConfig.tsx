@@ -1,6 +1,9 @@
 import { useBlockData } from "../../Store";
 import { Text } from "../fields/Text";
+import { Row } from "../fields/Row";
 import { FieldsRenderer } from "./FieldsRenderer";
+import { translation } from "../../utils/utils";
+import { Repeater } from "../fields/Repeater";
 
 export function BlockConfig({
     id,
@@ -20,8 +23,26 @@ export function BlockConfig({
         }),
         Text("css", {
             multiline: true,
-            label: "CSS Personnalisé",
+            label: translation("personnalCSS"),
             defaultValue: "",
+        }),
+        Repeater("attributes", {
+            label: translation("otherAttributes"),
+            itemLabel: "name",
+            fields: [
+                Row({
+                    fields: [
+                        Text("name", {
+                            label: translation("configAttributesName"),
+                            defaultValue: "",
+                        }),
+                        Text("value", {
+                            label: translation("configAttributesValue"),
+                            defaultValue: "",
+                        }),
+                    ],
+                }),
+            ],
         }),
     ];
 

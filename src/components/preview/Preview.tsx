@@ -112,7 +112,7 @@ export default function Preview() {
                 ref={frameWrapper}>
                 <iframe
                     onLoad={onLoad}
-                    className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-ve-dark/5 shadow-lg`}
+                    className={`h-full top-0 left-0 w-full transition-all outline-.3 outline-solid outline-ve-dark/5 shadow-lg max-md:w-full! max-md:h-full! max-md:scale-100! max-md:translate-x-0! max-md:translate-y-0!`}
                     ref={iframe}></iframe>
                 {loaded &&
                     createPortal(

@@ -54,6 +54,13 @@ export const fr: Translation = {
     allCategory: "Tous",
     searchComponentPlaceholder: "Rechercher un composant...",
     closeEditor: "Fermer l'éditeur",
+    noComponents: "Aucun composant",
+    personnalCSS: "CSS personnalisé",
+    editComponent: "Modifier le composant",
+    settingsComponent: "Paramètres",
+    otherAttributes: "Autres attributs",
+    configAttributesName: "Nom de l'attribut",
+    configAttributesValue: "Valeur de l'attribut",
 
     heroCategory: "Hero",
     contentCategory: "Contenu",

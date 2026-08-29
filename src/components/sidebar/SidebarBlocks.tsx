@@ -16,12 +16,10 @@ export function SidebarBlocks() {
         moveBlock: moveBlock,
         updateData,
         animReorder,
-        setInsertIndex,
     } = usePartialStore(
         "data",
         "moveBlock",
         "updateData",
-        "setInsertIndex",
         "animReorder",
     );
 
@@ -45,21 +43,18 @@ export function SidebarBlocks() {
 
     return (
         <>
-            {data.length === 0 && (
-                <button
-                    onClick={() => {
-                        setInsertIndex(0);
-                    }}
-                    className='btn btn-ve-primary mt-2'>
-                    {translation("addComponent")}
-                </button>
-            )}
             <DndContext
                 modifiers={[restrictToVerticalAxis]}
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
                 onDragStart={handleDragStart}>
-                <div className='flex w-full h-full flex-col px-2 py-2 gap-1 isolate overflow-auto'>
+                <div className='flex  w-full h-full flex-col px-2 py-2 gap-1 isolate overflow-auto'>
+                    {data.length === 0 && (
+                        <p className='mx-auto my-auto'>
+                            {translation("noComponents")}
+                        </p>
+                    )}
+
                     <SortableContext
                         items={data.map((block) => block._id)}
                         strategy={verticalListSortingStrategy}>
@@ -76,7 +71,7 @@ export function SidebarBlocks() {
                                         onUpdate={updateData}></SidebarBlock>
                                 </Sortable>
                             );
-                        })}
+                        })} 
                     </SortableContext>
                 </div>
             </DndContext>

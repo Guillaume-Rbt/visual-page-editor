@@ -14,6 +14,8 @@ import {
     Range,
     translation,
     Radio,
+    Group,
+    Row,
 } from "../src/visual-editor";
 
 const visualEditor = new VisualEditor();
@@ -35,6 +37,20 @@ visualEditor
         label: "Hero",
         category: translation("heroCategory"),
         fields: [
+            Group("button", {
+                label: "Button",
+                fields: [
+                    Text("label", {
+                        label: "Label du bouton",
+                        multiline: false,
+                        defaultValue: "Call to action",
+                    }),
+                    Text("class", {
+                        label: "Classe du bouton",
+                        multiline: false,
+                    }),
+                ],
+            }),
             Radio("alignment", {
                 label: "Alignement",
                 collapsed: false,
@@ -65,6 +81,7 @@ visualEditor
                 label: "Titre du site",
                 multiline: false,
                 placeholder: "Titre",
+                defaultValue: "Titre",
             }),
             HTMLText("siteDescription", {
                 label: "Description du site",
@@ -81,7 +98,7 @@ visualEditor
                 max: ref<number>("cols"),
                 min: 0,
                 fields: [
-                    Column({
+                    Row({
                         fields: [
                             Text("label", {
                                 label: "Label du bouton",

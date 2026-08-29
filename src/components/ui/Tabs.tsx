@@ -1,25 +1,43 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 export function Tabs({
     labels,
     children,
+    tabsContainer,
 }: {
     labels: string[];
     children: React.ReactNode[];
+    tabsContainer?: HTMLElement | null;
 }) {
     const [activeTab, setActiveTab] = useState(labels[0]);
 
     return (
         <div className='flex flex-col w-full gap-3'>
             <div className='inline-grid grid-flow-col auto-cols-max gap-3 w-max max-w-full'>
-                {labels.map((t) => (
-                    <Tab
-                        key={t}
-                        selected={activeTab === t}
-                        text={t}
-                        onClick={() => setActiveTab(t)}
-                    />
-                ))}
+                {tabsContainer
+                    ? createPortal(
+                          <>
+                              {labels.map((t) => (
+                                  <Tab
+                                      key={t}
+                                      selected={activeTab === t}
+                                      text={t}
+                                      onClick={() => setActiveTab(t)}
+                                  />
+                              ))}
+                          </>,
+                          tabsContainer,
+                      )
+                    : labels.map((t) => (
+                          <Tab
+                              key={t}
+                              selected={activeTab === t}
+                              text={t}
+                              onClick={() => setActiveTab(t)}
+                          />
+                      ))}
+                
             </div>
             <div className='position-relative grid'>
                 {children.map((c, i) => {
