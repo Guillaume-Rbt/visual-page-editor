@@ -61,6 +61,9 @@ export const fr: Translation = {
     otherAttributes: "Autres attributs",
     configAttributesName: "Nom de l'attribut",
     configAttributesValue: "Valeur de l'attribut",
+    deletion: "Suppression",
+    deletionInProgress: "Suppression en cours",
+    cancelDeletion: "Annuler la suppression",
 
     heroCategory: "Hero",
     contentCategory: "Contenu",

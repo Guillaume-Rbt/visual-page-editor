@@ -81,7 +81,6 @@ visualEditor
                 label: "Titre du site",
                 multiline: false,
                 placeholder: "Titre",
-                defaultValue: "Titre",
             }),
             HTMLText("siteDescription", {
                 label: "Description du site",

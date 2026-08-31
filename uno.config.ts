@@ -93,6 +93,7 @@ export default defineConfig({
     ],
 
     theme: {
+        animation: {},
         colors: {
             "ve-primary": "#007bff",
             "ve-secondary": "#6c757d",

@@ -13,6 +13,7 @@ type StoreState = {
     insertIndex: number | null;
     focusIndex: number | null;
     animReorder: boolean;
+    storedData: ComponentValue[];
     setInsertIndex: (index: number | null) => void;
     insertData: (block: ComponentDefinition) => void;
     updateData: (v: unknown, path: string) => void;
@@ -20,6 +21,7 @@ type StoreState = {
     getIndexById: (id: string) => number;
     removeData: (id: string) => void;
     setFocusIndex: (index: number | null) => void;
+    restoreData: () => void;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -57,6 +59,7 @@ export const EditorContextProvider = ({
             {
                 blocks: blocks,
                 data: data,
+                storedData: data,
                 animReorder: false,
                 blocksOrder: [] as string[],
                 focusIndex: null as number | null,
@@ -186,8 +189,14 @@ export const EditorContextProvider = ({
                     removeData: (id: string) => {
                         const { data } = getState();
                         const index = data.findIndex((b) => b._id === id);
+
                         if (index !== -1) {
-                            set({ data: deleteFromArray(data, index) });
+                            window.sessionStorage.setItem(
+                                "ve-data",
+                                JSON.stringify(data),
+                            );
+                            const newData = deleteFromArray(data, index);
+                            set({ data: newData, storedData: data });
                         }
                     },
                     getIndexById: (id: string) => {
@@ -196,6 +205,10 @@ export const EditorContextProvider = ({
                     },
                     setFocusIndex: (index: number | null) => {
                         set({ focusIndex: index });
+                    },
+                    restoreData: () => {
+                        const storedData = getState().storedData;
+                        set({ data: storedData });
                     },
                 };
             },

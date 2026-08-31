@@ -1,0 +1,33 @@
+.toast {
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out; 
+    
+    @starting-style {
+  
+            transform: translateY(20px);
+            opacity: 0;
+    }
+}
+
+
+
+   
+
+.toast-timer 
+{
+    animation-name: toast-timer;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    transform-origin: left center;
+}
+
+@keyframes toast-timer {
+    0% {
+        scale: 100% 100%;
+    }
+
+    100% {
+        scale: 0% 100%;
+    }
+}

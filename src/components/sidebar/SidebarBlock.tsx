@@ -11,6 +11,7 @@ import EditIcon from "../../assets/imgs/edit.svg?react";
 import { Tooltip } from "../ui/Tooltip";
 import { translation } from "../../visual-editor";
 import { BlockConfig } from "./BlockConfig";
+import { useToast } from "../ui/Toast";
 
 export const SidebarBlock = memo(function SidebarBlock({
     name,
@@ -24,18 +25,20 @@ export const SidebarBlock = memo(function SidebarBlock({
     onUpdate: (v: any, path: string) => void;
 }) {
     const [isCollapsed, collapse, extended, toggle] = useBoolean(false);
+    const { addToast } = useToast();
 
     const [settingsOpened, openSettings, closeSettings, toggleSettings] =
         useBoolean(false);
 
     const blockDefinition = useBlockDefinition(name);
-    const { removeData, setFocusIndex, focusIndex, getIndexById } =
+    const { removeData, setFocusIndex, focusIndex, getIndexById, restoreData } =
         usePartialStore(
             "removeData",
             "setFocusIndex",
             "focusIndex",
             "getIndexById",
             "setFocusIndex",
+            "restoreData",
         );
     const ref = useRef<HTMLDivElement>(null);
 
@@ -83,6 +86,24 @@ export const SidebarBlock = memo(function SidebarBlock({
                         onClick={(e) => {
                             e.stopPropagation();
                             removeData(id);
+                            addToast(
+                                {
+                                    title: translation("deletion"),
+                                    message: translation("deletionInProgress"),
+                                    actions: [
+                                        {
+                                            label: translation(
+                                                "cancelDeletion",
+                                            ),
+                                            type: "primary",
+                                            onClick: () => {
+                                                restoreData();
+                                            },
+                                        },
+                                    ],
+                                },
+                                3000,
+                            );
                         }}
                         classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger  text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
                         <TrashIcon />

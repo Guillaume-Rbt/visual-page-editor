@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ComponentValue } from "../types";
 import { useDebounce } from "./useDebounce";
 
-export function useBlockPreview(data: ComponentValue, previewUrl: string, initial: string) {
+export function useBlockPreview(
+    data: ComponentValue,
+    previewUrl: string,
+    initial: string,
+) {
     const [html, setHTML] = useState(initial);
+
+    const isFirstRender = useRef(!!initial);
+
     useDebounce(
         () => {
+            if (isFirstRender.current) {
+                isFirstRender.current = false;
+                return;
+            }
             fetch(previewUrl, {
                 method: "POST",
                 headers: {

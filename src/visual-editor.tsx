@@ -6,6 +6,7 @@ import { Translation } from "./types";
 import { fr as FR } from "./langs/fr";
 import "./assets/css/app.css";
 import "virtual:uno.css";
+import { ToastProvider } from "./components/ui/Toast";
 import type { Root } from "react-dom/client";
 
 const defaultDevices: Device[] = [
@@ -125,17 +126,21 @@ class VisualEditor {
                 }
 
                 this.root.render(
-                    <EditorContextProvider
-                        rootElement={this}
-                        urlPreview={this.urlPreview}
-                        iconsUrl={this.getAttribute("iconsUrl") || "./icons"}
-                        blocks={components}
-                        data={this.data}>
-                        <VisualEditorComponent
-                            visible={this.getAttribute("shown") === "true"}
-                        />
-                        <HiddenTextarea name={this.name} />
-                    </EditorContextProvider>,
+                    <ToastProvider>
+                        <EditorContextProvider
+                            rootElement={this}
+                            urlPreview={this.urlPreview}
+                            iconsUrl={
+                                this.getAttribute("iconsUrl") || "./icons"
+                            }
+                            blocks={components}
+                            data={this.data}>
+                            <VisualEditorComponent
+                                visible={this.getAttribute("shown") === "true"}
+                            />
+                            <HiddenTextarea name={this.name} />
+                        </EditorContextProvider>
+                    </ToastProvider>,
                 );
             }
 

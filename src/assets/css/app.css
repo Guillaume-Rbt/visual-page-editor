@@ -3,6 +3,7 @@
 @import "@unocss/reset/eric-meyer.css" layer(reset);
 @import "./components/tooltip.css" layer(custom);
 @import "./components/HTMLText.css" layer(custom);
+@import "./components/toast.css" layer(custom);
 @import "./Urbanist.css" layer(font);
 html {
     font-family: "Urbanist", "sans-serif";

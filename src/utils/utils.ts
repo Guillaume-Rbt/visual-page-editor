@@ -67,6 +67,7 @@ export function defineField<
         name: string,
         options = {} as FieldInputOptions<Options, Defaults>,
     ): FieldDefinition<MergedFieldOptions<Options, Defaults>, Value> => {
+        const { defaultOptions } = args;
         const optionsWithFields = options as unknown as OptionsWithFields;
         const defaultValue = optionsWithFields.fields
             ? optionsWithFields.fields.reduce((acc, f) => {
@@ -75,7 +76,11 @@ export function defineField<
                       [f.name]: f.options.defaultValue,
                   };
               }, {}) // build default value from fields[]
-            : ((options as { defaultValue?: unknown }).defaultValue ?? null);
+            : ((
+                  { ...defaultOptions, ...options } as {
+                      defaultValue?: unknown;
+                  }
+              ).defaultValue ?? null);
 
         const mergedOptions = {
             enabled: true,
