@@ -21,8 +21,6 @@ type ComponentProps = {
 
 function GroupComponent({ fields, value, onChange, label }: ComponentProps) {
     const onUpdate = (v: any, path: string) => {
-        console.log("GroupComponent onUpdate", v, path);
-
         const key = path.substring(1, path.length);
 
         onChange({ ...value, [key]: v });
@@ -32,7 +30,6 @@ function GroupComponent({ fields, value, onChange, label }: ComponentProps) {
         <div className='flex flex-col gap-2 small-labels'>
             <p className='font-500 text-ve-dark/60 text-4.2 mb-2'>{label}</p>
             <div className='border-l-[2px] border-ve-dark/20 pl-4'>
-                {" "}
                 <FieldsRenderer
                     fields={fields}
                     dataPath=''

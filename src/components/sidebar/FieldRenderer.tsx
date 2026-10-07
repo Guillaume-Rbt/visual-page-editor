@@ -107,6 +107,10 @@ export const FieldRenderer = memo(function FieldRenderer({
                 nextValue = data[nextValue.key];
             }
 
+            if (key !== "enabled" && typeof nextValue === "function") {
+                nextValue = nextValue(data);
+            }
+
             (options as Record<string, unknown>)[key] = nextValue;
         });
 

@@ -32,7 +32,10 @@ type OptionalDefaultKeys<
 
 type MaybeAsync<T> = T | Promise<Awaited<T>>;
 
-type MaybeDataRef<T> = MaybeAsync<T> | DataRef<NonNullable<T>>;
+type MaybeDataRef<T> =
+    | MaybeAsync<T>
+    | DataRef<NonNullable<T>>
+    | ((data: Record<string, any>) => T);
 
 type WithDataRefs<T> = {
     [K in keyof T]: MaybeDataRef<T[K]>;
@@ -254,4 +257,18 @@ export function stopPropagation(cb: Function, ...args: any[]): any {
 }
 export function isHTMLElement(value: RadioLabel): value is HTMLElement {
     return typeof HTMLElement !== "undefined" && value instanceof HTMLElement;
+}
+
+export function getDeepValue(obj: Record<string, any>, path: string[]): any {
+    if (path.length === 0) {
+        return obj;
+    }
+
+    const [key, ...rest] = path;
+
+    if (!(key in obj)) {
+        return undefined;
+    }
+
+    return getDeepValue(obj[key], rest);
 }

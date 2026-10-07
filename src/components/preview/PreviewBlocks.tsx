@@ -11,7 +11,11 @@ export function PreviewBlocks({
 }: {
     initHTML: Record<string, string>;
 }) {
-    const { data, blocks, animReorder } = usePartialStore("data", "blocks");
+    const { data, blocks, animReorder } = usePartialStore(
+        "data",
+        "blocks",
+        "animReorder",
+    );
 
     return (
         <SortableContext
@@ -23,7 +27,7 @@ export function PreviewBlocks({
                         id={block._id}
                         key={block._id}
                         interactable={false}
-                        animateReorder>
+                        animateReorder={animReorder}>
                         <PreviewBlockWrapper
                             id={block._id}
                             name={

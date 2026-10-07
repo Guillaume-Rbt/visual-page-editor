@@ -7,7 +7,7 @@ import { defineField, translation } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
-import { deleteFromArray, setDeepValue } from "../../utils/utils";
+import { deleteFromArray, getDeepValue, setDeepValue } from "../../utils/utils";
 import { RoundedButton } from "../ui/RoundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import { v4 as uuid } from "uuid";
@@ -130,7 +130,8 @@ function RepeaterComponent({
                     {safeValue.map((item, index) => {
                         const label =
                             itemLabel.indexOf("{{id}}") == -1
-                                ? (item[itemLabel] ?? `#${index + 1}`) ||
+                                ? (getDeepValue(item, itemLabel.split(".")) ??
+                                      `#${index + 1}`) ||
                                   `#${index + 1}`
                                 : itemLabel.replace("{{id}}", `${index + 1}`);
 

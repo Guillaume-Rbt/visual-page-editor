@@ -4,7 +4,7 @@ import {
     VisualEditor,
     Slot,
     Tabs,
-    Column,
+    File,
     Color,
     Number,
     HTMLText,
@@ -17,6 +17,14 @@ import {
     Group,
     Row,
 } from "../src/visual-editor";
+
+// @ts-ignore
+import "files-manager/style.css";
+import { FilesManager, FilesManagerElement } from "files-manager";
+
+const filesManager = new FilesManager();
+
+filesManager.defineElement();
 
 const visualEditor = new VisualEditor();
 
@@ -31,12 +39,22 @@ async function getData() {
     }));
 }
 
+const fmElement = document.querySelector(
+    "files-manager",
+) as FilesManagerElement;
+
 visualEditor
     .registerBlock({
         name: "hero",
         label: "Hero",
         category: translation("heroCategory"),
         fields: [
+            File("backgroundImage", {
+                label: "Image de fond",
+                onBrowse: () => () => {
+                    return fmElement!.open();
+                },
+            }),
             Group("button", {
                 label: "Button",
                 fields: [
@@ -87,16 +105,33 @@ visualEditor
             }),
             Number("cols", {
                 label: "Colonnes",
+                defaultValue: 1,
+                max: 5,
+                min: 1,
             }),
             Slot("content", {
                 label: "Contenu du hero",
             }),
             Repeater("actions", {
                 label: "Actions",
-                itemLabel: "label",
-                max: ref<number>("cols"),
+                itemLabel: "button.label",
+                max: ref("cols"), //ref<number>("cols"),
                 min: 0,
                 fields: [
+                    Group("button", {
+                        label: "Button",
+                        fields: [
+                            Text("label", {
+                                label: "Label du bouton",
+                                multiline: false,
+                                defaultValue: "Call to action",
+                            }),
+                            Text("class", {
+                                label: "Classe du bouton",
+                                multiline: false,
+                            }),
+                        ],
+                    }),
                     Row({
                         fields: [
                             Text("label", {

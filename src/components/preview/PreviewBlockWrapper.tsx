@@ -104,6 +104,7 @@ export function PreviewBlockWrapper({
         style.textContent = unoCss;
 
         const container = ownerDocument.createElement("div");
+        container.className = "ve-editor-element";
 
         shadowRoot.replaceChildren(unoVariables, style, container);
 

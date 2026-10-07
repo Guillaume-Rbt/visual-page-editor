@@ -67,7 +67,7 @@ class VisualEditor {
                 this.data = JSON.parse(this.getAttribute("value") ?? "[]");
                 this.name = this.getAttribute("name") ?? "content";
                 this.urlPreview = this.getAttribute("urlPreview") ?? "";
-
+                this.classList.add("ve-editor-element");
                 if (!this.root) {
                     this.root = createRoot(this);
                 }
@@ -174,6 +174,8 @@ export { FR };
 export { Checkbox } from "./components/fields/Checkbox";
 export { Color } from "./components/fields/Color";
 export { Column } from "./components/fields/Column";
+export { Field } from "./components/fields/Field";
+export { File } from "./components/fields/File";
 export { Group } from "./components/fields/Group";
 export { HTMLText } from "./components/fields/HTMLText";
 export { NumberField as Number } from "./components/fields/Number";
