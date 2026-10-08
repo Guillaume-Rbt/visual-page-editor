@@ -82,20 +82,19 @@ function NumberComponent({
         if (!regex.test(v)) return;
 
         setInputValue(v);
+    };
 
-        if (
-            v === "" ||
-            v === "-" ||
-            (allowDecimals && (v === "." || v === "-."))
-        ) {
+    const commit = () => {
+        const num = Number(inputValue);
+
+        if (inputValue.trim() === "" || Number.isNaN(num)) {
+            setInputValue(String(value));
             return;
         }
 
-        const num = Number(v);
-
-        if (Number.isNaN(num)) return;
-
-        onChange(Math.min(Math.max(num, min), max));
+        const clamped = Math.min(Math.max(num, min), max);
+        setInputValue(String(clamped));
+        if (clamped !== value) onChange(clamped);
     };
 
     return (
@@ -104,6 +103,13 @@ function NumberComponent({
                 type='text'
                 value={inputValue}
                 onChange={(e) => onInput(e.target.value)}
+                onBlur={commit}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        commit();
+                    }
+                }}
                 className='flex-grow'
             />
 

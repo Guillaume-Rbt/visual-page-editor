@@ -8,6 +8,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import useBoolean from "../../hooks/useBoolean";
+import { useEditorContext, usePartialStore } from "../../Store";
 
 type TooltipPos = "top" | "bottom" | "left" | "right";
 type TooltipAxis = "y" | "x";
@@ -34,6 +35,7 @@ export function Tooltip({
 }) {
     if (!text) return children;
 
+    const { rootElement } = useEditorContext();
     const [displayed, display, hide] = useBoolean(false);
     const target = useRef<HTMLElement | null>(null);
     const [pointerCoords, setPointerCoords] = useState(
@@ -89,7 +91,7 @@ export function Tooltip({
                     axis={axis}
                     pointerCoords={pointerCoords}
                 />,
-                document.body,
+                rootElement,
             )}
         </>
     );

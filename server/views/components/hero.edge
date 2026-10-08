@@ -1,13 +1,36 @@
-<div class="px-4 py-5 my-5 text-center">
-    <img class="d-block mx-auto mb-4" src="http://localhost:8000/imgs/bootstrap-logo.svg" alt="" width="72" height="57" />
-    <h1 class="display-5 fw-bold">{{siteTitle}}</h1>
-    <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">
-            {{{ siteDescription }}}
-        </p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-            <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
+<section class="py-5" style="background-color: {{ background }}">
+    <div class="container px-4 py-5">
+        <div class="row align-items-center g-5 {{ layout === 'split' ? 'flex-lg-row-reverse' : '' }}">
+            @if(showImage && backgroundImage)
+                <div class="{{ layout === 'split' ? 'col-10 col-sm-8 col-lg-6' : 'col-12' }} mx-auto text-center">
+                    <img
+                        class="d-block img-fluid mx-auto"
+                        src="{{ backgroundImage }}"
+                        alt="{{ imageAlt }}"
+                        width="{{ imageWidth }}"
+                        loading="eager"
+                        decoding="async"
+                    />
+                </div>
+            @endif
+
+            <div class="{{ layout === 'split' && showImage && backgroundImage ? 'col-lg-6' : 'col-lg-8 mx-auto' }} {{ alignment }}">
+                @if(eyebrow)
+                    <p class="text-primary fw-semibold text-uppercase mb-2">{{ eyebrow }}</p>
+                @endif
+                <h1 class="display-5 fw-bold lh-1 mb-3">{{ siteTitle }}</h1>
+                <div class="lead mb-4">{{{ siteDescription }}}</div>
+
+                @if(actions.length)
+                    <div class="d-grid gap-2 d-sm-flex {{ alignment === 'text-center' ? 'justify-content-sm-center' : alignment === 'text-end' ? 'justify-content-sm-end' : 'justify-content-sm-start' }}">
+                        @each(action in actions)
+                            <a href="{{ action.url }}" class="btn {{ action.style }} btn-lg px-4">
+                                {{ action.label }}
+                            </a>
+                        @endeach
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
-</div>
+</section>

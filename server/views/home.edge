@@ -9,7 +9,7 @@
     <title>Document</title>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
@@ -52,12 +52,22 @@
         </div>
     </nav>
 
-    <div id="components-root">
+    <div id="components-root" class="flex-grow-1">
         @each (block in data)
         @component(`components/${block._name}`, block.data)
         @endcomponent
         @endeach
     </div>
+
+    <footer class="border-top bg-body-tertiary">
+        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 py-4">
+            <p class="mb-0 text-body-secondary">&copy; 2026 Visual Page Editor</p>
+            <nav class="d-flex gap-3" aria-label="Footer navigation">
+                <a class="link-secondary text-decoration-none" href="#components-root">Components</a>
+                <a class="link-secondary text-decoration-none" href="https://github.com/Guillaume-Rbt/visual-page-editor">GitHub</a>
+            </nav>
+        </div>
+    </footer>
 </body>
 
 </html>

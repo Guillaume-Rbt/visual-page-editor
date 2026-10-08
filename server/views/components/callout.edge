@@ -1,0 +1,11 @@
+<section class="container py-4" aria-labelledby="callout-{{ title.replaceAll(' ', '-').toLowerCase() }}">
+    <div class="p-4 p-md-5 rounded-3 {{ theme }}">
+        <div class="container-fluid py-3">
+            <h2 id="callout-{{ title.replaceAll(' ', '-').toLowerCase() }}" class="display-5 fw-bold">{{ title }}</h2>
+            <div class="col-lg-8 fs-4">{{{ content }}}</div>
+            @if(showButton)
+                <a class="btn {{ buttonStyle }} btn-lg mt-3" href="{{ buttonUrl }}">{{ buttonLabel }}</a>
+            @endif
+        </div>
+    </div>
+</section>

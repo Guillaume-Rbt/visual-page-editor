@@ -117,6 +117,18 @@ export type Translation = Record<string, string> & {
     defaultFontWeight: string;
     allCategory: string;
     searchComponentPlaceholder: string;
+    closeEditor: string;
+    noComponents: string;
+    personnalCSS: string;
+    editComponent: string;
+    settingsComponent: string;
+    otherAttributes: string;
+    configAttributesName: string;
+    configAttributesValue: string;
+    deletion: string;
+    deletionInProgress: string;
+    cancelDeletion: string;
+    copyToClipboard: string;
 };
 
 export type ComponentValue = {

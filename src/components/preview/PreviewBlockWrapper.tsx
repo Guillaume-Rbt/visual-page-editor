@@ -132,10 +132,12 @@ export function PreviewBlockWrapper({
                     <div
                         onClick={stopPropagation(
                             setFocusIndex,
-                            getIndexById(id),
+                            getIndexById(id) == focusIndex
+                                ? null
+                                : getIndexById(id),
                         )}
                         className={`absolute inset-0 opacity-0 hover:opacity-100 border-1 border-ve-primary ${getIndexById(id) === focusIndex ? "opacity-100" : ""}`}>
-                        <div className='flex absolute top-0 left--1 translate-y-[-100%] transition-opacity duration-200'>
+                        <div className='flex absolute top-0 left-[-1px] translate-y-[-100%] transition-opacity duration-200'>
                             <p className='bg-ve-primary text-ve-light px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
                                 {name}
                             </p>

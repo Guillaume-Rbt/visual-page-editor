@@ -68,21 +68,18 @@ function ColorComponent({
                     {normalizedColors.map((c) => {
                         return (
                             <Tooltip text={c.label} key={c.value}>
-                                <>
-                                    <button
-                                        onClick={() => {
-                                            onUpdate(c.value);
-                                        }}
-                                        className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-ve-light/30`}
-                                        style={{
-                                            background: getColor(c.value),
-                                        }}
-                                        key={c.value}>
-                                        {getColor(c.value) == "transparent" && (
-                                            <TransparentIcon className='w-full h-full'></TransparentIcon>
-                                        )}
-                                    </button>
-                                </>
+                                <button
+                                    onClick={() => {
+                                        onUpdate(c.value);
+                                    }}
+                                    className={`w-5 h-5 rounded-1 overflow-hidden cursor-pointer border-1 border-solid border-ve-light/30`}
+                                    style={{
+                                        background: getColor(c.value),
+                                    }}>
+                                    {getColor(c.value) == "transparent" && (
+                                        <TransparentIcon className='w-full h-full'></TransparentIcon>
+                                    )}
+                                </button>
                             </Tooltip>
                         );
                     })}

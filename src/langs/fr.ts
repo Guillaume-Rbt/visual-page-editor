@@ -64,6 +64,7 @@ export const fr: Translation = {
     deletion: "Suppression",
     deletionInProgress: "Suppression en cours",
     cancelDeletion: "Annuler la suppression",
+    copyToClipboard: "Copier le code de la page<br>dans le presse-papiers",
 
     heroCategory: "Hero",
     contentCategory: "Contenu",

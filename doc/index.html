@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="description"
+            content="Documentation de Visual Page Editor : installation, configuration, fields, fields personnalisés et traductions." />
+        <title>Visual Page Editor — Documentation</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script defer src="app.js"></script>
+        <noscript
+            ><style>
+                body {
+                    visibility: visible !important;
+                }
+            </style></noscript
+        >
+    </head>
+    <body>
+        <a class="skip-link" href="#content">Aller au contenu</a>
+
+        <header class="topbar">
+            <a
+                class="brand"
+                href="#top"
+                aria-label="Visual Page Editor, accueil de la documentation">
+                <span class="brand-mark" aria-hidden="true">VE</span>
+                <span
+                    ><strong>Visual Page Editor</strong
+                    ><small>Documentation</small></span
+                >
+            </a>
+            <div class="topbar-actions">
+                <div
+                    class="language-switch"
+                    role="group"
+                    aria-label="Language / Langue">
+                    <button
+                        type="button"
+                        data-language="en"
+                        aria-pressed="true">
+                        EN
+                    </button>
+                    <button
+                        type="button"
+                        data-language="fr"
+                        aria-pressed="false">
+                        FR
+                    </button>
+                </div>
+                <a
+                    class="github-link"
+                    href="https://github.com/Guillaume-Rbt/visual-page-editor"
+                    >GitHub</a
+                >
+                <button
+                    class="icon-button"
+                    id="theme-toggle"
+                    type="button"
+                    aria-label="Activer le thème sombre"
+                    title="Changer de thème">
+                    <span aria-hidden="true">◐</span>
+                </button>
+                <button
+                    class="icon-button menu-button"
+                    id="menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="sidebar"
+                    aria-label="Ouvrir la navigation">
+                    <span aria-hidden="true">☰</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="page-shell" id="top">
+            <aside
+                class="sidebar"
+                id="sidebar"
+                aria-label="Navigation de la documentation">
+                <nav>
+                    <p class="nav-label">Premiers pas</p>
+                    <a href="#presentation">Présentation</a>
+                    <a href="#installation">Installation</a>
+                    <a href="#setup">Mise en place</a>
+                    <a href="#preview">Endpoint d’aperçu</a>
+                    <p class="nav-label">API</p>
+                    <a href="#blocks">Déclarer un block</a>
+                    <a href="#options-communes">Options communes</a>
+                    <a href="#fields">Tous les fields</a>
+                    <a href="#define-field">Créer un field</a>
+                    <a href="#translations">Traductions</a>
+                    <a href="#data">Format des données</a>
+                </nav>
+            </aside>
+
+            <main id="content">
+                <section class="hero" id="presentation">
+                    <p class="eyebrow">Éditeur visuel composable</p>
+                    <h1>
+                        Construisez l’interface d’édition qui correspond à vos
+                        composants.
+                    </h1>
+                    <p class="hero-copy">
+                        Visual Page Editor fournit un Web Component, une
+                        bibliothèque de fields et un aperçu serveur. Vous
+                        déclarez vos blocks ; l’éditeur produit une structure
+                        JSON prête à être rendue par votre application.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="button primary" href="#installation"
+                            >Commencer</a
+                        >
+                        <a class="button secondary" href="#fields"
+                            >Explorer les fields</a
+                        >
+                    </div>
+                    <div class="feature-strip" aria-label="Points forts">
+                        <div>
+                            <strong>15</strong><span>helpers documentés</span>
+                        </div>
+                        <div>
+                            <strong>Web Component</strong
+                            ><span>intégrable dans un formulaire</span>
+                        </div>
+                        <div>
+                            <strong>Responsive</strong
+                            ><span>aperçu multi-appareils</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="installation">
+                    <div class="section-heading">
+                        <p class="eyebrow">01 — Installation</p>
+                        <h2>Installer la librairie</h2>
+                    </div>
+                    <p>
+                        Le package publie un module ES et une feuille de style.
+                        Node.js et npm sont nécessaires pour l’installation.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>npm install visual-page-editor</code></pre>
+                    </div>
+                    <p>Pour travailler directement depuis le dépôt :</p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>npm install
+npm run dev        # interface Vite sur http://localhost:5173
+npm run server     # aperçu Edge/Fastify sur http://localhost:8000</code></pre>
+                    </div>
+                    <aside class="callout note">
+                        <strong>Styles requis.</strong> Importez
+                        <code>visual-page-editor/style.css</code> une seule fois
+                        dans votre point d’entrée.
+                    </aside>
+                </section>
+
+                <section id="setup">
+                    <div class="section-heading">
+                        <p class="eyebrow">02 — Mise en place</p>
+                        <h2>Initialiser l’éditeur</h2>
+                    </div>
+                    <ol class="steps">
+                        <li>
+                            <strong>Importez</strong> la classe, les fields et
+                            la feuille de style.
+                        </li>
+                        <li>
+                            <strong>Enregistrez</strong> vos blocks avec
+                            <code>registerBlock</code>.
+                        </li>
+                        <li>
+                            <strong>Déclarez</strong> le Custom Element avec
+                            <code>defineElement</code>.
+                        </li>
+                        <li>
+                            <strong>Insérez</strong> l’élément dans une page,
+                            idéalement dans un formulaire.
+                        </li>
+                    </ol>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>import {
+    Text,
+    VisualEditor,
+} from "visual-page-editor";
+import "visual-page-editor/style.css";
+
+const editor = new VisualEditor();
+
+editor.registerBlock({
+    name: "heading",
+    label: "Titre",
+    category: "Contenu",
+    usableInSlot: true,
+    fields: [
+        Text("title", {
+            label: "Texte",
+            defaultValue: "Bonjour !",
+        }),
+    ],
+});
+
+editor.defineElement("visual-editor");</code></pre>
+                    </div>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>&lt;form method="post"&gt;
+    &lt;visual-editor
+        name="content"
+        shown="true"
+        value="[]"
+        urlPreview="/preview"
+        iconsUrl="/icons/{{name}}.svg"&gt;
+    &lt;/visual-editor&gt;
+&lt;/form&gt;</code></pre>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <caption>
+                                Attributs du Web Component
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Attribut</th>
+                                    <th>Rôle</th>
+                                    <th>Valeur par défaut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>name</code></td>
+                                    <td>
+                                        Nom du
+                                        <code>&lt;textarea hidden&gt;</code>
+                                        généré pour la soumission du JSON.
+                                    </td>
+                                    <td><code>content</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>value</code></td>
+                                    <td>
+                                        Tableau JSON initial des blocks. Doit
+                                        être un JSON valide.
+                                    </td>
+                                    <td><code>[]</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>shown</code></td>
+                                    <td>
+                                        L’éditeur est visible uniquement quand
+                                        la valeur vaut exactement
+                                        <code>"true"</code>.
+                                    </td>
+                                    <td>masqué</td>
+                                </tr>
+                                <tr>
+                                    <td><code>urlPreview</code></td>
+                                    <td>
+                                        URL appelée en POST pour rendre un block
+                                        ou la page complète.
+                                    </td>
+                                    <td>chaîne vide dans l’élément connecté</td>
+                                </tr>
+                                <tr>
+                                    <td><code>iconsUrl</code></td>
+                                    <td>
+                                        Patron d’URL des icônes de blocks ;
+                                        <code>{{name}}</code> est remplacé par
+                                        leur nom.
+                                    </td>
+                                    <td><code>./icons</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        Le bouton « Enregistrer » est un bouton de soumission.
+                        Placez donc l’éditeur dans un
+                        <code>&lt;form&gt;</code> pour recevoir le JSON dans le
+                        champ caché.
+                    </p>
+                </section>
+
+                <section id="preview">
+                    <div class="section-heading">
+                        <p class="eyebrow">03 — Aperçu</p>
+                        <h2>Implémenter l’endpoint de rendu</h2>
+                    </div>
+                    <p>
+                        L’éditeur envoie du JSON avec
+                        <code>Content-Type: application/json</code>. Une requête
+                        de block contient un objet ; une requête de page
+                        contient le tableau complet. La réponse attendue est du
+                        HTML.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>// Exemple de contrat, indépendant du framework serveur
+app.post("/preview", async (request, response) =&gt; {
+    const payload = request.body;
+
+    const html = Array.isArray(payload)
+        ? await renderPage(payload)
+        : await renderComponent(payload._name, payload.data);
+
+    response.type("text/html").send(html);
+});</code></pre>
+                    </div>
+                    <aside class="callout warning">
+                        <strong>Sécurité.</strong> Le field
+                        <code>HTMLText</code> produit du HTML. Assainissez-le
+                        côté serveur selon votre politique avant de l’afficher
+                        sur un site public.
+                    </aside>
+                </section>
+
+                <section id="blocks">
+                    <div class="section-heading">
+                        <p class="eyebrow">04 — Blocks</p>
+                        <h2>Déclarer un composant éditable</h2>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <caption>
+                                Options de
+                                <code>registerBlock</code>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>name</code></td>
+                                    <td><code>string</code></td>
+                                    <td>
+                                        Identifiant technique écrit dans
+                                        <code>_name</code> et envoyé au
+                                        renderer.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td><code>string</code></td>
+                                    <td>Nom affiché dans la bibliothèque.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>fields</code></td>
+                                    <td><code>FieldDefinition[]</code></td>
+                                    <td>
+                                        Liste des fields et groupes éditables.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>category</code></td>
+                                    <td><code>string?</code></td>
+                                    <td>
+                                        Catégorie de classement dans la
+                                        bibliothèque.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>usableInSlot</code></td>
+                                    <td><code>boolean?</code></td>
+                                    <td>
+                                        Autorise le block dans un
+                                        <code>Slot</code>. Défaut :
+                                        <code>false</code>.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="options-communes">
+                    <div class="section-heading">
+                        <p class="eyebrow">05 — Configuration</p>
+                        <h2>Options communes aux fields</h2>
+                    </div>
+                    <p>
+                        <code>defineField</code> ajoute automatiquement
+                        <code>enabled: true</code> et fusionne les valeurs par
+                        défaut. Toutes les options peuvent aussi être une
+                        promesse, une fonction dérivée des données du block ou
+                        une référence créée avec <code>ref</code>.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Comportement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>label</code></td>
+                                    <td><code>string</code></td>
+                                    <td>
+                                        Libellé visible. Requis par la majorité
+                                        des fields, parfois fourni par défaut à
+                                        <code>""</code>.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>description</code></td>
+                                    <td><code>string?</code></td>
+                                    <td>
+                                        Aide affichée sous le libellé lorsque le
+                                        field utilise le wrapper
+                                        <code>Field</code>.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>defaultValue</code></td>
+                                    <td>dépend du field</td>
+                                    <td>
+                                        Valeur injectée à la création d’un
+                                        block.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>enabled</code></td>
+                                    <td>
+                                        <code
+                                            >boolean | (data) =&gt;
+                                            boolean</code
+                                        >
+                                    </td>
+                                    <td>
+                                        Désactive visuellement et
+                                        fonctionnellement le field si faux.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>Text("buttonLabel", {
+    label: "Libellé",
+    enabled: (data) =&gt; data.showButton,
+});
+
+Repeater("items", {
+    label: "Éléments",
+    max: ref&lt;number&gt;("limit"),
+    fields: [Text("title", { label: "Titre" })],
+});
+
+Select("remoteItem", {
+    label: "Élément distant",
+    options: fetchOptions(), // Promise acceptée
+});</code></pre>
+                    </div>
+                </section>
+
+                <section id="fields">
+                    <div class="section-heading fields-heading">
+                        <div>
+                            <p class="eyebrow">06 — Référence</p>
+                            <h2>Tous les fields</h2>
+                        </div>
+                        <label class="search"
+                            ><span class="sr-only">Filtrer les fields</span
+                            ><input
+                                id="field-search"
+                                type="search"
+                                placeholder="Filtrer les fields…"
+                                autocomplete="off"
+                        /></label>
+                    </div>
+                    <div class="field-grid" id="field-grid">
+                        <article
+                            class="field-card"
+                            data-search="text texte chaine multiline placeholder">
+                            <h3><code>Text(name, options)</code></h3>
+                            <p>
+                                Texte court ou zone multiligne. Valeur :
+                                <code>string</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>multiline?</code></dt>
+                                <dd><code>false</code></dd>
+                                <dt><code>placeholder?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="number nombre min max each suffix decimal">
+                            <h3><code>Number(name, options)</code></h3>
+                            <p>
+                                Nombre avec boutons d’incrémentation. Valeur :
+                                <code>number</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>0</code></dd>
+                                <dt><code>min?</code></dt>
+                                <dd><code>-Infinity</code></dd>
+                                <dt><code>max?</code></dt>
+                                <dd><code>Infinity</code></dd>
+                                <dt><code>each?</code></dt>
+                                <dd>Pas, défaut <code>1</code>.</dd>
+                                <dt><code>suffix?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="checkbox booleen interrupteur">
+                            <h3><code>Checkbox(name, options)</code></h3>
+                            <p>
+                                Interrupteur booléen. Valeur :
+                                <code>boolean</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>false</code></dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="color couleur palette custom position">
+                            <h3><code>Color(name, options)</code></h3>
+                            <p>
+                                Palette et sélecteur de couleur optionnel.
+                                Valeur : <code>string</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>colors</code></dt>
+                                <dd>
+                                    <code>string[]</code> ou
+                                    <code>{ value, label }[]</code>.
+                                </dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>enableCustomColor?</code></dt>
+                                <dd><code>false</code></dd>
+                                <dt><code>position?</code></dt>
+                                <dd>
+                                    <code>"bottom" | "top"</code>, défaut
+                                    <code>bottom</code>.
+                                </dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="file fichier browse parcourir placeholder">
+                            <h3><code>File(name, options)</code></h3>
+                            <p>
+                                Chemin texte avec bouton de navigateur de
+                                fichiers. Valeur : <code>string</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>onBrowse</code></dt>
+                                <dd>
+                                    <code
+                                        >() =&gt; Promise&lt;string |
+                                        null&gt;</code
+                                    >. La valeur n’est modifiée que si le
+                                    résultat n’est pas nul.
+                                </dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>placeholder?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="select liste options render placeholder element html">
+                            <h3><code>Select(name, options)</code></h3>
+                            <p>
+                                Liste de choix, synchrone ou chargée par
+                                promesse. Valeur : type de l’option.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>options</code></dt>
+                                <dd>
+                                    <code
+                                        >{ value: any, render: () =&gt;
+                                        ReactNode | HTMLElement }[]</code
+                                    >
+                                </dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>placeholder?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="radio choix row col collapsed tooltip label checked unchecked">
+                            <h3><code>Radio(name, options)</code></h3>
+                            <p>
+                                Choix exclusif, en ligne ou colonne. Valeur :
+                                <code>string</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>options</code></dt>
+                                <dd>
+                                    Tableau de
+                                    <code>{ value, label, tooltip? }</code>.
+                                    <code>label</code> accepte un nœud, un
+                                    <code>HTMLElement</code>, une fonction de
+                                    l’état ou
+                                    <code>{ checked, unchecked }</code>.
+                                </dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>collapsed?</code></dt>
+                                <dd><code>false</code></dd>
+                                <dt><code>layout?</code></dt>
+                                <dd>
+                                    <code>"row" | "col"</code>, défaut
+                                    <code>col</code>.
+                                </dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="range intervalle min max step curseur double">
+                            <h3><code>Range(name, options)</code></h3>
+                            <p>
+                                Curseur simple ou double. Valeur :
+                                <code>number</code> ou
+                                <code>{ min, max }</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>min</code></dt>
+                                <dd>
+                                    Borne basse, défaut technique
+                                    <code>0</code>.
+                                </dd>
+                                <dt><code>max</code></dt>
+                                <dd>
+                                    Borne haute, défaut technique
+                                    <code>100</code>.
+                                </dd>
+                                <dt><code>step?</code></dt>
+                                <dd><code>1</code></dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd>
+                                    Nombre ou objet ; un objet active deux
+                                    poignées.
+                                </dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="htmltext html riche rich text tiptap toolbar buttons headings colors font">
+                            <h3><code>HTMLText(name, options)</code></h3>
+                            <p>
+                                Éditeur HTML riche basé sur Tiptap. Valeur :
+                                chaîne HTML.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>placeholder?</code></dt>
+                                <dd><code>"Votre texte ici..."</code></dd>
+                                <dt><code>buttons?</code></dt>
+                                <dd>
+                                    Configuration complète de la barre (voir
+                                    ci-dessous).
+                                </dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                            <details>
+                                <summary>
+                                    Valeurs de <code>buttons</code>
+                                </summary>
+                                <p>
+                                    Contrôles unitaires : <code>bold</code>,
+                                    <code>italic</code>, <code>underline</code>,
+                                    <code>strike</code>,
+                                    <code>bulletList</code>,
+                                    <code>orderedList</code>, <code>left</code>,
+                                    <code>center</code>, <code>right</code>,
+                                    <code>justify</code>. Raccourcis avec
+                                    valeurs prédéfinies : <code>headings</code>,
+                                    <code>textStyle</code>,
+                                    <code>textDecoration</code>,
+                                    <code>lists</code>, <code>textAlign</code>,
+                                    <code>fontFamily</code>,
+                                    <code>fontWeight</code>,
+                                    <code>fontSize</code>. Listes personnalisées
+                                    : <code>{ headings }</code>,
+                                    <code>{ colors }</code>,
+                                    <code>{ backgroundColors }</code>,
+                                    <code>{ fontFamily }</code> ou
+                                    <code>{ fontFamilies }</code>,
+                                    <code>{ textStyle }</code>,
+                                    <code>{ textDecoration }</code>,
+                                    <code>{ lists }</code>,
+                                    <code>{ fontWeights }</code>,
+                                    <code>{ fontSizes }</code>,
+                                    <code>{ textAlign }</code>.
+                                </p>
+                            </details>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="repeater repetition collection liste drag min max itemlabel addbuttonlabel">
+                            <h3><code>Repeater(name, options)</code></h3>
+                            <p>
+                                Collection ordonnable d’objets. Chaque item
+                                reçoit un <code>_id</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé.</dd>
+                                <dt><code>fields</code></dt>
+                                <dd>Fields de chaque item.</dd>
+                                <dt><code>defaultValue?</code></dt>
+                                <dd><code>[]</code></dd>
+                                <dt><code>itemLabel?</code></dt>
+                                <dd>
+                                    Chemin profond comme
+                                    <code>button.label</code>, ou texte
+                                    contenant <code>{{id}}</code>.
+                                </dd>
+                                <dt><code>min?</code></dt>
+                                <dd><code>0</code></dd>
+                                <dt><code>max?</code></dt>
+                                <dd><code>Infinity</code></dd>
+                                <dt><code>addButtonLabel?</code></dt>
+                                <dd>
+                                    Défaut traduit par la clé <code>add</code>.
+                                </dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="slot composant imbrique nested usableinslot">
+                            <h3><code>Slot(name, options)</code></h3>
+                            <p>
+                                Emplacement pour un block dont
+                                <code>usableInSlot</code> vaut vrai. Valeur :
+                                <code>ComponentValue</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé requis.</dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Texte d’aide.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="group groupe objet fields label">
+                            <h3><code>Group(name, options)</code></h3>
+                            <p>Regroupe des fields sous une propriété objet.</p>
+                            <dl>
+                                <dt><code>label?</code></dt>
+                                <dd><code>""</code></dd>
+                                <dt><code>fields</code></dt>
+                                <dd>Fields enfants, défaut <code>[]</code>.</dd>
+                                <dt><code>defaultValue</code></dt>
+                                <dd>
+                                    Construit automatiquement depuis les valeurs
+                                    par défaut enfants.
+                                </dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="row ligne grille columns collapsed label groupe">
+                            <h3><code>Row(options)</code></h3>
+                            <p>
+                                Groupe de présentation : aligne plusieurs fields
+                                sur une grille sans ajouter de niveau aux
+                                données.
+                            </p>
+                            <dl>
+                                <dt><code>fields</code></dt>
+                                <dd>Fields enfants.</dd>
+                                <dt><code>columns?</code></dt>
+                                <dd>
+                                    Valeur CSS de
+                                    <code>grid-template-columns</code> ; par
+                                    défaut une colonne égale par field.
+                                </dd>
+                                <dt><code>collapsed?</code></dt>
+                                <dd>Supprime l’espace entre colonnes.</dd>
+                                <dt><code>label?</code></dt>
+                                <dd>Titre du groupe.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="column colonne fields groupe">
+                            <h3><code>Column(options)</code></h3>
+                            <p>
+                                Alias de <code>Row</code> avec
+                                <code>columns: "100%"</code>.
+                            </p>
+                            <dl>
+                                <dt><code>fields</code></dt>
+                                <dd>Fields enfants empilés.</dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="tabs onglets name key usetabnameaskey fields">
+                            <h3><code>Tabs(tabs)</code></h3>
+                            <p>
+                                Répartit les fields dans des onglets, avec
+                                données à plat ou imbriquées.
+                            </p>
+                            <dl>
+                                <dt><code>name</code></dt>
+                                <dd>Libellé d’onglet.</dd>
+                                <dt><code>fields</code></dt>
+                                <dd>Fields de l’onglet.</dd>
+                                <dt><code>useTabNameAsKey?</code></dt>
+                                <dd>
+                                    Imbrique les valeurs sous une clé si vrai.
+                                </dd>
+                                <dt><code>key?</code></dt>
+                                <dd>
+                                    Clé d’imbrication ; sinon <code>name</code>.
+                                </dd>
+                            </dl>
+                        </article>
+                        <article
+                            class="field-card"
+                            data-search="field wrapper bas niveau label description enabled">
+                            <h3><code>Field(props)</code></h3>
+                            <p>
+                                Wrapper React de bas niveau exporté pour
+                                construire un field personnalisé ; ce n’est pas
+                                une définition à placer directement dans
+                                <code>fields</code>.
+                            </p>
+                            <dl>
+                                <dt><code>label</code></dt>
+                                <dd>Libellé requis.</dd>
+                                <dt><code>description?</code></dt>
+                                <dd>Aide.</dd>
+                                <dt><code>enabled?</code></dt>
+                                <dd>État visuel, défaut vrai.</dd>
+                                <dt><code>children</code></dt>
+                                <dd>Contrôle React rendu.</dd>
+                            </dl>
+                        </article>
+                    </div>
+                    <p class="empty-state" id="field-empty" hidden>
+                        Aucun field ne correspond à cette recherche.
+                    </p>
+                </section>
+
+                <section id="define-field">
+                    <div class="section-heading">
+                        <p class="eyebrow">07 — Extension</p>
+                        <h2>Créer un field avec <code>defineField</code></h2>
+                    </div>
+                    <p>
+                        Un renderer reçoit <code>value</code>,
+                        <code>onChange</code> et les
+                        <code>options</code> fusionnées.
+                        <code>defineField</code> transforme ce renderer en
+                        factory typée <code>(name, options)</code>.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>import { defineField, Field } from "visual-page-editor";
+
+type RatingOptions = {
+    label: string;
+    description?: string;
+    defaultValue?: number;
+    max?: number;
+};
+
+const defaults = {
+    defaultValue: 0,
+    max: 5,
+};
+
+const RatingRenderer = ({ value, onChange, options }: {
+    value: number;
+    onChange: (value: number) =&gt; void;
+    options: RatingOptions &amp; typeof defaults;
+}) =&gt; (
+    &lt;Field label={options.label} description={options.description}&gt;
+        &lt;input
+            type="range"
+            min="0"
+            max={options.max}
+            value={value}
+            onChange={(event) =&gt; onChange(Number(event.target.value))}
+        /&gt;
+    &lt;/Field&gt;
+);
+
+export const Rating = defineField&lt;
+    RatingOptions,
+    number,
+    typeof defaults
+&gt;({
+    defaultOptions: defaults,
+    render: RatingRenderer,
+});
+
+// Utilisation
+Rating("score", { label: "Note", max: 10 });</code></pre>
+                    </div>
+                    <aside class="callout note">
+                        <strong>Valeur initiale.</strong> Mettez
+                        systématiquement une valeur exploitable dans
+                        <code>defaultOptions.defaultValue</code>. Pour un field
+                        contenant <code>fields</code>, la factory construit
+                        l’objet initial à partir des valeurs par défaut enfants.
+                    </aside>
+                </section>
+
+                <section id="translations">
+                    <div class="section-heading">
+                        <p class="eyebrow">08 — Internationalisation</p>
+                        <h2>Ajouter une traduction</h2>
+                    </div>
+                    <p>
+                        La traduction française complète est exportée sous le
+                        nom <code>FR</code>. Créez un objet complet en partant
+                        de cette base, surchargez les libellés voulus et
+                        passez-le au constructeur. Les clés propres à votre
+                        projet sont autorisées et deviennent accessibles via
+                        <code>translation(key)</code>.
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>import {
+    FR,
+    VisualEditor,
+    translation,
+} from "visual-page-editor";
+
+const en = {
+    ...FR, // garantit que toutes les clés internes existent
+    save: "Save",
+    addComponent: "Add component",
+    closeEditor: "Close editor",
+    heroCategory: "Hero",
+};
+
+const editor = new VisualEditor({ lang: en });
+
+editor.registerBlock({
+    name: "hero",
+    label: "Hero",
+    category: translation("heroCategory"),
+    fields: [],
+});</code></pre>
+                    </div>
+                    <p>
+                        Le constructeur accepte aussi <code>devices</code>.
+                        Chaque appareil a un <code>name</code>, un
+                        <code>type</code> (<code>desktop</code>,
+                        <code>tablet</code> ou <code>mobile</code>), une taille
+                        <code>[largeur, hauteur]</code>, une orientation
+                        facultative et éventuellement
+                        <code>default: true</code>.
+                    </p>
+                </section>
+
+                <section id="data">
+                    <div class="section-heading">
+                        <p class="eyebrow">09 — Données</p>
+                        <h2>Structure produite</h2>
+                    </div>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>[
+    {
+        "_name": "heading",
+        "_id": "identifiant-uuid",
+        "data": {
+            "title": "Bonjour !"
+        },
+        "config": {
+            "id": "",
+            "class": "",
+            "css": ""
+        }
+    }
+]</code></pre>
+                    </div>
+                    <p>
+                        <code>_name</code> sélectionne le renderer,
+                        <code>_id</code> stabilise l’édition et
+                        <code>data</code> contient les valeurs des fields.
+                        <code>config</code> est facultatif et porte
+                        l’identifiant HTML, les classes et le CSS personnalisé
+                        du block.
+                    </p>
+                </section>
+
+                <footer>
+                    <p>
+                        Documentation alignée sur le code du dépôt —
+                        <span id="year"></span>.
+                    </p>
+                    <a href="#top">Retour en haut ↑</a>
+                </footer>
+            </main>
+        </div>
+        <div class="backdrop" id="backdrop" hidden></div>
+    </body>
+</html>

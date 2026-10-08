@@ -49,11 +49,13 @@ export function SidebarHeader() {
             </Tooltip>
 
             <div className='flex items-center ml-auto gap-2'>
-                <RoundedButton
-                    onClick={handleCopy}
-                    classes={"hover:bg-ve-dark/10 p-1"}>
-                    <CodeIcon className='text-5' />
-                </RoundedButton>
+                <Tooltip text={translation("copyToClipboard")}>
+                    <RoundedButton
+                        onClick={handleCopy}
+                        classes={"hover:bg-ve-dark/10 p-1"}>
+                        <CodeIcon className='text-5' />
+                    </RoundedButton>
+                </Tooltip>
                 <button className='btn btn-ve-primary' onClick={handleClick}>
                     {translation("addComponent")}
                 </button>

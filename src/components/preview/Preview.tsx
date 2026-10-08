@@ -108,7 +108,7 @@ export default function Preview() {
             <PreviewSize onChange={handleDeviceChange}></PreviewSize>
             {!loaded && <Loader />}
             <div
-                className={`relative w-full h-1 grow-1 flex items-center justify-center transition-opacity ${!loaded ? "opacity-0" : "opacity-100"} overflow-hidden rounded-3 bg-ve-primary/2`}
+                className={`relative w-full h-1 grow-1 flex items-center justify-center transition-opacity ${!loaded ? "opacity-0" : "opacity-100"} overflow-hidden  bg-ve-primary/2`}
                 ref={frameWrapper}>
                 <iframe
                     onLoad={onLoad}
