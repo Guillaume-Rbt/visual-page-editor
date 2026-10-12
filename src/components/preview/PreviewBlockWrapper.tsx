@@ -17,14 +17,23 @@ export function PreviewBlockWrapper({
     id: string;
     name: string;
 }) {
-    const { moveBlock, removeData, getIndexById, setFocusIndex, focusIndex } =
-        usePartialStore(
-            "moveBlock",
-            "removeData",
-            "getIndexById",
-            "setFocusIndex",
-            "focusIndex",
-        );
+    const {
+        moveBlock,
+        removeData,
+        getIndexById,
+        setFocusIndex,
+        focusIndex,
+        data,
+        setAnimReorder,
+    } = usePartialStore(
+        "moveBlock",
+        "removeData",
+        "getIndexById",
+        "setFocusIndex",
+        "focusIndex",
+        "data",
+        "setAnimReorder",
+    );
 
     const hostRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +42,6 @@ export function PreviewBlockWrapper({
 
     const handleMove = (direction: "up" | "down") => {
         const currentIndex = getIndexById(id);
-
         const newIndex =
             direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
@@ -63,7 +71,7 @@ export function PreviewBlockWrapper({
             behavior: "auto",
         });
     }, [focusIndex, getIndexById, id]);
-
+    const [hovered, setHovered] = useState(false);
     useLayoutEffect(() => {
         const host = hostRef.current;
 
@@ -117,26 +125,30 @@ export function PreviewBlockWrapper({
     }, []);
 
     return (
-        <div style={{ position: "relative" }}>
+        <div
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={(e) => {
+                e.preventDefault();
+                stopPropagation(
+                    setFocusIndex,
+                    getIndexById(id) == focusIndex ? null : getIndexById(id),
+                );
+            }}
+            style={{ position: "relative" }}>
             <div
                 ref={hostRef}
                 style={{
                     position: "absolute",
                     inset: 0,
                     zIndex: 100,
-                }}
-            />
+                    pointerEvents: "none",
+                }}></div>
 
             {shadowContainer &&
                 createPortal(
                     <div
-                        onClick={stopPropagation(
-                            setFocusIndex,
-                            getIndexById(id) == focusIndex
-                                ? null
-                                : getIndexById(id),
-                        )}
-                        className={`absolute inset-0 opacity-0 hover:opacity-100 border-1 border-ve-primary ${getIndexById(id) === focusIndex ? "opacity-100" : ""}`}>
+                        className={`absolute inset-0 opacity-0 pointer-events-none hover:opacity-100 border-1 border-ve-primary ${getIndexById(id) === focusIndex || hovered ? "opacity-100" : ""}`}>
                         <div className='flex absolute top-0 left-[-1px] translate-y-[-100%] transition-opacity duration-200'>
                             <p className='bg-ve-primary text-ve-light px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
                                 {name}
@@ -153,15 +165,29 @@ export function PreviewBlockWrapper({
 
                             <button
                                 type='button'
-                                onClick={stopPropagation(handleMove, "down")}
-                                className='btn btn-ve-primary px-1 pt-1 pb-1  rounded-b-0'>
+                                disabled={getIndexById(id) === data.length - 1}
+                                onClick={stopPropagation(async () => {
+                                    await setAnimReorder({
+                                        preview: true,
+                                        sidebar: true,
+                                    });
+                                    handleMove("down");
+                                })}
+                                className={`btn btn-ve-primary px-1 pt-1 pb-1 rounded-b-0 ${getIndexById(id) === data.length - 1 ? "opacity-50 pointer-events-none" : ""}`}>
                                 <ChevronIcon className='text-[16px] text-ve-light' />
                             </button>
 
                             <button
                                 type='button'
-                                onClick={stopPropagation(handleMove, "up")}
-                                className='btn btn-ve-primary px-1 pt-1 pb-1 rounded-b-0'>
+                                disabled={getIndexById(id) === 0}
+                                onClick={stopPropagation(async () => {
+                                    await setAnimReorder({
+                                        preview: true,
+                                        sidebar: true,
+                                    });
+                                    handleMove("up");
+                                })}
+                                className={`btn btn-ve-primary px-1 pt-1 pb-1 rounded-b-0 ${getIndexById(id) === 0 ? "opacity-50 pointer-events-none" : ""}`}>
                                 <ChevronIcon className='text-[16px] text-ve-light rotate-180' />
                             </button>
                         </div>

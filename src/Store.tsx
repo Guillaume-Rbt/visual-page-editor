@@ -12,7 +12,7 @@ type StoreState = {
     blocksOrder: string[];
     insertIndex: number | null;
     focusIndex: number | null;
-    animReorder: boolean;
+    animReorder: { sidebar: boolean; preview: boolean };
     storedData: ComponentValue[];
     setInsertIndex: (index: number | null) => void;
     insertData: (block: ComponentDefinition) => void;
@@ -22,6 +22,9 @@ type StoreState = {
     removeData: (id: string) => void;
     setFocusIndex: (index: number | null) => void;
     restoreData: () => void;
+    setAnimReorder: (
+        animReorder: Partial<{ sidebar: boolean; preview: boolean }>,
+    ) => Promise<void>;
 };
 
 export type Store = UseBoundStore<StoreApi<StoreState>>;
@@ -60,7 +63,7 @@ export const EditorContextProvider = ({
                 blocks: blocks,
                 data: data,
                 storedData: data,
-                animReorder: false,
+                animReorder: { sidebar: false, preview: false },
                 blocksOrder: [] as string[],
                 focusIndex: null as number | null,
                 insertIndex: null as number | null,
@@ -154,12 +157,12 @@ export const EditorContextProvider = ({
                             focusIndex: finalInsertIndex,
                         });
                     },
-                    updateData: (v: unknown, path: string) => {
+                    updateData: async (v: unknown, path: string) => {
                         const { data } = getState();
                         const keys = path.split(".");
+
                         set({
                             data: setDeepValue(data, keys, v),
-                            animReorder: false,
                         });
                     },
                     moveBlock: (
@@ -170,8 +173,6 @@ export const EditorContextProvider = ({
                         if (setFocus && fromIndex == getState().focusIndex) {
                             set({ focusIndex: toIndex });
                         }
-
-                        set({ animReorder: true });
 
                         set((state) => {
                             const newData = arrayMove(
@@ -185,6 +186,15 @@ export const EditorContextProvider = ({
                                 blocksOrder: newData.map((v) => v._id),
                             };
                         });
+                    },
+                    setAnimReorder: (
+                        opt: Partial<{ sidebar: boolean; preview: boolean }>,
+                    ) => {
+                        set({
+                            animReorder: { ...getState().animReorder, ...opt },
+                        });
+
+                        return Promise.resolve();
                     },
                     removeData: (id: string) => {
                         const { data } = getState();

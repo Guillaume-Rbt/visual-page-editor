@@ -8,7 +8,7 @@ import {
 } from "@dnd-kit/sortable";
 import { Sortable } from "../Sortable";
 import { translation } from "../../visual-editor";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export function SidebarBlocks() {
     const {
@@ -16,17 +16,19 @@ export function SidebarBlocks() {
         moveBlock: moveBlock,
         updateData,
         animReorder,
+        setAnimReorder,
     } = usePartialStore(
         "data",
         "moveBlock",
         "updateData",
         "animReorder",
+        "setAnimReorder",
     );
 
-    const [isDragging, setIsDragging] = useState(false);
 
-    const handleDragStart = () => {
-        setIsDragging(true);
+    const handleDragStart = async () => {
+        setAnimReorder({ sidebar: false, preview: false });
+
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -36,9 +38,9 @@ export function SidebarBlocks() {
 
         const fromIndex = data.findIndex((block) => block._id === active.id);
         const toIndex = data.findIndex((block) => block._id === over.id);
-
+        setAnimReorder({ sidebar: false, preview: true });
         moveBlock(fromIndex, toIndex);
-        setIsDragging(false);
+  
     };
 
     return (
@@ -59,9 +61,13 @@ export function SidebarBlocks() {
                         items={data.map((block) => block._id)}
                         strategy={verticalListSortingStrategy}>
                         {data.map((block, k) => {
+                            console.log(animReorder.sidebar);
+
                             return (
                                 <Sortable
-                                    animateReorder={!isDragging && animReorder}
+                                    animateReorder={
+                                        animReorder.sidebar
+                                    }
                                     key={block._id}
                                     id={block._id}>
                                     <SidebarBlock
@@ -71,7 +77,7 @@ export function SidebarBlocks() {
                                         onUpdate={updateData}></SidebarBlock>
                                 </Sortable>
                             );
-                        })} 
+                        })}
                     </SortableContext>
                 </div>
             </DndContext>

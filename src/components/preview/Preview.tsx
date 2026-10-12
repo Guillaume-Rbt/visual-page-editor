@@ -14,7 +14,6 @@ import TabletLandscapeIcon from "../../assets/imgs/tablet-portrait.svg?react";
 import MobilePortraitIcon from "../../assets/imgs/mobile-landscape.svg?react";
 import MobileLandscapeIcon from "../../assets/imgs/mobile-portrait.svg?react";
 import { Tooltip } from "../ui/Tooltip";
-import unoCss from "virtual:uno.css?inline";
 
 export default function Preview() {
     const getData = useDataGetter();
@@ -84,6 +83,10 @@ export default function Preview() {
         if (!htmlAdded.current) return;
 
         const iFrameDoc = iframe.current!.contentDocument!;
+
+        iFrameDoc.addEventListener("click", (e) => {
+            e.preventDefault();
+        });
 
         const componentsRoot = iFrameDoc.querySelector(
             "#components-root",

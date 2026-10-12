@@ -42,6 +42,8 @@ export function Sortable({
         },
     });
 
+    console.log(animateReorder);
+
     const nodeRef = useRef<HTMLDivElement | null>(null);
     const previousRectRef = useRef<DOMRect | null>(null);
 
