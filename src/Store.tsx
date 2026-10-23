@@ -33,6 +33,7 @@ type EditorContextValue = {
     store: Store;
     iconsUrl: string;
     urlPreview: string;
+    showCloseButton: boolean;
     rootElement: HTMLElement & { pasteData?: boolean };
 };
 
@@ -46,6 +47,7 @@ type EditorContextProviderProps = {
     data: ComponentValue[];
     urlPreview: string;
     children?: ReactNode;
+    showCloseButton: boolean;
     rootElement: HTMLElement & { pasteData?: boolean };
 };
 
@@ -56,11 +58,13 @@ export const EditorContextProvider = ({
     children,
     data: data,
     rootElement,
+    showCloseButton,
 }: EditorContextProviderProps) => {
     const store = create(
         combine(
             {
                 blocks: blocks,
+                showCloseButton: showCloseButton,
                 data: data,
                 storedData: data,
                 animReorder: { sidebar: false, preview: false },
@@ -232,6 +236,7 @@ export const EditorContextProvider = ({
                 iconsUrl: iconsUrl,
                 urlPreview: urlPreview,
                 rootElement: rootElement,
+                showCloseButton: showCloseButton,
             }}>
             {children}
         </EditorContext.Provider>

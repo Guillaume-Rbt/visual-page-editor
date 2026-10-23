@@ -9,6 +9,8 @@ import { Tooltip } from "../ui/Tooltip";
 export function SidebarHeader() {
     const { setInsertIndex, data } = usePartialStore("setInsertIndex", "data");
 
+    const { showCloseButton } = useEditorContext();
+
     const { rootElement } = useEditorContext();
 
     const handleClose = useCallback(() => {
@@ -40,13 +42,15 @@ export function SidebarHeader() {
 
     return (
         <div className='w-full flex items-center p-2 border-b border-ve-dark/10'>
-            <Tooltip text={translation("closeEditor")}>
-                <RoundedButton
-                    classes={"hover:bg-ve-dark/10 p-1"}
-                    onClick={handleClose}>
-                    <CloseIcon className='text-5' />
-                </RoundedButton>
-            </Tooltip>
+            {showCloseButton && (
+                <Tooltip text={translation("closeEditor")}>
+                    <RoundedButton
+                        classes={"hover:bg-ve-dark/10 p-1"}
+                        onClick={handleClose}>
+                        <CloseIcon className='text-5' />
+                    </RoundedButton>
+                </Tooltip>
+            )}
 
             <div className='flex items-center ml-auto gap-2'>
                 <Tooltip text={translation("copyToClipboard")}>

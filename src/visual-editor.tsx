@@ -125,6 +125,11 @@ class VisualEditor {
                     this.root = createRoot(this);
                 }
 
+                const shownAttribute = this.getAttribute("shown");
+
+                const isShown =
+                    shownAttribute === "true" || shownAttribute === "always";
+
                 this.root.render(
                     <ToastProvider>
                         <EditorContextProvider
@@ -134,9 +139,10 @@ class VisualEditor {
                                 this.getAttribute("iconsUrl") || "./icons"
                             }
                             blocks={components}
-                            data={this.data}>
+                            data={this.data}
+                            showCloseButton={shownAttribute !== "always"}>
                             <VisualEditorComponent
-                                visible={this.getAttribute("shown") === "true"}
+                                visible={isShown !== false}
                             />
                             <HiddenTextarea name={this.name} />
                         </EditorContextProvider>
