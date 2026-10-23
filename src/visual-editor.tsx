@@ -2,12 +2,14 @@ import { ComponentDefinition, ComponentValue, Device } from "./types";
 import { createRoot } from "react-dom/client";
 import { VisualEditor as VisualEditorComponent } from "./VisualEditor";
 import { EditorContextProvider, usePartialStore } from "./Store";
+import type { EditorOptions } from "./Store";
 import { Translation } from "./types";
 import { fr as FR } from "./langs/fr";
 import "./assets/css/app.css";
 import "virtual:uno.css";
 import { ToastProvider } from "./components/ui/Toast";
 import type { Root } from "react-dom/client";
+import { v4 as uuidv4 } from "uuid";
 
 const defaultDevices: Device[] = [
     { name: "Mobile", type: "mobile", size: [390, 900] },
@@ -32,28 +34,58 @@ const isValidData = (data: any): data is ComponentValue[] => {
 class VisualEditor {
     static lang: Translation = FR;
     static devices: Device[] = defaultDevices;
-    root = null as unknown as Root;
+    id = uuidv4();
+    blocks: ComponentDefinition[] = components;
+    editorOptions: Partial<EditorOptions>;
 
     constructor(
-        options: { lang?: Translation; devices?: Device[]; name?: string } = {},
+        options: {
+            lang?: Translation;
+            devices?: Device[];
+            name?: string;
+            reorderable?: boolean;
+            requiredBlocks?: string[];
+            allowAdd?: boolean;
+        } = {},
     ) {
         VisualEditor.lang = options.lang ?? FR;
         VisualEditor.devices = options.devices ?? defaultDevices;
+        this.editorOptions = {
+            reorderable: options.reorderable ?? true,
+            requiredBlocks: options.requiredBlocks ?? [],
+            allowAdd: options.allowAdd ?? true,
+        };
     }
 
-    registerBlock(options: ComponentDefinition) {
-        components.push({ usableInSlot: false, ...options });
+    registerBlock(options: ComponentDefinition, instanceBlock = false) {
+        const array = [...this.blocks];
+
+        const canAdd = !array.some((block) => block.name === options.name);
+
+        if (!canAdd) {
+            console.warn(`Block with name "${options.name}" already exists.`);
+            return this;
+        }
+
+        this.blocks.push({ usableInSlot: false, ...options });
+
+        if (!instanceBlock) {
+            components.push({ usableInSlot: false, ...options });
+        }
 
         return this;
     }
 
     defineElement(name = "visual-editor") {
+        const instance = this;
+
         class Element extends HTMLElement {
             root = null as unknown as Root;
             data = [];
             name = "content";
             urlPreview = "/preview";
             pasteData = false;
+            editorInstance = instance;
 
             static get observedAttributes() {
                 return ["previewUrl", "value", "iconsUrl", "shown"];
@@ -138,7 +170,8 @@ class VisualEditor {
                             iconsUrl={
                                 this.getAttribute("iconsUrl") || "./icons"
                             }
-                            blocks={components}
+                            blocks={this.editorInstance.blocks}
+                            editorOptions={this.editorInstance.editorOptions}
                             data={this.data}
                             showCloseButton={shownAttribute !== "always"}>
                             <VisualEditorComponent

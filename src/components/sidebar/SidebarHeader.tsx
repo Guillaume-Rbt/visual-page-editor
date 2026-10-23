@@ -7,7 +7,11 @@ import CloseIcon from "../../assets/imgs/close.svg?react";
 import { Tooltip } from "../ui/Tooltip";
 
 export function SidebarHeader() {
-    const { setInsertIndex, data } = usePartialStore("setInsertIndex", "data");
+    const { setInsertIndex, data, editorOptions } = usePartialStore(
+        "setInsertIndex",
+        "data",
+        "editorOptions",
+    );
 
     const { showCloseButton } = useEditorContext();
 
@@ -60,9 +64,13 @@ export function SidebarHeader() {
                         <CodeIcon className='text-5' />
                     </RoundedButton>
                 </Tooltip>
-                <button className='btn btn-ve-primary' onClick={handleClick}>
-                    {translation("addComponent")}
-                </button>
+                {editorOptions.allowAdd && (
+                    <button
+                        className='btn btn-ve-primary'
+                        onClick={handleClick}>
+                        {translation("addComponent")}
+                    </button>
+                )}
             </div>
         </div>
     );

@@ -17,12 +17,14 @@ export function SidebarBlocks() {
         updateData,
         animReorder,
         setAnimReorder,
+        editorOptions,
     } = usePartialStore(
         "data",
         "moveBlock",
         "updateData",
         "animReorder",
         "setAnimReorder",
+        "editorOptions",
     );
 
 
@@ -69,6 +71,7 @@ export function SidebarBlocks() {
                                         animReorder.sidebar
                                     }
                                     key={block._id}
+                                    interactable={editorOptions.reorderable}
                                     id={block._id}>
                                     <SidebarBlock
                                         hasInsertBefore={k === 0}

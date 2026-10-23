@@ -2,7 +2,6 @@ import {
     Repeater,
     Text,
     VisualEditor,
-    Tabs,
     File,
     Color,
     Number,

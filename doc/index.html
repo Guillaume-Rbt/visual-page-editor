@@ -259,9 +259,10 @@ editor.defineElement("visual-editor");</code></pre>
                                 <tr>
                                     <td><code>shown</code></td>
                                     <td>
-                                        L’éditeur est visible uniquement quand
-                                        la valeur vaut exactement
-                                        <code>"true"</code>.
+                                        <code>"true"</code> affiche l’éditeur
+                                        avec un bouton pour le fermer.
+                                        <code>"always"</code> l’affiche en
+                                        permanence, sans bouton de fermeture.
                                     </td>
                                     <td>masqué</td>
                                 </tr>
@@ -1026,6 +1027,65 @@ editor.registerBlock({
                         facultative et éventuellement
                         <code>default: true</code>.
                     </p>
+                    <h3>Options de gestion des blocks</h3>
+                    <p>
+                        Trois options du constructeur contrôlent ce que
+                        l’utilisateur peut faire, dans la sidebar comme dans
+                        l’aperçu.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Rôle</th>
+                                    <th>Défaut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>reorderable</code></td>
+                                    <td>
+                                        Si <code>false</code>, les blocks ne
+                                        peuvent plus être déplacés (poignée de
+                                        glisser-déposer et boutons
+                                        monter/descendre masqués).
+                                    </td>
+                                    <td><code>true</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>requiredBlocks</code></td>
+                                    <td>
+                                        Liste de noms de blocks obligatoires :
+                                        ils ne peuvent pas être supprimés. S’ils
+                                        sont absents de la valeur initiale, ils
+                                        sont ajoutés automatiquement avec leurs
+                                        valeurs par défaut.
+                                    </td>
+                                    <td><code>[]</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>allowAdd</code></td>
+                                    <td>
+                                        Si <code>false</code>, l’ajout de
+                                        blocks est désactivé (bouton « Ajouter »
+                                        et boutons d’insertion masqués).
+                                    </td>
+                                    <td><code>true</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>const editor = new VisualEditor({
+    reorderable: false,
+    requiredBlocks: ["hero"],
+    allowAdd: false,
+});</code></pre>
+                    </div>
                 </section>
 
                 <section id="data">

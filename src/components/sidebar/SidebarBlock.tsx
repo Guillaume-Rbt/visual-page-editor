@@ -31,7 +31,7 @@ export const SidebarBlock = memo(function SidebarBlock({
         useBoolean(false);
 
     const blockDefinition = useBlockDefinition(name);
-    const { removeData, setFocusIndex, focusIndex, getIndexById, restoreData } =
+    const { removeData, setFocusIndex, focusIndex, getIndexById, restoreData, editorOptions } =
         usePartialStore(
             "removeData",
             "setFocusIndex",
@@ -39,7 +39,10 @@ export const SidebarBlock = memo(function SidebarBlock({
             "getIndexById",
             "setFocusIndex",
             "restoreData",
+            "editorOptions",
         );
+    const canDelete = !editorOptions.requiredBlocks.includes(name);
+    const { allowAdd } = editorOptions;
     const ref = useRef<HTMLDivElement>(null);
 
     const isFocused = useMemo(
@@ -68,7 +71,7 @@ export const SidebarBlock = memo(function SidebarBlock({
         <div
             ref={ref}
             className='relative bg-ve-light w-full flex flex-col shadow rounded-.6 gap-4 border-[1px] border-ve-dark/20 p-is-5 p-ie-2 py-2'>
-            {hasInsertBefore && (
+            {hasInsertBefore && allowAdd && (
                 <ButtonAddComponent addType='before' blockId={id} />
             )}
 
@@ -81,6 +84,7 @@ export const SidebarBlock = memo(function SidebarBlock({
                 <h2 className='font-bold text-5 mr-auto'>
                     {blockDefinition?.label}
                 </h2>
+                {canDelete && (
                 <Tooltip axis='y' text={translation("deleteComponent")}>
                     <RoundedButton
                         onClick={(e) => {
@@ -108,7 +112,8 @@ export const SidebarBlock = memo(function SidebarBlock({
                         classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger  text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
                         <TrashIcon />
                     </RoundedButton>
-                </Tooltip>{" "}
+                </Tooltip>
+                )}{" "}
                 <Tooltip
                     axis='y'
                     text={
@@ -144,7 +149,7 @@ export const SidebarBlock = memo(function SidebarBlock({
                 fields={blockDefinition!.fields ?? []}
             />
 
-            <ButtonAddComponent blockId={id} />
+            {allowAdd && <ButtonAddComponent blockId={id} />}
         </div>
     );
 });

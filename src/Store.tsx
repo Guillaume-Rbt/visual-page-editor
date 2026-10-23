@@ -6,7 +6,20 @@ import { deleteFromArray, insertIntoArray, setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
 import { arrayMove } from "@dnd-kit/sortable";
 
+export type EditorOptions = {
+    reorderable: boolean;
+    requiredBlocks: string[];
+    allowAdd: boolean;
+};
+
+export const defaultEditorOptions: EditorOptions = {
+    reorderable: true,
+    requiredBlocks: [],
+    allowAdd: true,
+};
+
 type StoreState = {
+    editorOptions: EditorOptions;
     blocks: ComponentDefinition[];
     data: ComponentValue[];
     blocksOrder: string[];
@@ -48,10 +61,12 @@ type EditorContextProviderProps = {
     urlPreview: string;
     children?: ReactNode;
     showCloseButton: boolean;
+    editorOptions?: Partial<EditorOptions>;
     rootElement: HTMLElement & { pasteData?: boolean };
 };
 
 export const EditorContextProvider = ({
+    editorOptions,
     blocks: blocks,
     iconsUrl,
     urlPreview,
@@ -60,10 +75,15 @@ export const EditorContextProvider = ({
     rootElement,
     showCloseButton,
 }: EditorContextProviderProps) => {
+  
     const store = create(
         combine(
             {
                 blocks: blocks,
+                editorOptions: {
+                    ...defaultEditorOptions,
+                    ...editorOptions,
+                } as EditorOptions,
                 showCloseButton: showCloseButton,
                 data: data,
                 storedData: data,
@@ -76,6 +96,9 @@ export const EditorContextProvider = ({
             (set, getState) => {
                 return {
                     setInsertIndex: (index: number | null) => {
+                        if (index !== null && !getState().editorOptions.allowAdd) {
+                            return;
+                        }
                         set({ insertIndex: index });
                     },
                     insertData: (block: ComponentDefinition) => {
@@ -174,6 +197,10 @@ export const EditorContextProvider = ({
                         toIndex: number,
                         setFocus: boolean = false,
                     ) => {
+                        if (!getState().editorOptions.reorderable) {
+                            return;
+                        }
+
                         if (setFocus && fromIndex == getState().focusIndex) {
                             set({ focusIndex: toIndex });
                         }
@@ -201,10 +228,15 @@ export const EditorContextProvider = ({
                         return Promise.resolve();
                     },
                     removeData: (id: string) => {
-                        const { data } = getState();
+                        const { data, editorOptions } = getState();
                         const index = data.findIndex((b) => b._id === id);
 
-                        if (index !== -1) {
+                        if (
+                            index !== -1 &&
+                            !editorOptions.requiredBlocks.includes(
+                                data[index]._name,
+                            )
+                        ) {
                             window.sessionStorage.setItem(
                                 "ve-data",
                                 JSON.stringify(data),
@@ -228,6 +260,22 @@ export const EditorContextProvider = ({
             },
         ),
     );
+
+    const presentNames = new Set(data.map((b) => b._name));
+    store
+        .getState()
+        .editorOptions.requiredBlocks.filter((n) => !presentNames.has(n))
+        .forEach((n) => {
+            const definition = blocks.find((b) => b.name === n);
+            if (definition) {
+                store.getState().insertData(definition);
+            }
+        });
+    store.setState({
+        focusIndex: null,
+        insertIndex: null,
+        storedData: store.getState().data,
+    });
 
     return (
         <EditorContext.Provider

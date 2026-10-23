@@ -25,6 +25,7 @@ export function PreviewBlockWrapper({
         focusIndex,
         data,
         setAnimReorder,
+        editorOptions,
     } = usePartialStore(
         "moveBlock",
         "removeData",
@@ -33,6 +34,11 @@ export function PreviewBlockWrapper({
         "focusIndex",
         "data",
         "setAnimReorder",
+        "editorOptions",
+    );
+    const { reorderable } = editorOptions;
+    const canDelete = !editorOptions.requiredBlocks.includes(
+        data.find((b) => b._id === id)?._name ?? "",
     );
 
     const hostRef = useRef<HTMLDivElement>(null);
@@ -156,14 +162,18 @@ export function PreviewBlockWrapper({
                         </div>
 
                         <div className='flex absolute top-0 right-1 gap-1 translate-y-[-100%]  pointer-events-auto'>
-                            <button
-                                type='button'
-                                onClick={stopPropagation(removeData, id)}
-                                className='btn btn-ve-danger px-1 py-.7 text-ve-light rounded-b-0'>
-                                <DeleteIcon className='text-[16px]' />
-                            </button>
+                            {canDelete && (
+                                <button
+                                    type='button'
+                                    onClick={stopPropagation(removeData, id)}
+                                    className='btn btn-ve-danger px-1 py-.7 text-ve-light rounded-b-0'>
+                                    <DeleteIcon className='text-[16px]' />
+                                </button>
+                            )}
 
-                            <button
+                            {reorderable && (
+                                <>
+                                    <button
                                 type='button'
                                 disabled={getIndexById(id) === data.length - 1}
                                 onClick={stopPropagation(async () => {
@@ -190,6 +200,8 @@ export function PreviewBlockWrapper({
                                 className={`btn btn-ve-primary px-1 pt-1 pb-1 rounded-b-0 ${getIndexById(id) === 0 ? "opacity-50 pointer-events-none" : ""}`}>
                                 <ChevronIcon className='text-[16px] text-ve-light rotate-180' />
                             </button>
+                                </>
+                            )}
                         </div>
                     </div>,
                     shadowContainer,

@@ -27,7 +27,7 @@ export function PreviewBlocks({
                         id={block._id}
                         key={block._id}
                         interactable={false}
-                        animateReorder={animReorder}>
+                        animateReorder={animReorder.preview}>
                         <PreviewBlockWrapper
                             id={block._id}
                             name={
