@@ -42,7 +42,6 @@ class VisualEditor {
         options: {
             lang?: Translation;
             devices?: Device[];
-            name?: string;
             reorderable?: boolean;
             requiredBlocks?: string[];
             allowAdd?: boolean;
