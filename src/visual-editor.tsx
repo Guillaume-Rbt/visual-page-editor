@@ -35,7 +35,7 @@ class VisualEditor {
     static lang: Translation = FR;
     static devices: Device[] = defaultDevices;
     id = uuidv4();
-    blocks: ComponentDefinition[] = components;
+    blocks: ComponentDefinition[] = [...components];
     editorOptions: Partial<EditorOptions>;
 
     constructor(
@@ -170,7 +170,7 @@ class VisualEditor {
                             iconsUrl={
                                 this.getAttribute("iconsUrl") || "./icons"
                             }
-                            blocks={this.editorInstance.blocks}
+                            blocks={components}
                             editorOptions={this.editorInstance.editorOptions}
                             data={this.data}
                             showCloseButton={shownAttribute !== "always"}>

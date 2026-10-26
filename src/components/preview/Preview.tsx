@@ -66,17 +66,22 @@ export default function Preview() {
 
     useAsync(async () => {
         data.current = getData();
-        const r = await fetch(previewUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data.current),
-        });
-        const html = await r.text();
-        iframe.current!.srcdoc = html;
+        try {
+            const r = await fetch(previewUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data.current),
+            });
+            if (!r.ok) return;
+            const html = await r.text();
+            iframe.current!.srcdoc = html;
 
-        htmlAdded.current = true;
+            htmlAdded.current = true;
+        } catch (e) {
+            console.error(`Preview unavailable (${previewUrl}):`, e);
+        }
     }, []);
 
     const onLoad = async () => {
