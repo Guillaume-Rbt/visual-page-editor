@@ -82,7 +82,7 @@ class VisualEditor {
             root = null as unknown as Root;
             data = [];
             name = "content";
-            urlPreview = "/preview";
+            previewUrl = "/preview";
             pasteData = false;
             editorInstance = instance;
 
@@ -97,7 +97,7 @@ class VisualEditor {
             connectedCallback() {
                 this.data = JSON.parse(this.getAttribute("value") ?? "[]");
                 this.name = this.getAttribute("name") ?? "content";
-                this.urlPreview = this.getAttribute("urlPreview") ?? "";
+                this.previewUrl = this.getAttribute("previewUrl") ?? "/preview";
                 this.classList.add("ve-editor-element");
                 if (!this.root) {
                     this.root = createRoot(this);
@@ -141,7 +141,8 @@ class VisualEditor {
                 }
                 switch (name) {
                     case "previewUrl":
-                        this.urlPreview = this.getAttribute("previewUrl") ?? "";
+                        this.previewUrl =
+                            this.getAttribute("previewUrl") ?? "/preview";
                         break;
                     case "shown":
                         this.render();
@@ -165,7 +166,7 @@ class VisualEditor {
                     <ToastProvider>
                         <EditorContextProvider
                             rootElement={this}
-                            urlPreview={this.urlPreview}
+                            previewUrl={this.previewUrl}
                             iconsUrl={
                                 this.getAttribute("iconsUrl") || "./icons"
                             }

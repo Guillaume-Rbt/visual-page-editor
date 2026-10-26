@@ -70,7 +70,7 @@ supplied through the `name` attribute.
         name="content"
         shown="true"
         value="[]"
-        urlPreview="/preview"
+        previewUrl="/preview"
         iconsUrl="/icons/{{name}}.svg">
     </visual-editor>
 </form>

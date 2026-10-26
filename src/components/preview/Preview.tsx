@@ -17,7 +17,7 @@ import { Tooltip } from "../ui/Tooltip";
 
 export default function Preview() {
     const getData = useDataGetter();
-    const { urlPreview } = useEditorContext();
+    const { previewUrl } = useEditorContext();
     const data = useRef<ComponentValue[]>([]);
     const iframe = useRef<HTMLIFrameElement>(null);
     const htmlAdded = useRef(false);
@@ -66,7 +66,7 @@ export default function Preview() {
 
     useAsync(async () => {
         data.current = getData();
-        const r = await fetch(urlPreview, {
+        const r = await fetch(previewUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

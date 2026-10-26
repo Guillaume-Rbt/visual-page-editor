@@ -10,9 +10,9 @@ export function component({
     html: string;
     data: ComponentValue;
 }) {
-    const { urlPreview } = useEditorContext();
+    const { previewUrl } = useEditorContext();
 
-    const html = useBlockPreview(data, urlPreview, initial);
+    const html = useBlockPreview(data, previewUrl, initial);
 
     return <div dangerouslySetInnerHTML={{ __html: html }}></div>;
 }

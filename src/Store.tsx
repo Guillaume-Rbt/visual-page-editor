@@ -45,7 +45,7 @@ export type Store = UseBoundStore<StoreApi<StoreState>>;
 type EditorContextValue = {
     store: Store;
     iconsUrl: string;
-    urlPreview: string;
+    previewUrl: string;
     showCloseButton: boolean;
     rootElement: HTMLElement & { pasteData?: boolean };
 };
@@ -58,7 +58,7 @@ type EditorContextProviderProps = {
     iconsUrl: string;
     blocks: ComponentDefinition[];
     data: ComponentValue[];
-    urlPreview: string;
+    previewUrl: string;
     children?: ReactNode;
     showCloseButton: boolean;
     editorOptions?: Partial<EditorOptions>;
@@ -69,13 +69,12 @@ export const EditorContextProvider = ({
     editorOptions,
     blocks: blocks,
     iconsUrl,
-    urlPreview,
+    previewUrl,
     children,
     data: data,
     rootElement,
     showCloseButton,
 }: EditorContextProviderProps) => {
-  
     const store = create(
         combine(
             {
@@ -96,7 +95,10 @@ export const EditorContextProvider = ({
             (set, getState) => {
                 return {
                     setInsertIndex: (index: number | null) => {
-                        if (index !== null && !getState().editorOptions.allowAdd) {
+                        if (
+                            index !== null &&
+                            !getState().editorOptions.allowAdd
+                        ) {
                             return;
                         }
                         set({ insertIndex: index });
@@ -282,7 +284,7 @@ export const EditorContextProvider = ({
             value={{
                 store: store,
                 iconsUrl: iconsUrl,
-                urlPreview: urlPreview,
+                previewUrl: previewUrl,
                 rootElement: rootElement,
                 showCloseButton: showCloseButton,
             }}>
