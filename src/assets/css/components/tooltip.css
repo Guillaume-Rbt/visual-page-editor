@@ -1,4 +1,5 @@
 .tooltip {
+    font-family: "Urbanist", sans-serif;
     transition-property: opacity, translate;
     transition-duration: 200ms, 200ms;
     width: max-content;

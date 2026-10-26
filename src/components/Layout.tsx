@@ -24,7 +24,7 @@ export function Layout({ visible = true }: { visible?: boolean }) {
             </div>
 
             <div
-                className={`${isResizing ? "pointer-events-none" : ""} w-full h-full max-md:col-start-1 max-md:row-start-1 ${!previewVisible ? "max-md:opacity-0 max-md:pointer-events-none" : "max-md:opacity-100"} transition-[opacity] duration-200`}>
+                className={`${isResizing ? "pointer-events-none" : ""} w-full h-full max-md:col-start-1 max-md:row-start-1 ${!previewVisible ? "max-md:opacity-0 max-md:pointer-events-none" : "max-md:opacity-100"} transition-[opacity] duration-200 bg-ve-light`}>
                 <Preview />
             </div>
             <Sizer
