@@ -90,7 +90,9 @@ export default function Preview() {
 
         const componentsRoot = iFrameDoc.querySelector(
             "#components-root",
-        ) as HTMLDivElement;
+        ) as HTMLDivElement | null;
+        // The initial about:blank load can fire after srcdoc is set; wait for the real load
+        if (!componentsRoot) return;
         root.current = componentsRoot;
         initHTML.current = Array.from(componentsRoot.children).reduce(
             (acc, c, i) => {
