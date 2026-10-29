@@ -1086,6 +1086,24 @@ editor.registerBlock({
     allowAdd: false,
 });</code></pre>
                     </div>
+
+                    <h3>Taille de base de l’interface</h3>
+                    <p>
+                        L’éditeur est isolé du <code>font-size</code> de la
+                        page hôte : toutes les tailles (texte, espacements,
+                        rayons…) sont calculées à partir d’une unité de base de
+                        <code>16px</code>. Pour la modifier, utilisez
+                        <code>baseSize</code> (nombre en pixels ou longueur CSS)
+                        dans le constructeur, ou en second argument de
+                        <code>defineElement</code> (prioritaire).
+                    </p>
+                    <div class="code-block">
+                        <button class="copy-button" type="button">
+                            Copier
+                        </button>
+                        <pre><code>const editor = new VisualEditor({ baseSize: 14 });
+editor.defineElement("visual-editor", { baseSize: "0.9em" });</code></pre>
+                    </div>
                 </section>
 
                 <section id="data">

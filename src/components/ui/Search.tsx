@@ -4,7 +4,7 @@ export function Search({
     onChange,
     value,
     placeholder,
-    width = "30rem",
+    width = "calc(30 * var(--ve-rem, 16px))",
 }: {
     onChange: (value: string) => void;
     value: string;

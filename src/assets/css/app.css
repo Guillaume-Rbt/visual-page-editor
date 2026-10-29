@@ -5,6 +5,10 @@
 @import "./components/HTMLText.css" layer(custom);
 @import "./components/toast.css" layer(custom);
 @import "./Urbanist.css" layer(font);
+.ve-editor-element {
+    --ve-rem: 16px;
+}
+
 .ve-editor,
 .ve-editor-element {
     font-family: "Urbanist", "sans-serif";

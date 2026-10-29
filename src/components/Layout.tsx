@@ -12,14 +12,14 @@ export function Layout({ visible = true }: { visible?: boolean }) {
 
     const [sizerValue, setSizerValue] = useState<number | null>(null);
 
-    const sidebarWidth = `clamp(min(30rem, 50%), ${sizerValue ?? 0}px, 50%)`;
+    const sidebarWidth = `clamp(min(calc(30 * var(--ve-rem, 16px)), 50%), ${sizerValue ?? 0}px, 50%)`;
 
     return (
         <div
             style={{ "--ve-sidebar-w": sidebarWidth } as React.CSSProperties}
             className={`ve-editor relative w-full h-full overflow-hidden grid-rows-[100%] grid max-md:grid-cols-1 max-md:grid-rows-[calc(100%_-_2.5rem)_1fr] md:grid-cols-[var(--ve-sidebar-w)_1fr] ${visible ? "editor-visible" : "editor-hidden"}`}>
             <div
-                className={`w-full h-full max-md:col-start-1 max-md:row-start-1 ${previewVisible ? "max-md:opacity-0 max-md:pointer-events-none" : "max-md:opacity-100"} transition-[opacity] duration-200`}>
+                className={`w-full h-full max-md:col-start-1 max-md:row-start-1 ${previewVisible ? "max-md:opacity-0 max-md:pointer-events-none" : "max-md:opacity-100"} transition-[opacity] duration-200 z-2`}>
                 <Sidebar></Sidebar>
             </div>
 

@@ -37,6 +37,7 @@ class VisualEditor {
     id = uuidv4();
     blocks: ComponentDefinition[] = [...components];
     editorOptions: Partial<EditorOptions>;
+    baseSize?: number | string;
 
     constructor(
         options: {
@@ -45,10 +46,12 @@ class VisualEditor {
             reorderable?: boolean;
             requiredBlocks?: string[];
             allowAdd?: boolean;
+            baseSize?: number | string;
         } = {},
     ) {
         VisualEditor.lang = options.lang ?? FR;
         VisualEditor.devices = options.devices ?? defaultDevices;
+        this.baseSize = options.baseSize;
         this.editorOptions = {
             reorderable: options.reorderable ?? true,
             requiredBlocks: options.requiredBlocks ?? [],
@@ -75,8 +78,12 @@ class VisualEditor {
         return this;
     }
 
-    defineElement(name = "visual-editor") {
+    defineElement(
+        name = "visual-editor",
+        elementOptions: { baseSize?: number | string } = {},
+    ) {
         const instance = this;
+        const baseSize = elementOptions.baseSize ?? this.baseSize;
 
         class Element extends HTMLElement {
             root = null as unknown as Root;
@@ -99,6 +106,14 @@ class VisualEditor {
                 this.name = this.getAttribute("name") ?? "content";
                 this.previewUrl = this.getAttribute("previewUrl") ?? "/preview";
                 this.classList.add("ve-editor-element");
+                if (baseSize !== undefined) {
+                    this.style.setProperty(
+                        "--ve-rem",
+                        typeof baseSize === "number"
+                            ? `${baseSize}px`
+                            : baseSize,
+                    );
+                }
                 if (!this.root) {
                     this.root = createRoot(this);
                 }

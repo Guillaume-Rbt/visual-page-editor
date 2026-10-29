@@ -12,6 +12,15 @@ function rewriteRootSelectors(rule) {
     );
 }
 
+// Make sizes independent from the host page's root font-size
+function rewriteRem(decl) {
+    if (!decl.value.includes("rem")) return;
+    decl.value = decl.value.replace(
+        /(-?\d*\.?\d+)rem\b/g,
+        (_, n) => `calc(${n} * var(--ve-rem, 16px))`,
+    );
+}
+
 function scopeContainer(container) {
     const scoped = [];
 
@@ -22,6 +31,8 @@ function scopeContainer(container) {
             return;
         }
         if (node.type === "rule") rewriteRootSelectors(node);
+        node.walkDecls?.(rewriteRem);
+        if (node.type === "decl") rewriteRem(node);
         scoped.push(node);
     });
 

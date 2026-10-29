@@ -80,6 +80,18 @@ The preview URL receives either a single `{ _name, _id, data }` block or the
 complete block array as a JSON POST request and must return HTML. See
 `server/server.ts` for a Fastify and Edge implementation.
 
+## Interface size
+
+The editor ignores the host page's root `font-size`. All sizes derive from a
+base unit of `16px`, which can be changed with `baseSize` (a number in pixels
+or any CSS length), either in the constructor or in `defineElement` (which
+takes precedence):
+
+```ts
+const visualEditor = new VisualEditor({ baseSize: 14 });
+visualEditor.defineElement("visual-editor", { baseSize: "0.9em" });
+```
+
 ## Documentation
 
 The complete documentation is available in [`doc/index.html`](doc/index.html).
