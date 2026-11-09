@@ -18,7 +18,7 @@ export function Modal({
 }) {
     return (
         <div
-            className={`position-fixed inset-0 bg-ve-dark/50 flex items-center justify-center z-index-50 ${visible ? "flex" : "hidden"}`}>
+            className={`position-fixed inset-0 bg-ve-dark/50 flex items-center justify-center z-50 ${visible ? "flex" : "hidden"}`}>
             <div
                 className={`rounded-2 font-bold flex flex-col bg-ve-light overflow-hidden min-w-[300px] w-full  max-w-[80%] max-h-[80%] ${stringifyValue(classes)}`}>
                 <ModalHeader

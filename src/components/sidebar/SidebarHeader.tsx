@@ -66,6 +66,7 @@ export function SidebarHeader() {
                 </Tooltip>
                 {editorOptions.allowAdd && (
                     <button
+                        type='button'
                         className='btn btn-ve-primary'
                         onClick={handleClick}>
                         {translation("addComponent")}

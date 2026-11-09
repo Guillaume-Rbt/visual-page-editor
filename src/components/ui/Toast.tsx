@@ -151,6 +151,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
                     <div className='flex gap-2 justify-end'>
                         {toast.actions?.map((action, index) => (
                             <button
+                                type='button'
                                 key={index}
                                 className={`btn ${actionsBtnType[action.type]} text-4 px-2.5 font-400  rounded-2`}
                                 onClick={() => {

@@ -31,16 +31,22 @@ export const SidebarBlock = memo(function SidebarBlock({
         useBoolean(false);
 
     const blockDefinition = useBlockDefinition(name);
-    const { removeData, setFocusIndex, focusIndex, getIndexById, restoreData, editorOptions } =
-        usePartialStore(
-            "removeData",
-            "setFocusIndex",
-            "focusIndex",
-            "getIndexById",
-            "setFocusIndex",
-            "restoreData",
-            "editorOptions",
-        );
+    const {
+        removeData,
+        setFocusIndex,
+        focusIndex,
+        getIndexById,
+        restoreData,
+        editorOptions,
+    } = usePartialStore(
+        "removeData",
+        "setFocusIndex",
+        "focusIndex",
+        "getIndexById",
+        "setFocusIndex",
+        "restoreData",
+        "editorOptions",
+    );
     const canDelete = !editorOptions.requiredBlocks.includes(name);
     const { allowAdd } = editorOptions;
     const ref = useRef<HTMLDivElement>(null);
@@ -85,34 +91,35 @@ export const SidebarBlock = memo(function SidebarBlock({
                     {blockDefinition?.label}
                 </h2>
                 {canDelete && (
-                <Tooltip axis='y' text={translation("deleteComponent")}>
-                    <RoundedButton
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            removeData(id);
-                            addToast(
-                                {
-                                    title: translation("deletion"),
-                                    message: translation("deletionInProgress"),
-                                    actions: [
-                                        {
-                                            label: translation(
-                                                "cancelDeletion",
-                                            ),
-                                            type: "primary",
-                                            onClick: () => {
-                                                restoreData();
+                    <Tooltip axis='y' text={translation("deleteComponent")}>
+                        <RoundedButton
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                removeData(id);
+                                addToast(
+                                    {
+                                        title: translation("deletion"),
+                                        message:
+                                            translation("deletionInProgress"),
+                                        actions: [
+                                            {
+                                                label: translation(
+                                                    "cancelDeletion",
+                                                ),
+                                                type: "primary",
+                                                onClick: () => {
+                                                    restoreData();
+                                                },
                                             },
-                                        },
-                                    ],
-                                },
-                                3000,
-                            );
-                        }}
-                        classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger  text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
-                        <TrashIcon />
-                    </RoundedButton>
-                </Tooltip>
+                                        ],
+                                    },
+                                    3000,
+                                );
+                            }}
+                            classes='p-1 delete-btn hover:bg-ve-dark/10 hover:text-ve-danger  text-5 cursor-pointer opacity-0 group-hover:opacity-100'>
+                            <TrashIcon />
+                        </RoundedButton>
+                    </Tooltip>
                 )}{" "}
                 <Tooltip
                     axis='y'

@@ -15,6 +15,7 @@ export function RoundedButton({
 }) {
     return (
         <button
+            type='button'
             ref={ref}
             {...props}
             onClick={onClick}

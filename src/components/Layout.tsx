@@ -118,11 +118,13 @@ function MobileViewToggle({
             onClick={handleClick}
             className='w-full flex md-hidden justify-center items-center'>
             <button
+                type='button'
                 data-action='edit'
                 className={`px-4 py-2 text-5 ${!isPreviewVisible ? "bg-ve-primary text-ve-light" : "bg-ve-light text-black"} cursor-pointer`}>
                 <EditIcon />
             </button>
             <button
+                type='button'
                 data-action='preview'
                 className={`px-4 py-2 text-5 ${isPreviewVisible ? "bg-ve-primary text-ve-light" : "bg-ve-light text-black"} cursor-pointer`}>
                 <PreviewIcon />

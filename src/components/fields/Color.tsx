@@ -69,6 +69,7 @@ function ColorComponent({
                         return (
                             <Tooltip text={c.label} key={c.value}>
                                 <button
+                                    type='button'
                                     onClick={() => {
                                         onUpdate(c.value);
                                     }}
@@ -94,6 +95,7 @@ function ColorComponent({
                 )}
             </div>
             <button
+                type='button'
                 style={{ background: getColor(value) }}
                 className='w-full h-full top-0 left-0 absolute border-1 rounded-2 border-solid border-ve-dark/20 cursor-pointer overflow-hidden'
                 onClick={toggle}>

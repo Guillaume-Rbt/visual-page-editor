@@ -158,6 +158,7 @@ function RepeaterComponent({
 
                 <div className='w-full rounded-2 flex justify-end bg-ve-dark/10'>
                     <button
+                        type='button'
                         className={`btn btn-outline-ve-primary w-max ${safeValue.length >= max ? "disabled" : ""}`}
                         onClick={insertData}>
                         {addButtonLabel}

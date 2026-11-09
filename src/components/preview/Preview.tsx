@@ -170,6 +170,7 @@ function PreviewSize({ onChange }: { onChange: (device: Device) => void }) {
                     key={device.name}
                     text={`${translation("width")} : ${typeof device.size[0] === "number" ? device.size[0] + "px" : device.size[0]}<br>${translation("height")} : ${typeof device.size[1] === "number" ? device.size[1] + "px" : device.size[1]}`}>
                     <button
+                        type='button'
                         key={device.name}
                         className={`px-4 py-2 text-5 ${selectedIndex === index ? "bg-ve-primary text-ve-light" : "bg-ve-light text-black"} cursor-pointer`}
                         onClick={() => handleChange(index)}>

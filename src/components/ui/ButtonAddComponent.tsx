@@ -33,6 +33,7 @@ export function ButtonAddComponent({
                 onMouseLeave={hide}
                 className='w-full h-5 position-absolute top--2 left-0'></div>
             <button
+                type='button'
                 onMouseEnter={show}
                 onMouseLeave={hide}
                 className={`btn btn-ve-primary btn-rounded position-relative ${isDisplayed ? "" : "pointer-events-none"}`}
