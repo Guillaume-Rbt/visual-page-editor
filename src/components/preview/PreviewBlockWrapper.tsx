@@ -108,7 +108,17 @@ export function PreviewBlockWrapper({
         --un-translate-y: -100%;
         --un-translate-x: 0;
         --spacing: 4px;
-  
+        --un-shadow: 0 0 #0000;
+        --un-shadow-color: initial;
+        --un-inset-shadow: 0 0 #0000;
+        --un-inset-shadow-color: initial;
+        --un-ring-shadow: 0 0 #0000;
+        --un-ring-color: initial;
+        --un-inset-ring-shadow: 0 0 #0000;
+        --un-inset-ring-color: initial;
+        --un-ring-offset-shadow: 0 0 #0000;
+        --un-ring-offset-width: 0px;
+        --un-ring-offset-color: #fff;
     }
         :host {
         font-size: 16px;}
@@ -139,7 +149,7 @@ export function PreviewBlockWrapper({
                 stopPropagation(
                     setFocusIndex,
                     getIndexById(id) == focusIndex ? null : getIndexById(id),
-                );
+                )(e);
             }}
             style={{ position: "relative" }}>
             <div

@@ -54,8 +54,29 @@ const scopeCSS = () => ({
     },
 });
 scopeCSS.postcss = true;
+
+// `virtual:uno.css?inline` is not resolved in the lib build (only UnoCSS's placeholder stays in the JS),
+// so inject the generated stylesheet in its place for the shadow roots.
+const inlineUnoCss = () => ({
+    name: "ve-inline-uno-css",
+    enforce: "post",
+    generateBundle(_, bundle) {
+        const cssAsset = Object.values(bundle).find(
+            f => f.type === "asset" && f.fileName.endsWith(".css"),
+        );
+        if (!cssAsset) return;
+        const css = JSON.stringify(String(cssAsset.source)).slice(1, -1);
+        const placeholder = /@scope\(\.ve-editor-element,\.components-root\)\{#--unocss--\{layer:__ALL__.*?\}\}(?=")/;
+        for (const chunk of Object.values(bundle)) {
+            if (chunk.type === "chunk" && placeholder.test(chunk.code)) {
+                chunk.code = chunk.code.replace(placeholder, () => css);
+            }
+        }
+    },
+});
+
 export default defineConfig({
-    plugins: [UnoCSS(), svgr()],
+    plugins: [UnoCSS(), svgr(), inlineUnoCss()],
     server: {
         port: 5173,
         strictPort: true,
