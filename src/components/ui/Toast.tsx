@@ -131,7 +131,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
             className={`
         min-w-[300px]
         text-dark
-        bg-ve-white
+        bg-ve-background-light
         rounded-2
         overflow-hidden toast
       `}>

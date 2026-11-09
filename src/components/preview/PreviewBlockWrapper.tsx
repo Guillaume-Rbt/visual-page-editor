@@ -1,12 +1,13 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useToast } from "../ui/Toast";
 
 import { usePartialStore } from "../../Store";
 import ChevronIcon from "../../assets/imgs/arrow.svg?react";
 import DeleteIcon from "../../assets/imgs/delete.svg?react";
 
 import unoCss from "virtual:uno.css?inline";
-import { stopPropagation } from "../../utils/utils";
+import { stopPropagation, translation } from "../../utils/utils";
 
 export function PreviewBlockWrapper({
     children,
@@ -26,6 +27,7 @@ export function PreviewBlockWrapper({
         data,
         setAnimReorder,
         editorOptions,
+        restoreData,
     } = usePartialStore(
         "moveBlock",
         "removeData",
@@ -35,12 +37,13 @@ export function PreviewBlockWrapper({
         "data",
         "setAnimReorder",
         "editorOptions",
+        "restoreData",
     );
     const { reorderable } = editorOptions;
     const canDelete = !editorOptions.requiredBlocks.includes(
         data.find((b) => b._id === id)?._name ?? "",
     );
-
+    const { addToast } = useToast();
     const hostRef = useRef<HTMLDivElement>(null);
 
     const [shadowContainer, setShadowContainer] =
@@ -164,19 +167,41 @@ export function PreviewBlockWrapper({
             {shadowContainer &&
                 createPortal(
                     <div
-                        className={`absolute inset-0 opacity-0 pointer-events-none hover:opacity-100 border-1 border-ve-primary ${getIndexById(id) === focusIndex || hovered ? "opacity-100" : ""}`}>
+                        className={`absolute inset-0 opacity-0 pointer-events-none hover:opacity-100! border-1 border-ve-primary ${getIndexById(id) === focusIndex || hovered ? "opacity-100!" : ""}`}>
                         <div className='flex absolute top-0 left-[-1px] translate-y-[-100%] transition-opacity duration-200'>
                             <p className='bg-ve-primary text-ve-light px-2 py-1 rounded-tl-md rounded-tr-md text-[16px] font-600 mb-0'>
                                 {name}
                             </p>
                         </div>
 
-                        <div className='flex absolute top-0 right-1 gap-1 translate-y-[-100%]  pointer-events-auto'>
+                        <div className='flex absolute top-0 right-1 gap-1 translate-y-[-100%]  pointer-events-auto!'>
                             {canDelete && (
                                 <button
                                     type='button'
-                          
-                                    onClick={stopPropagation(removeData, id)}
+                                    onClick={stopPropagation(function () {
+                                        removeData(id);
+                                        addToast(
+                                            {
+                                                title: translation("deletion"),
+                                                message:
+                                                    translation(
+                                                        "deletionInProgress",
+                                                    ),
+                                                actions: [
+                                                    {
+                                                        label: translation(
+                                                            "cancelDeletion",
+                                                        ),
+                                                        type: "primary",
+                                                        onClick: () => {
+                                                            restoreData();
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            3000,
+                                        );
+                                    }, id)}
                                     className='btn btn-ve-danger px-1 py-.7 text-ve-light rounded-b-0'>
                                     <DeleteIcon className='text-[16px]' />
                                 </button>
@@ -186,7 +211,6 @@ export function PreviewBlockWrapper({
                                 <>
                                     <button
                                         type='button'
-                                   
                                         disabled={
                                             getIndexById(id) === data.length - 1
                                         }
@@ -203,7 +227,6 @@ export function PreviewBlockWrapper({
 
                                     <button
                                         type='button'
-                                       
                                         disabled={getIndexById(id) === 0}
                                         onClick={stopPropagation(async () => {
                                             await setAnimReorder({
