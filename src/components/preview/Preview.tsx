@@ -25,7 +25,7 @@ export default function Preview() {
     const frameWrapper = useRef<HTMLDivElement>(null);
     const currentDevice = useRef<Device | null>(null);
     const initHTML = useRef({});
-    const [loaded, setLoadedTrue] = useBoolean(false);
+    const [loaded, setLoadedTrue, setLoadedFalse] = useBoolean(false);
 
     const handleDeviceChange = (device: Device) => {
         currentDevice.current = device;
@@ -64,7 +64,12 @@ export default function Preview() {
         return () => observer.disconnect();
     }, []);
 
+    const requestId = useRef(0);
+
     useAsync(async () => {
+        const id = ++requestId.current;
+        htmlAdded.current = false;
+        setLoadedFalse();
         data.current = getData();
         try {
             const r = await fetch(previewUrl, {
@@ -74,15 +79,16 @@ export default function Preview() {
                 },
                 body: JSON.stringify(data.current),
             });
-            if (!r.ok) return;
+            if (!r.ok || id !== requestId.current) return;
             const html = await r.text();
+            if (id !== requestId.current) return;
             iframe.current!.srcdoc = html;
 
             htmlAdded.current = true;
         } catch (e) {
             console.error(`Preview unavailable (${previewUrl}):`, e);
         }
-    }, []);
+    }, [previewUrl]);
 
     const onLoad = async () => {
         if (!htmlAdded.current) return;

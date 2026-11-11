@@ -94,7 +94,8 @@ class VisualEditor {
             editorInstance = instance;
 
             static get observedAttributes() {
-                return ["previewUrl", "value", "iconsUrl", "shown"];
+                // HTML attribute names are lowercased, camelCase entries never match
+                return ["previewurl", "value", "iconsurl", "shown"];
             }
 
             constructor() {
@@ -155,12 +156,9 @@ class VisualEditor {
                     return;
                 }
                 switch (name) {
-                    case "previewUrl":
+                    case "previewurl":
                         this.previewUrl =
                             this.getAttribute("previewUrl") ?? "/preview";
-                        break;
-                    case "shown":
-                        this.render();
                         break;
                 }
 
