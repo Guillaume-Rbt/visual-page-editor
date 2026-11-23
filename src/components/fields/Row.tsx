@@ -14,11 +14,11 @@ type FieldArgs = {
 };
 type RowComponentProps = {
     options: FieldArgs;
-    value: ComponentValue;
+    value: ComponentValue["data"];
     onChange: (v: any) => void;
     label?: string;
 };
-function RowComponent({ onChange, options }: RowComponentProps) {
+function RowComponent({ onChange, options, value }: RowComponentProps) {
     const onUpdate = (v: any, path: string) => {
         const data = {} as { [key: string]: any };
         const key = path.substring(1, path.length);
@@ -29,7 +29,7 @@ function RowComponent({ onChange, options }: RowComponentProps) {
     };
 
     const fields = Array.isArray(options.fields) ? options.fields : [];
-    const gridTemplate = options.columns ?? `repeat(${fields.length}, 1fr)`;
+    const gridTemplate = options.columns ?? `repeat(${fields.length}, minmax(0, 1fr))`;
 
     return (
         <div className='flex flex-col gap-2'>
@@ -43,10 +43,11 @@ function RowComponent({ onChange, options }: RowComponentProps) {
                 className={`grid w-full ${options.collapsed ? "gap-0" : "gap-2"}`}>
                 {fields.map((f) => {
                     return (
-                        <div className='w-full' key={f.name}>
+                        <div className='w-full min-w-0' key={f.name}>
                             <FieldsRenderer
                                 key={f.name}
                                 fields={[f]}
+                                data={value}
                                 dataPath=''
                                 onUpdate={onUpdate}
                             />
@@ -58,7 +59,7 @@ function RowComponent({ onChange, options }: RowComponentProps) {
     );
 }
 
-const Component: FieldsGroupComponent<FieldArgs, ComponentValue> = ({
+const Component: FieldsGroupComponent<FieldArgs, ComponentValue["data"]> = ({
     onChange,
     options,
     value,
@@ -66,4 +67,4 @@ const Component: FieldsGroupComponent<FieldArgs, ComponentValue> = ({
     return <RowComponent options={options} value={value} onChange={onChange} />;
 };
 
-export const Row = defineFieldsGroup<FieldArgs, ComponentValue>(Component);
+export const Row = defineFieldsGroup<FieldArgs, ComponentValue["data"]>(Component);

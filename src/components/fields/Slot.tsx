@@ -4,7 +4,7 @@ import {
     ComponentValue,
     FieldComponent,
 } from "../../types";
-import { setDeepValue } from "../../utils/utils";
+import { getFieldsDefaultValues, setDeepValue } from "../../utils/utils";
 import { defineField, translation } from "../../visual-editor";
 import { v4 as uuid } from "uuid";
 import { Field } from "./Field";
@@ -59,11 +59,8 @@ function SlotComponent({ value, onChange, label }: ComponentProps) {
         const newBlockData = {
             _id: uuid(),
             _name: block.name,
-            data: {},
+            data: getFieldsDefaultValues(block.fields),
         } as ComponentValue;
-        block.fields.forEach((field) => {
-            newBlockData["data"][field.name!] = field.options.defaultValue;
-        });
         onChange(newBlockData);
     };
 

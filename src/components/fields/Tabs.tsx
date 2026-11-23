@@ -23,32 +23,33 @@ function TabsComponent({ options, value, onChange }: TabsComponentProps) {
         return [...acc, cur.name];
     }, []);
 
-    const onUpdate = (v: any, path: string) => {
-        const data = {} as { [key: string]: any };
-
-        if (path.startsWith(".")) {
-            const key = path.substring(1, path.length);
-            data[key] = v;
-        } else {
-            const keys = path.split(".");
-            data[keys[0]] = { ...(value[keys[0]] as { [key: string]: any }), [keys[1]]: v };
-        }
-
-        onChange(data);
-    };
-
     return (
         <div className='flex flex-col'>
             <div className='flex gap-3'>
                 <TabsLayout labels={tabsLabel}>
-                    {options.map((t) => (
-                        <FieldsRenderer
-                            fields={t.fields}
-                            dataPath={t.useTabNameAsKey ? (t.key ?? t.name) : ""}
-                            data={value}
-                            onUpdate={onUpdate}
-                        />
-                    ))}
+                    {options.map((t) => {
+                        const tabKey = t.key ?? t.name;
+                        const tabData = t.useTabNameAsKey
+                            ? (value[tabKey] ?? {})
+                            : value;
+
+                        return (
+                            <FieldsRenderer
+                                key={tabKey}
+                                fields={t.fields}
+                                dataPath=''
+                                data={tabData}
+                                onUpdate={(v, path) => {
+                                    const key = path.substring(1);
+                                    onChange(
+                                        t.useTabNameAsKey
+                                            ? { [tabKey]: { ...tabData, [key]: v } }
+                                            : { [key]: v },
+                                    );
+                                }}
+                            />
+                        );
+                    })}
                 </TabsLayout>
             </div>
         </div>

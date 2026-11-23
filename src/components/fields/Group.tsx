@@ -19,7 +19,7 @@ type ComponentProps = {
     fields: FieldDefinition<any, any>[];
 };
 
-function GroupComponent({ fields, value, onChange, label }: ComponentProps) {
+function GroupComponent({ fields, value = {}, onChange, label }: ComponentProps) {
     const onUpdate = (v: any, path: string) => {
         const key = path.substring(1, path.length);
 

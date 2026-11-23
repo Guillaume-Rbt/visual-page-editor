@@ -28,10 +28,10 @@ function FileComponent({
     onBrowse,
 }: ComponentProps) {
     return (
-        <div className='grid grid-cols-[1fr_auto]'>
+        <div className='grid grid-cols-[minmax(0,1fr)_auto]'>
             <input
                 type='text'
-                className='bordered-input p-2 focus:border-ve-primary/20 focus:outline-2 focus:outline-solid focus:outline-ve-primary/20'
+                className='min-w-0 bordered-input p-2 focus:border-ve-primary/20 focus:outline-2 focus:outline-solid focus:outline-ve-primary/20'
                 value={value}
                 placeholder={placeholder}
                 onChange={(e) => onChange(e.target.value)}

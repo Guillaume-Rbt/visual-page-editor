@@ -1,8 +1,8 @@
 import { createContext, type ReactNode, useContext } from "react";
 import { create, useStore, UseBoundStore, StoreApi } from "zustand";
-import { ComponentDefinition, ComponentValue, FieldDefinition } from "./types";
+import { ComponentDefinition, ComponentValue } from "./types";
 import { combine } from "zustand/middleware";
-import { deleteFromArray, insertIntoArray, setDeepValue } from "./utils/utils";
+import { deleteFromArray, getFieldsDefaultValues, insertIntoArray, setDeepValue } from "./utils/utils";
 import { v4 as uuid } from "uuid";
 import { arrayMove } from "@dnd-kit/sortable";
 
@@ -106,74 +106,7 @@ export const EditorContextProvider = ({
                     insertData: (block: ComponentDefinition) => {
                         const { data, insertIndex } = getState();
 
-                        const newBlockData = {} as Record<string, any>;
-
-                        block.fields.forEach((field) => {
-                            if (field.group) {
-                                const fields = (
-                                    field.options[0].defaultValue // check if fiekdsDefinition[] | {fields : fiekdsDefinition[]}
-                                        ? field.options
-                                        : field.options.reduce(
-                                              (
-                                                  acc: any,
-                                                  obj: {
-                                                      fields: [];
-                                                      useTabNameAsKey?: boolean;
-                                                      name?: string;
-                                                      key?: string;
-                                                  },
-                                              ) => {
-                                                  const fields =
-                                                      obj.useTabNameAsKey
-                                                          ? obj.fields.map(
-                                                                (f) => {
-                                                                    return {
-                                                                        parent:
-                                                                            obj.key ??
-                                                                            obj.name,
-                                                                        field: f,
-                                                                    };
-                                                                },
-                                                            )
-                                                          : obj.fields;
-
-                                                  return [...acc, ...fields];
-                                              },
-                                              [],
-                                          )
-                                ) as FieldDefinition<any, any>[];
-
-                                fields.forEach(
-                                    (
-                                        f:
-                                            | FieldDefinition<any, any>
-                                            | {
-                                                  parent: string;
-                                                  field: FieldDefinition<
-                                                      any,
-                                                      any
-                                                  >;
-                                              },
-                                    ) => {
-                                        if ("parent" in f) {
-                                            newBlockData[f.parent] ??= {};
-                                            newBlockData[f.parent][
-                                                f.field.name
-                                            ] = f.field.options.defaultValue;
-                                            return;
-                                        }
-
-                                        newBlockData[f.name] =
-                                            f.options.defaultValue;
-                                    },
-                                );
-
-                                return;
-                            }
-
-                            newBlockData[field.name!] =
-                                field.options.defaultValue;
-                        });
+                        const newBlockData = getFieldsDefaultValues(block.fields);
 
                         const finalInsertIndex = insertIndex ?? data.length;
 

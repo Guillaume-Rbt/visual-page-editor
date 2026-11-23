@@ -98,7 +98,7 @@ function NumberComponent({
     };
 
     return (
-        <div className='w-full flex relative bordered-input p-is-2'>
+        <div className='w-full flex relative bordered-input'>
             <input
                 type='text'
                 value={inputValue}
@@ -110,12 +110,12 @@ function NumberComponent({
                         commit();
                     }
                 }}
-                className='flex-grow'
+                className='w-0 min-w-0 flex-grow p-2'
             />
 
             <div
                 onMouseLeave={stop}
-                className='flex flex-col  border-1 border-solid border-transparent hover:border-ve-primary'>
+                className='flex flex-col relative  border-1 border-solid border-transparent hover:border-ve-primary'>
                 <button
                     type='button'
                     onMouseDown={() => {
@@ -124,7 +124,7 @@ function NumberComponent({
                         setActiveTrue();
                     }}
                     onMouseUp={stop}
-                    className='hover:bg-ve-primary/10'>
+                    className='hover:bg-ve-primary/10 flex-grow'>
                     <ChevronIcon className='w-6 rotate-180' />
                 </button>
 
@@ -136,7 +136,7 @@ function NumberComponent({
                         setActiveTrue();
                     }}
                     onMouseUp={stop}
-                    className='hover:bg-ve-primary/10'>
+                    className='hover:bg-ve-primary/10 flex-grow'>
                     <ChevronIcon className='w-6' />
                 </button>
             </div>
@@ -152,7 +152,12 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, number> = ({
     return (
         <Field label={options.label} description={options.description}>
             <NumberComponent
-                value={value}
+                value={
+                    value ??
+                    (Number.isFinite(options.min)
+                        ? options.min
+                        : options.defaultValue)
+                }
                 each={options.each}
                 max={options.max}
                 min={options.min}

@@ -1,5 +1,6 @@
 import { RadioLabel } from "../components/fields/Radio";
 import {
+    ComponentDefinition,
     DataRef,
     FieldComponent,
     FieldDefinition,
@@ -72,13 +73,10 @@ export function defineField<
     ): FieldDefinition<MergedFieldOptions<Options, Defaults>, Value> => {
         const { defaultOptions } = args;
         const optionsWithFields = options as unknown as OptionsWithFields;
-        const defaultValue = optionsWithFields.fields
-            ? optionsWithFields.fields.reduce((acc, f) => {
-                  return {
-                      ...acc,
-                      [f.name]: f.options.defaultValue,
-                  };
-              }, {}) // build default value from fields[]
+        const defaultValue = optionsWithFields.fields &&
+            !("defaultValue" in defaultOptions) &&
+            !("defaultValue" in options)
+            ? getFieldsDefaultValues(optionsWithFields.fields)
             : ((
                   { ...defaultOptions, ...options } as {
                       defaultValue?: unknown;
@@ -101,6 +99,36 @@ export function defineField<
 type OptionsWithFields = {
     fields: FieldDefinition<any, any>[];
 };
+
+export function getFieldsDefaultValues(
+    fields: ComponentDefinition["fields"],
+): Record<string, any> {
+    const data: Record<string, any> = {};
+
+    for (const field of fields) {
+        if (!field.group) {
+            data[field.name!] = field.options.defaultValue;
+            continue;
+        }
+
+        if (Array.isArray(field.options)) {
+            for (const tab of field.options) {
+                const defaults = getFieldsDefaultValues(tab.fields);
+                if (tab.useTabNameAsKey) {
+                    const key = tab.key ?? tab.name;
+                    data[key] = { ...data[key], ...defaults };
+                } else {
+                    Object.assign(data, defaults);
+                }
+            }
+        } else {
+            Object.assign(data, getFieldsDefaultValues(field.options.fields));
+        }
+    }
+
+    return data;
+}
+
 export function defineFieldsGroup<
     Options extends OptionsWithFields | OptionsWithFields[],
     Value,

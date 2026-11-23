@@ -9,6 +9,7 @@ import {
     Checkbox,
     translation,
     Radio,
+    Row,
 } from "../src/visual-editor";
 
 // @ts-ignore
@@ -33,6 +34,25 @@ visualEditor
         label: "Hero",
         category: translation("heroCategory"),
         fields: [
+            Row({
+                columns: "1fr 1fr",
+                fields: [
+                    File("image", {
+                        label: "Image",
+                        onBrowse: () => {
+                            return () => Promise.resolve("test");
+                        },
+                    }),
+                    Number("width", {
+                        label: "Largeur",
+                        suffix: "%",
+                        min: 0,
+                        each: 1,
+                        max: 100,
+                        defaultValue: 50,
+                    }),
+                ],
+            }),
             Text("eyebrow", {
                 label: "Surtitre",
                 defaultValue: "Visual Page Editor",

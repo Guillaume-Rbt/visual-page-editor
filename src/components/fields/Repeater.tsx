@@ -7,7 +7,7 @@ import { defineField, translation } from "../../visual-editor";
 import { Field } from "./Field";
 import { FieldsRenderer } from "../sidebar/FieldsRenderer";
 import TrashIcon from "../../assets/imgs/delete.svg?react";
-import { deleteFromArray, getDeepValue, setDeepValue } from "../../utils/utils";
+import { deleteFromArray, getDeepValue, getFieldsDefaultValues, setDeepValue } from "../../utils/utils";
 import { RoundedButton } from "../ui/RoundedButton";
 import ArrowIcon from "../../assets/imgs/arrow.svg?react";
 import { v4 as uuid } from "uuid";
@@ -61,10 +61,7 @@ function RepeaterComponent({
     const safeValue = Array.isArray(value) ? value : [];
 
     const insertData = () => {
-        const newBlockData = { _id: uuid() } as RepeaterItemValue;
-        safeFields.forEach((field) => {
-            newBlockData[field.name] = field.options.defaultValue;
-        });
+        const newBlockData = { ...getFieldsDefaultValues(safeFields), _id: uuid() };
 
         onChange([...safeValue, newBlockData]);
     };
@@ -103,13 +100,7 @@ function RepeaterComponent({
 
         if (missing > 0) {
             const newItems = Array.from({ length: missing }, () => {
-                const newBlockData = { _id: uuid() } as RepeaterItemValue;
-
-                safeFields.forEach((field) => {
-                    newBlockData[field.name] = field.options.defaultValue;
-                });
-
-                return newBlockData;
+                return { ...getFieldsDefaultValues(safeFields), _id: uuid() };
             });
 
             onChange([...safeValue, ...newItems]);

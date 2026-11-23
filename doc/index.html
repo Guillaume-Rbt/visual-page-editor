@@ -538,6 +538,11 @@ Select("remoteItem", {
                                 <dt><code>description?</code></dt>
                                 <dd>Texte d’aide.</dd>
                             </dl>
+                            <p>
+                                Si la valeur enregistrée est absente, le contrôle
+                                affiche <code>min</code> si elle est finie,
+                                sinon <code>defaultValue</code>.
+                            </p>
                         </article>
                         <article
                             class="field-card"
@@ -973,8 +978,9 @@ Rating("score", { label: "Note", max: 10 });</code></pre>
                         <strong>Valeur initiale.</strong> Mettez
                         systématiquement une valeur exploitable dans
                         <code>defaultOptions.defaultValue</code>. Pour un field
-                        contenant <code>fields</code>, la factory construit
-                        l’objet initial à partir des valeurs par défaut enfants.
+                        contenant <code>fields</code> sans valeur par défaut
+                        explicite, la factory construit l’objet initial à partir
+                        des valeurs par défaut enfants.
                     </aside>
                 </section>
 
