@@ -35,6 +35,7 @@ function NumberComponent({
     each,
     max,
     min,
+    suffix,
 }: NumberComponentProps) {
     const [active, setActiveTrue, setActiveFalse] = useBoolean(false);
     const [action, setAction] = useState<"increment" | "decrement" | null>(
@@ -112,6 +113,7 @@ function NumberComponent({
                 }}
                 className='w-0 min-w-0 flex-grow p-2'
             />
+            {suffix && <span className='ml-2'>{suffix}</span>}
 
             <div
                 onMouseLeave={stop}

@@ -12,13 +12,16 @@ function SelectComponent({
     value,
     onChange,
     options,
+    placeholder,
 }: {
     value: any;
     onChange: (value: any) => void;
     options: { value: any; render: () => React.ReactNode | HTMLElement }[];
+    placeholder?: string;
 }) {
     return (
         <SelectRenderer
+            placeholder={placeholder}
             value={value}
             onChange={onChange}
             options={options}></SelectRenderer>
@@ -33,9 +36,10 @@ const Component: FieldComponent<FieldArgs, any> = ({
     return (
         <Field label={options.label} description={options.description}>
             <SelectComponent
-                value={value}
+                value={value ?? options.defaultValue}
                 onChange={onChange}
-                options={options.options}></SelectComponent>
+                options={options.options}
+                placeholder={options.placeholder}></SelectComponent>
         </Field>
     );
 };
