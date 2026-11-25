@@ -6,6 +6,7 @@ import { defineField } from "../../visual-editor";
 type FieldArgs = ValueFieldOptions<string> & {
     options: { value: any; render: () => React.ReactNode | HTMLElement }[];
     placeholder?: string;
+    defaultValue?: string | number;
 };
 
 function SelectComponent({

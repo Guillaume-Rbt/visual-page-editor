@@ -10,11 +10,29 @@ import {
     translation,
     Radio,
     Row,
+    Select,
+    type HTMLTextButton,
 } from "../src/visual-editor";
 
 // @ts-ignore
 import "files-manager/style.css";
 import { FilesManager, FilesManagerElement } from "files-manager";
+
+const htmlTextButtons: HTMLTextButton[] = [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    { headings: [1, 2, 3] },
+    { colors: ["red", "green", { value: "blue", label: "Blue" }] },
+    { backgroundColors: ["#ff0000", "lightgray"] },
+    { fontSizes: ["12px", "14px", "16px", "20px", "24px", "32px"] },
+    "orderedList",
+    "left",
+    "center",
+    "right",
+    "justify",
+];
 
 const filesManager = new FilesManager();
 
@@ -34,25 +52,6 @@ visualEditor
         label: "Hero",
         category: translation("heroCategory"),
         fields: [
-            Row({
-                columns: "1fr 1fr",
-                fields: [
-                    File("image", {
-                        label: "Image",
-                        onBrowse: () => {
-                            return () => Promise.resolve("test");
-                        },
-                    }),
-                    Number("width", {
-                        label: "Largeur",
-                        suffix: "%",
-                        min: 0,
-                        each: 1,
-                        max: 100,
-                        defaultValue: 50,
-                    }),
-                ],
-            }),
             Text("eyebrow", {
                 label: "Surtitre",
                 defaultValue: "Visual Page Editor",
@@ -63,6 +62,7 @@ visualEditor
             }),
             HTMLText("siteDescription", {
                 label: "Description",
+                buttons: htmlTextButtons,
                 defaultValue:
                     "<p>Composez des pages à partir de composants réutilisables, sans sacrifier la qualité du code rendu.</p>",
             }),
@@ -168,6 +168,7 @@ visualEditor
             }),
             HTMLText("intro", {
                 label: "Introduction",
+                buttons: htmlTextButtons,
                 defaultValue:
                     "<p>Une grille responsive inspirée de l’exemple Features de Bootstrap.</p>",
             }),
@@ -194,6 +195,7 @@ visualEditor
                     }),
                     HTMLText("description", {
                         label: "Description",
+                        buttons: htmlTextButtons,
                         defaultValue:
                             "<p>Décrivez clairement le bénéfice proposé.</p>",
                     }),
@@ -212,6 +214,7 @@ visualEditor
             }),
             HTMLText("intro", {
                 label: "Introduction",
+                buttons: htmlTextButtons,
                 defaultValue:
                     "<p>Choisissez l’offre qui correspond à votre projet.</p>",
             }),
@@ -289,6 +292,7 @@ visualEditor
             }),
             HTMLText("content", {
                 label: "Contenu",
+                buttons: htmlTextButtons,
                 defaultValue:
                     "<p>Présentez votre proposition de valeur et guidez le visiteur vers l’étape suivante.</p>",
             }),
@@ -315,19 +319,27 @@ visualEditor
                 defaultValue: "#",
                 enabled: (data) => data.showButton,
             }),
-            Radio("buttonStyle", {
+            Select("buttonStyle", {
                 label: "Style du bouton",
                 defaultValue: "btn-primary",
-                enabled: (data) => data.showButton,
-                options: [
-                    { label: "Primaire", value: "btn-primary" },
-                    { label: "Clair", value: "btn-light" },
-                    { label: "Contour clair", value: "btn-outline-light" },
-                    {
-                        label: "Contour sombre",
-                        value: "btn-outline-dark",
-                    },
-                ],
+                placeholder: "Choisir un style",
+                enabled: (data) => Promise.resolve(data.showButton),
+                options: () =>
+                    Promise.resolve([
+                        {
+                            value: "btn-primary",
+                            render: () => "Primaire",
+                        },
+                        { value: "btn-light", render: () => "Clair" },
+                        {
+                            value: "btn-outline-light",
+                            render: () => "Contour clair",
+                        },
+                        {
+                            value: "btn-outline-dark",
+                            render: () => "Contour sombre",
+                        },
+                    ]),
             }),
         ],
     });

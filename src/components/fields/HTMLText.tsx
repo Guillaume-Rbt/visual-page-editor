@@ -166,7 +166,7 @@ type ToolbarShortcut =
     | "fontWeight"
     | "fontSize";
 
-type HTMLTextButton = AtomicButton | ToolbarShortcut | HTMLTextListButton;
+export type HTMLTextButton = AtomicButton | ToolbarShortcut | HTMLTextListButton;
 
 type NormalizedToolbar = {
     headings?: number[];
@@ -1211,21 +1211,7 @@ const Component: FieldComponent<FieldArgs & typeof defaultOptions, string> = ({
 const defaultOptions = {
     defaultValue: "",
     placeholder: "Votre texte ici...",
-    buttons: [
-        "bold",
-        "italic",
-        "underline",
-        "strike",
-        { headings: [1, 2, 3] },
-        { colors: ["red", "green", { value: "blue", label: "Blue" }] },
-        { backgroundColors: ["#ff0000", "lightgray"] },
-        { fontSizes: ["12px", "14px", "16px", "20px", "24px", "32px"] },
-        "orderedList",
-        "left",
-        "center",
-        "right",
-        "justify",
-    ] as HTMLTextButton[],
+    buttons: [] as HTMLTextButton[],
 };
 
 export const HTMLText = defineField<FieldArgs, string, typeof defaultOptions>({

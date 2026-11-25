@@ -403,6 +403,13 @@ app.post("/preview", async (request, response) =&gt; {
                         promesse, une fonction dérivée des données du block ou
                         une référence créée avec <code>ref</code>.
                     </p>
+                    <p>
+                        Une fonction peut aussi retourner une promesse. Tant
+                        qu’une promesse n’est pas résolue, le field n’est pas
+                        affiché ; ensuite, la dernière valeur résolue est
+                        conservée pendant un rechargement. Une promesse rejetée
+                        donne <code>undefined</code>.
+                    </p>
                     <div class="table-wrap">
                         <table>
                             <thead>
@@ -435,8 +442,10 @@ app.post("/preview", async (request, response) =&gt; {
                                     <td><code>defaultValue</code></td>
                                     <td>dépend du field</td>
                                     <td>
-                                        Valeur injectée à la création d’un
-                                        block.
+                                        Valeur injectée à la création d’un block
+                                        et affichée tant que le field n’a pas de
+                                        valeur. Si c’est une promesse, elle n’est
+                                        résolue qu’à l’affichage.
                                     </td>
                                 </tr>
                                 <tr>
@@ -636,7 +645,11 @@ Select("remoteItem", {
                                 <dt><code>defaultValue?</code></dt>
                                 <dd><code>""</code></dd>
                                 <dt><code>placeholder?</code></dt>
-                                <dd><code>""</code></dd>
+                                <dd>
+                                    Texte affiché lorsqu’aucune option ne
+                                    correspond à la valeur. Défaut :
+                                    <code>""</code>.
+                                </dd>
                                 <dt><code>description?</code></dt>
                                 <dd>Texte d’aide.</dd>
                             </dl>
@@ -724,8 +737,9 @@ Select("remoteItem", {
                                 <dd><code>"Votre texte ici..."</code></dd>
                                 <dt><code>buttons?</code></dt>
                                 <dd>
-                                    Configuration complète de la barre (voir
-                                    ci-dessous).
+                                    Boutons de la barre d’outils (voir
+                                    ci-dessous). Vide par défaut : aucun bouton
+                                    n’est affiché.
                                 </dd>
                                 <dt><code>description?</code></dt>
                                 <dd>Texte d’aide.</dd>
@@ -761,6 +775,22 @@ Select("remoteItem", {
                                     <code>{ fontSizes }</code>,
                                     <code>{ textAlign }</code>.
                                 </p>
+                                <div class="code-block">
+                                    <button class="copy-button" type="button">
+                                        Copier
+                                    </button>
+                                    <pre><code>HTMLText("content", {
+    label: "Contenu",
+    buttons: [
+        "bold",
+        "italic",
+        { headings: [1, 2, 3] },
+        { colors: ["red", { value: "blue", label: "Blue" }] },
+        "left",
+        "center",
+    ],
+});</code></pre>
+                                </div>
                             </details>
                         </article>
                         <article

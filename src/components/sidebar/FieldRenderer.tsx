@@ -1,9 +1,11 @@
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type ComponentValue } from "../../types";
-import { isDataRef } from "../../utils/utils";
+import { isDataRef, isPromiseLike } from "../../utils/utils";
 
-function isPromiseLike(value: unknown): value is Promise<unknown> {
-    return value instanceof Promise;
+function evaluateOption(value: unknown, data: ComponentValue["data"]) {
+    if (isDataRef(value)) return data[value.key];
+    if (typeof value === "function") return value(data);
+    return value;
 }
 
 export const FieldRenderer = memo(function FieldRenderer({
@@ -19,45 +21,52 @@ export const FieldRenderer = memo(function FieldRenderer({
 }) {
     const Component = field.render;
     const [resolvedAsyncOptions, setResolvedAsyncOptions] = useState<
-        Record<string, unknown>
+        Record<string, { value: unknown }>
     >({});
+    const requested = useRef<Record<string, PromiseLike<unknown>>>({});
+    const mounted = useRef(true);
 
     useEffect(() => {
-        let cancelled = false;
+        mounted.current = true;
+        return () => {
+            mounted.current = false;
+        };
+    }, []);
 
-        const asyncEntries = Object.entries(field.options).filter(([, value]) =>
-            isPromiseLike(value),
-        );
+    // Resolves refs and functions; the result may still be a promise.
+    const evaluatedOptions = useMemo(() => {
+        const options: Record<string, unknown> = {};
 
-        if (asyncEntries.length === 0) {
-            setResolvedAsyncOptions({});
-            return;
-        }
-
-        setResolvedAsyncOptions({});
-
-        asyncEntries.forEach(([key, promise]) => {
-            Promise.resolve(promise)
-                .then((value) => {
-                    if (cancelled) return;
-                    setResolvedAsyncOptions((prev) => ({
-                        ...prev,
-                        [key]: value,
-                    }));
-                })
-                .catch(() => {
-                    if (cancelled) return;
-                    setResolvedAsyncOptions((prev) => ({
-                        ...prev,
-                        [key]: undefined,
-                    }));
-                });
+        Object.entries(field.options).forEach(([key, optionValue]) => {
+            options[key] = evaluateOption(optionValue, data);
         });
 
-        return () => {
-            cancelled = true;
-        };
-    }, [field.options]);
+        return options;
+    }, [data, field.options]);
+
+    useEffect(() => {
+        Object.entries(evaluatedOptions).forEach(([key, optionValue]) => {
+            if (!isPromiseLike(optionValue)) {
+                delete requested.current[key];
+                return;
+            }
+
+            if (requested.current[key] === optionValue) return;
+            requested.current[key] = optionValue;
+
+            const store = (value: unknown) => {
+                if (!mounted.current || requested.current[key] !== optionValue)
+                    return;
+                setResolvedAsyncOptions((prev) =>
+                    prev[key] && prev[key].value === value
+                        ? prev
+                        : { ...prev, [key]: { value } },
+                );
+            };
+
+            Promise.resolve(optionValue).then(store, () => store(undefined));
+        });
+    }, [evaluatedOptions]);
 
     const handleChange = useCallback(
         (v: unknown) => {
@@ -78,52 +87,48 @@ export const FieldRenderer = memo(function FieldRenderer({
         [dataPath, onChange],
     );
 
-    const hasPendingAsyncOptions = useMemo(() => {
-        return Object.entries(field.options).some(
-            ([key, value]) =>
-                isPromiseLike(value) &&
-                !Object.prototype.hasOwnProperty.call(
-                    resolvedAsyncOptions,
-                    key,
-                ),
-        );
-    }, [field.options, resolvedAsyncOptions]);
-
-    const fieldOptions = useMemo(() => {
+    const { fieldOptions, hasPendingAsyncOptions } = useMemo(() => {
         const options = Array.isArray(field.options)
             ? [...field.options]
             : { ...field.options };
+        let pending = false;
 
-        Object.entries(options).forEach(([key, optionValue]) => {
+        Object.entries(evaluatedOptions).forEach(([key, optionValue]) => {
             let nextValue = optionValue;
 
-            if (
-                Object.prototype.hasOwnProperty.call(resolvedAsyncOptions, key)
-            ) {
-                nextValue = resolvedAsyncOptions[key];
-            }
+            if (isPromiseLike(optionValue)) {
+                const resolved = resolvedAsyncOptions[key];
 
-            if (isDataRef(nextValue)) {
-                nextValue = data[nextValue.key];
-            }
+                if (!resolved) {
+                    pending = true;
+                    return;
+                }
 
-            if (key !== "enabled" && typeof nextValue === "function") {
-                nextValue = nextValue(data);
+                // Previously resolved values are kept while a new promise is pending.
+                nextValue = evaluateOption(resolved.value, data);
+                if (isPromiseLike(nextValue)) nextValue = undefined;
             }
 
             (options as Record<string, unknown>)[key] = nextValue;
         });
 
-        return options;
-    }, [data, field.options, resolvedAsyncOptions]);
+        return { fieldOptions: options, hasPendingAsyncOptions: pending };
+    }, [data, evaluatedOptions, field.options, resolvedAsyncOptions]);
 
     if (hasPendingAsyncOptions) {
         return null;
     }
 
     const enabled = fieldOptions.enabled;
-    const isEnabled =
-        typeof enabled === "function" ? enabled(data) : enabled !== false;
+    const isEnabled = enabled !== false;
+
+    const resolvedValue = field.group ? data : data[field.name];
+    const value =
+        !field.group &&
+        resolvedValue === undefined &&
+        fieldOptions.defaultValue != null
+            ? fieldOptions.defaultValue
+            : resolvedValue;
 
     return (
         <div
@@ -131,7 +136,7 @@ export const FieldRenderer = memo(function FieldRenderer({
             <Component
                 enabled={isEnabled}
                 options={fieldOptions}
-                value={field.group ? data : data[field.name]}
+                value={value}
                 onChange={handleChange}
             />
         </div>

@@ -17,6 +17,16 @@ export function ref<T>(key: string): DataRef<T> {
     return { __isDataRef: true, key };
 }
 
+/** Returns true if the value is a Promise or any thenable. */
+export function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
+    return (
+        value instanceof Promise ||
+        (typeof value === "object" &&
+            value !== null &&
+            typeof (value as PromiseLike<unknown>).then === "function")
+    );
+}
+
 /** Returns true if the value is a DataRef created with `ref()`. */
 export function isDataRef(value: unknown): value is DataRef<unknown> {
     return (
@@ -36,7 +46,7 @@ type MaybeAsync<T> = T | Promise<Awaited<T>>;
 type MaybeDataRef<T> =
     | MaybeAsync<T>
     | DataRef<NonNullable<T>>
-    | ((data: Record<string, any>) => T);
+    | ((data: Record<string, any>) => MaybeAsync<T>);
 
 type WithDataRefs<T> = {
     [K in keyof T]: MaybeDataRef<T[K]>;
@@ -47,8 +57,8 @@ type FieldInputOptions<
     Defaults extends Partial<Options>,
 > = WithDataRefs<
     Omit<Options, OptionalDefaultKeys<Options, Defaults>> &
-        Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>> &
-        Pick<FieldOptions, "enabled">
+    Partial<Pick<Options, OptionalDefaultKeys<Options, Defaults>>> &
+    Pick<FieldOptions, "enabled">
 >;
 
 type MergedFieldOptions<
@@ -78,10 +88,10 @@ export function defineField<
             !("defaultValue" in options)
             ? getFieldsDefaultValues(optionsWithFields.fields)
             : ((
-                  { ...defaultOptions, ...options } as {
-                      defaultValue?: unknown;
-                  }
-              ).defaultValue ?? null);
+                { ...defaultOptions, ...options } as {
+                    defaultValue?: unknown;
+                }
+            ).defaultValue ?? null);
 
         const mergedOptions = {
             enabled: true,
@@ -105,9 +115,17 @@ export function getFieldsDefaultValues(
 ): Record<string, any> {
     const data: Record<string, any> = {};
 
+    function getDefaultValue(field: { options: FieldOptions }): any {
+        const defaultValue = field.options.defaultValue;
+        if (isPromiseLike(defaultValue)) return undefined;
+        return typeof defaultValue === "function"
+            ? defaultValue()
+            : (defaultValue ?? null);
+    }
+
     for (const field of fields) {
         if (!field.group) {
-            data[field.name!] = field.options.defaultValue;
+            data[field.name!] = getDefaultValue(field);
             continue;
         }
 

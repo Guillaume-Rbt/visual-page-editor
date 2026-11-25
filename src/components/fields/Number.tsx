@@ -99,7 +99,7 @@ function NumberComponent({
     };
 
     return (
-        <div className='w-full flex relative bordered-input'>
+        <div className='w-full flex relative bordered-input items-center'>
             <input
                 type='text'
                 value={inputValue}
@@ -113,7 +113,7 @@ function NumberComponent({
                 }}
                 className='w-0 min-w-0 flex-grow p-2'
             />
-            {suffix && <span className='ml-2'>{suffix}</span>}
+            {suffix && <span className='ml-2 mr-2'>{suffix}</span>}
 
             <div
                 onMouseLeave={stop}

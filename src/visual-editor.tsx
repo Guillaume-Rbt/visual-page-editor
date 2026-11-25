@@ -230,6 +230,7 @@ export { Field } from "./components/fields/Field";
 export { File } from "./components/fields/File";
 export { Group } from "./components/fields/Group";
 export { HTMLText } from "./components/fields/HTMLText";
+export type { HTMLTextButton } from "./components/fields/HTMLText";
 export { NumberField as Number } from "./components/fields/Number";
 export { Radio } from "./components/fields/Radio";
 export { Range } from "./components/fields/Range";

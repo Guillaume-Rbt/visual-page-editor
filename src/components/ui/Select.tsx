@@ -75,9 +75,10 @@ export function Select({
     const handlerRef = useRef(null as HTMLDivElement | null);
     const listRef = useRef(null as HTMLDivElement | null);
     const selectedOption = useMemo(() => {
+        const v = typeof value === "function" ? value() : value;
+
         return options.find(
-            (option) =>
-                option.value === value || `${option.value}` === `${value}`,
+            (option) => option.value === v || `${option.value}` === `${v}`,
         );
     }, [options, value]);
     const handleDocumentClick = useCallback(

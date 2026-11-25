@@ -102,8 +102,12 @@ const english = new Map(
             "Visible label. Required by most fields and sometimes defaulted to",
         "Aide affichée sous le libellé lorsque le field utilise le wrapper":
             "Help displayed below the label when the field uses the",
-        "Valeur injectée à la création d’un block.":
-            "Value injected when a block is created.",
+        "Valeur injectée à la création d’un block et affichée tant que le field n’a pas de valeur. Si c’est une promesse, elle n’est résolue qu’à l’affichage.":
+            "Value injected when a block is created and displayed while the field has no value. If it is a promise, it is only resolved when displayed.",
+        "Texte affiché lorsqu’aucune option ne correspond à la valeur. Défaut :":
+            "Text displayed when no option matches the value. Default:",
+        "Une fonction peut aussi retourner une promesse. Tant qu’une promesse n’est pas résolue, le field n’est pas affiché ; ensuite, la dernière valeur résolue est conservée pendant un rechargement. Une promesse rejetée donne":
+            "A function may also return a promise. Until a promise is resolved, the field is not displayed; afterwards, the last resolved value is kept while reloading. A rejected promise yields",
         "Désactive visuellement et fonctionnellement le field si faux.":
             "Visually and functionally disables the field when false.",
         "dépend du field": "depends on the field",
@@ -143,8 +147,8 @@ const english = new Map(
             "Number or object; an object enables two thumbs.",
         "Éditeur HTML riche basé sur Tiptap. Valeur : chaîne HTML.":
             "Tiptap-based rich HTML editor. Value: HTML string.",
-        "Configuration complète de la barre (voir ci-dessous).":
-            "Complete toolbar configuration (see below).",
+        "Boutons de la barre d’outils (voir ci-dessous). Vide par défaut : aucun bouton n’est affiché.":
+            "Toolbar buttons (see below). Empty by default: no button is displayed.",
         "Valeurs de": "Values for",
         "Contrôles unitaires :": "Individual controls:",
         "Raccourcis avec valeurs prédéfinies :":
