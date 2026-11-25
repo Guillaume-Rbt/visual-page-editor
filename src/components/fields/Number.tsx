@@ -117,7 +117,7 @@ function NumberComponent({
 
             <div
                 onMouseLeave={stop}
-                className='flex flex-col relative  border-1 border-solid border-transparent hover:border-ve-primary'>
+                className='flex flex-col relative  border-1 border-solid border-transparent hover:border-ve-primary self-stretch'>
                 <button
                     type='button'
                     onMouseDown={() => {

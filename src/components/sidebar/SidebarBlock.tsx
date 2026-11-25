@@ -38,6 +38,7 @@ export const SidebarBlock = memo(function SidebarBlock({
         getIndexById,
         restoreData,
         editorOptions,
+        requiredIds,
     } = usePartialStore(
         "removeData",
         "setFocusIndex",
@@ -46,8 +47,9 @@ export const SidebarBlock = memo(function SidebarBlock({
         "setFocusIndex",
         "restoreData",
         "editorOptions",
+        "requiredIds",
     );
-    const canDelete = !editorOptions.requiredBlocks.includes(name);
+    const canDelete = !requiredIds.includes(id);
     const { allowAdd } = editorOptions;
     const ref = useRef<HTMLDivElement>(null);
 

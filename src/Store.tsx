@@ -23,6 +23,7 @@ type StoreState = {
     blocks: ComponentDefinition[];
     data: ComponentValue[];
     blocksOrder: string[];
+    requiredIds: string[];
     insertIndex: number | null;
     focusIndex: number | null;
     animReorder: { sidebar: boolean; preview: boolean };
@@ -88,6 +89,7 @@ export const EditorContextProvider = ({
                 storedData: data,
                 animReorder: { sidebar: false, preview: false },
                 blocksOrder: [] as string[],
+                requiredIds: [] as string[],
                 focusIndex: null as number | null,
                 insertIndex: null as number | null,
                 rootElement: rootElement,
@@ -163,15 +165,10 @@ export const EditorContextProvider = ({
                         return Promise.resolve();
                     },
                     removeData: (id: string) => {
-                        const { data, editorOptions } = getState();
+                        const { data, requiredIds } = getState();
                         const index = data.findIndex((b) => b._id === id);
 
-                        if (
-                            index !== -1 &&
-                            !editorOptions.requiredBlocks.includes(
-                                data[index]._name,
-                            )
-                        ) {
+                        if (index !== -1 && !requiredIds.includes(id)) {
                             window.sessionStorage.setItem(
                                 "ve-data",
                                 JSON.stringify(data),
@@ -196,19 +193,40 @@ export const EditorContextProvider = ({
         ),
     );
 
-    const presentNames = new Set(data.map((b) => b._name));
-    store
-        .getState()
-        .editorOptions.requiredBlocks.filter((n) => !presentNames.has(n))
-        .forEach((n) => {
-            const definition = blocks.find((b) => b.name === n);
-            if (definition) {
-                store.getState().insertData(definition);
-            }
-        });
+    // A name listed N times in requiredBlocks requires N instances of that block.
+    const requiredCounts = new Map<string, number>();
+    store.getState().editorOptions.requiredBlocks.forEach((n) => {
+        requiredCounts.set(n, (requiredCounts.get(n) ?? 0) + 1);
+    });
+    const presentCounts = new Map<string, number>();
+    data.forEach((b) => {
+        presentCounts.set(b._name, (presentCounts.get(b._name) ?? 0) + 1);
+    });
+    requiredCounts.forEach((required, n) => {
+        const definition = blocks.find((b) => b.name === n);
+        if (!definition) {
+            return;
+        }
+        for (let i = presentCounts.get(n) ?? 0; i < required; i++) {
+            store.getState().insertData(definition);
+        }
+    });
+
+    // Only the instances that satisfy the requirement are protected;
+    // blocks added afterwards from the library stay deletable.
+    const remaining = new Map(requiredCounts);
+    const requiredIds: string[] = [];
+    store.getState().data.forEach((b) => {
+        const left = remaining.get(b._name) ?? 0;
+        if (left > 0) {
+            requiredIds.push(b._id);
+            remaining.set(b._name, left - 1);
+        }
+    });
     store.setState({
         focusIndex: null,
         insertIndex: null,
+        requiredIds,
         storedData: store.getState().data,
     });
 

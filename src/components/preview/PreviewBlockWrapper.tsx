@@ -27,6 +27,7 @@ export function PreviewBlockWrapper({
         data,
         setAnimReorder,
         editorOptions,
+        requiredIds,
         restoreData,
     } = usePartialStore(
         "moveBlock",
@@ -37,12 +38,11 @@ export function PreviewBlockWrapper({
         "data",
         "setAnimReorder",
         "editorOptions",
+        "requiredIds",
         "restoreData",
     );
     const { reorderable } = editorOptions;
-    const canDelete = !editorOptions.requiredBlocks.includes(
-        data.find((b) => b._id === id)?._name ?? "",
-    );
+    const canDelete = !requiredIds.includes(id);
     const { addToast } = useToast();
     const hostRef = useRef<HTMLDivElement>(null);
 
